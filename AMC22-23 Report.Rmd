@@ -1,0 +1,117 @@
+---
+title: "PNSW22-23 Report"
+author: "BYDavis"
+date: "2023-08-13"
+output:
+  pdf_document:
+    fig_caption: yes
+    number_sections: yes
+    includes:
+      in_header: header.txt
+  word_document: default
+---
+
+```{=tex}
+\newpage 
+\tableofcontents
+\newpage
+```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, fig.height = 9, fig.width = 7)
+
+library(tinytex)
+```
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# The title of your manuscript should be an informative statement or question.
+
+Firstname Lastname 1, <- repeat for all authors
+
+1  Department, University of Maine, Orono ME (affiliation here)
+
+## Author contributions
+Author Name1 is an undergraduate/graduate student, advised by __________ (research advisor, if relevant), and they contributed to (add or delete as needed): data analysis, statistics, creating figures, reading literature, writing the manuscript, and reviewing the drafts for submission.
+
+Author Name2 is an undergraduate/graduate student, advised by __________ (research advisor, if relevant), and they contributed to (add or delete as needed): data analysis, statistics, creating figures, reading literature, writing the manuscript, and reviewing the drafts for submission.
+
+
+# Keywords (5 - 10):
+
+Keywords that would help someone search for this paper or topic. These should not be repeated in the abstract
+
+
+
+
+# Abstract
+The abstract is a short section at the beginning of scientific articles and proposals that summarizes the rest of the document.  Because it is a summary it is OK to reiterate information and thoughts you include in the rest of the article. Anything you mention here should also appear in the main text. This section should be in the past tense.
+    • 150-300 words, go by length required by your journal format of choice.  
+    • Do not include citations or acronyms. 
+    • You may write this for a non-technical audience, but it should sound professional and not like an email.  
+
+Include 1 - 2 lines each about:
+    • What you are studying and what the problem is,
+    • The long-term and short term goal,
+    • the research question being posed and your hypothesis, 
+    • objectives
+    • a brief or vague explanation of the methods or analysis used, 
+    • results
+    • additional impacts or outcomes
+
+
+# Introduction
+Include some basic information on the samples/ecosystem/problem being researched to give the reader what they need to know to keep reading. This should be at least 1 page in length
+    • What host, ecosystem, or model did these samples come from? Describe that.
+    • What are you hoping to learn?
+    • Is there a problem you are trying to solve with this research, and what is it?
+    • Include what the point of the paper is/research questions/hypotheses.
+    • Students who inherit data from another researcher will be provided with some of this information by the researcher.  It is understood that these data may be outside of your field of knowledge, so do your best with writing the background section.
+
+
+# Methods
+Describe the methods for your study as best you can, but it is understood that if you are borrowing data or working with a larger research team that you might not have all the details. 
+    • This should be 1 – 2 pages depending on how complex your research was
+    • Summarize the experimental design and how the samples were generated. If you are using example data that you are just using to practice, you can invent an experimental design for them. 
+    • If you are part of a larger team or you got this data from someone else, it is understood that you might not have all the details. You have two options, the first is to mention those collaborators and which portions of the experimental design they were responsible for, as a way to show that the details for this exist and you are simply not aware of them yet. The second is to obtain a description of the methods from your collaborators and to include it in your manuscript with a sentence saying which portions they wrote for you.  
+    • Regardless of where the data came from, you must summarize the steps you performed in data analysis, such that someone else could follow what you did.  You may include your code as a Supplemental File and reference it in the Methods, instead of describing it in too much detail.
+
+
+# Results
+This will look different for each project.  Present the results as best you can to answer the research questions/hypotheses. Put the results in a conceptual order that makes sense, and it may take several drafts before you know the best way to order your results to present a cohesive storyline. Think about your hypothesis and what you are trying to show your reader, and what are the most important things for them to know.
+    • This should be 1.5 – 3 pages worth of text, depending on how complex your research was, but it can be as long as needed to accommodate figures and tables
+    • It’s ok if you have null results (not statistically significant)!  Sometimes no change in the community is a good thing, and even null results tell us something about that ecosystem.
+    • Tables – please include in the main body of the manuscript close to where you mention in, to make reviewing easier. Usually, tables are put at the end of manuscripts to help with typesetting.
+        ◦ The results will look different for every project, and students may decide to include the type and number of tables which make sense for the narrative of the paper.
+        ◦ You must also describe the results of your table in the main Results section so your reader understands what that table is showing them.
+
+    • Figures - please include in the main body of the manuscript close to where you mention them, to make reviewing easier. Usually, tables are put at the end of manuscripts to help with typesetting.
+        ◦ The results will look different for every project, and students may decide to include the type and number of tables which make sense for the narrative of the paper. 
+        ◦ You must also describe the results of your figures in the main Results section so your reader understands what those images are showing them.
+
+
+
+# Discussion 
+This will look different for each project.  Try to frame your results in the context of other papers. Students who inherit data from another researcher will be provided with some of this information by the researcher.  It is understood that these data may be outside of your field of knowledge, so do your best with writing the background section.
+        ◦ This should be at least 1 page
+        ◦ Include study limitations or next steps as needed.
+
+
+
+# Acknowledgements
+Add a brief thank you to anyone who provided data, provided assistance with samples, or otherwise helped on the project. Do not include any of the authors, because being an author is the acknowledgement. Please include the following sentence and add on as needed:
+
+
+# Funding 
+This is a standard section to include and recommended if you intend to submit your paper for review at the end of the semester. It is optional to include for this class, delete this section if you do not want to include it. 
+
+
+# References
+You must use a consistent style but it can be whichever style you prefer. Each item on the reference list must be cited somewhere in the text at least once. It is easier to use (Name, Year) for citation style when drafting manuscripts, but you may use [1] citations if you prefer.
+    • The final draft should have at least 15 references, but if you are planning to submit this for publication eventually I recommend at least 30.
+
+
+# Supplementary Material 
+This is a standard section to include and recommended if you intend to submit your paper for review at the end of the semester. It is optional to include for this class, delete this section if you do not want to include it. Supplemental materials (figures, tables, video, code, data, etc.) can be included in a section at the very end, or as a separate document.  Supplemental material contains helpful info that is not critical to the paper, such as negative results, additional levels of taxonomy, or metadata.
