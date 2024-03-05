@@ -197,7 +197,7 @@ BF2 Forward: cut after 240
 BR2 Reverse: these are a hot mess. Run aggregates
 
 ```{r aggregatetesting}
-plotQualityProfile(fns12Fisolate, aggregate = T)
+plotQualityProfile(fns12Fisolate[1:10], aggregate = T)
 
 plotQualityProfile(fns12Risolate, aggregate = T)
 
@@ -207,8 +207,9 @@ plotQualityProfile(fnsBRisolate, aggregate = T)
 
 beep(sound = "fanfare")
 
-fns12Fisolate
 ```
+
+# Have not localized code from here on
 
 # Begin filtering process
 
