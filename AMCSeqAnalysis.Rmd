@@ -98,79 +98,115 @@ Run 4 randomly selected quality profile plots per primer per read type (forward 
 ```{r random_selection}
 
 # Numbers for 12S Forward reads:
-sample(1:78, 4, replace = FALSE)
-  # Results on 3/5/2023: 41, 49, 18, 60
+sample(1:78, 6, replace = FALSE)
+  # Results on 3/20/2024: 75 15 63 34 35 28
 
 # Numbers for 12S Reverse reads:
-sample(1:78, 4, replace = FALSE)
-  # Results on 3/5/2023: 31, 3, 22, 55
+sample(1:78, 6, replace = FALSE)
+  # Results on 3/20/2024: 70 40 69 38  5 10
 
 # Numbers for BF2 Forward reads:
-sample(1:78, 4, replace = FALSE)
-  # Results on 3/5/2023: 70, 28, 62, 3
+sample(1:78, 6, replace = FALSE)
+  # Results on 3/20/2024: 48 64 20 57 15 11
 
 # Numbers for BF2 Reverse reads:
-sample(1:78, 4, replace = FALSE)
-  # Results on 3/5/2023: 10, 63, 49, 48
+sample(1:78, 6, replace = FALSE)
+  # Results on 3/20/2024: 15, 49, 56, 78, 11, 28
 
 ```
 
 
 ```{r qualityplotgeneration}
 # 12S Forward:
-plotQualityProfile(fns12Fisolate[41])
-ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12ForwardQuality_RNG41.png", plot = plotQualityProfile(fns12Fisolate[41]))
+plotQualityProfile(fns12Fisolate[75])
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12ForwardQuality_RNG75.png", plot = plotQualityProfile(fns12Fisolate[75]))
 
-plotQualityProfile(fns12Fisolate[49])
-ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12ForwardQuality_RNG49.png", plot = plotQualityProfile(fns12Fisolate[49]))
+plotQualityProfile(fns12Fisolate[15])
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12ForwardQuality_RNG15.png", plot = plotQualityProfile(fns12Fisolate[15]))
 
-plotQualityProfile(fns12Fisolate[18])
-ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12ForwardQuality_RNG18.png", plot = plotQualityProfile(fns12Fisolate[18]))
+plotQualityProfile(fns12Fisolate[63])
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12ForwardQuality_RNG63.png", plot = plotQualityProfile(fns12Fisolate[63]))
 
-plotQualityProfile(fns12Fisolate[60])
-ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12ForwardQuality_RNG60.png", plot = plotQualityProfile(fns12Fisolate[60]))
+plotQualityProfile(fns12Fisolate[34])
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12ForwardQuality_RNG34.png", plot = plotQualityProfile(fns12Fisolate[34]))
 
+plotQualityProfile(fns12Fisolate[35])
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12ForwardQuality_RNG35.png", plot = plotQualityProfile(fns12Fisolate[35]))
 
+plotQualityProfile(fns12Fisolate[28])
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12ForwardQuality_RNG28.png", plot = plotQualityProfile(fns12Fisolate[28]))
+
+beep(sound = "fanfare")
+
+```
+
+```{r}
 # 12S Reverse:
-plotQualityProfile(fns12Risolate[31])
-ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12ReverseQuality_RNG31.png", plot = plotQualityProfile(fns12Risolate[31]))
+plotQualityProfile(fns12Risolate[70])
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12ReverseQuality_RNG70.png", plot = plotQualityProfile(fns12Risolate[70]))
 
-plotQualityProfile(fns12Risolate[3])
-ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12ReverseQuality_RNG3.png", plot = plotQualityProfile(fns12Risolate[3]))
+plotQualityProfile(fns12Risolate[40])
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12ReverseQuality_RNG40.png", plot = plotQualityProfile(fns12Risolate[40]))
 
-plotQualityProfile(fns12Risolate[22])
-ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12ReverseQuality_RNG22.png", plot = plotQualityProfile(fns12Risolate[22]))
+plotQualityProfile(fns12Risolate[69])
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12ReverseQuality_RNG69.png", plot = plotQualityProfile(fns12Risolate[69]))
 
-plotQualityProfile(fns12Risolate[55])
-ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12ReverseQuality_RNG55.png", plot = plotQualityProfile(fns12Risolate[55]))
+plotQualityProfile(fns12Risolate[38])
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12ReverseQuality_RNG38.png", plot = plotQualityProfile(fns12Risolate[38]))
 
+plotQualityProfile(fns12Risolate[5])
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12ReverseQuality_RNG5.png", plot = plotQualityProfile(fns12Risolate[5]))
 
+plotQualityProfile(fns12Risolate[10])
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12ReverseQuality_RNG10.png", plot = plotQualityProfile(fns12Risolate[10]))
+
+beep(sound = "fanfare")
+
+```
+
+```{r}
 # B Forward:
-plotQualityProfile(fnsBFisolate[70])
-ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/BF2ForwardQuality_RNG70.png", plot = plotQualityProfile(fnsBFisolate[70]))
+plotQualityProfile(fnsBFisolate[48])
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/BF2ForwardQuality_RNG48.png", plot = plotQualityProfile(fnsBFisolate[48]))
 
-plotQualityProfile(fnsBFisolate[28]) 
-ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/BF2ForwardQuality_RNG28.png", plot = plotQualityProfile(fnsBFisolate[28]))
+plotQualityProfile(fnsBFisolate[64]) 
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/BF2ForwardQuality_RNG64.png", plot = plotQualityProfile(fnsBFisolate[64]))
 
-plotQualityProfile(fnsBFisolate[62])
-ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/BF2ForwardQuality_RNG62.png", plot = plotQualityProfile(fnsBFisolate[62]))
+plotQualityProfile(fnsBFisolate[20])
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/BF2ForwardQuality_RNG20.png", plot = plotQualityProfile(fnsBFisolate[20]))
 
-plotQualityProfile(fnsBFisolate[5])
-ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/BF2ForwardQuality_RNG5.png", plot = plotQualityProfile(fnsBFisolate[5]))
+plotQualityProfile(fnsBFisolate[57])
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/BF2ForwardQuality_RNG57.png", plot = plotQualityProfile(fnsBFisolate[57]))
 
+plotQualityProfile(fnsBFisolate[15])
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/BF2ForwardQuality_RNG15.png", plot = plotQualityProfile(fnsBFisolate[15]))
 
+plotQualityProfile(fnsBFisolate[11])
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/BF2ForwardQuality_RNG11.png", plot = plotQualityProfile(fnsBFisolate[11]))
+
+beep(sound = "fanfare")
+
+```
+
+```{r}
 # B Reverse:
-plotQualityProfile(fnsBRisolate[10])
-ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/BF2ReverseQuality_RNG10.png", plot = plotQualityProfile(fnsBRisolate[10]))
+plotQualityProfile(fnsBRisolate[15])
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/BF2ReverseQuality_RNG15.png", plot = plotQualityProfile(fnsBRisolate[15]))
 
-plotQualityProfile(fnsBRisolate[63]) 
-ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/BF2ReverseQuality_RNG63.png", plot = plotQualityProfile(fnsBRisolate[63]))
-
-plotQualityProfile(fnsBRisolate[49])
+plotQualityProfile(fnsBRisolate[49]) 
 ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/BF2ReverseQuality_RNG49.png", plot = plotQualityProfile(fnsBRisolate[49]))
 
-plotQualityProfile(fnsBRisolate[48])
-ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/BF2ReverseQuality_RNG48.png", plot = plotQualityProfile(fnsBRisolate[48]))
+plotQualityProfile(fnsBRisolate[56])
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/BF2ReverseQuality_RNG56.png", plot = plotQualityProfile(fnsBRisolate[56]))
+
+plotQualityProfile(fnsBRisolate[77])
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/BF2ReverseQuality_RNG77.png", plot = plotQualityProfile(fnsBRisolate[77]))
+
+plotQualityProfile(fnsBRisolate[11])
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/BF2ReverseQuality_RNG11.png", plot = plotQualityProfile(fnsBRisolate[11]))
+
+plotQualityProfile(fnsBRisolate[28])
+ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/BF2ReverseQuality_RNG28.png", plot = plotQualityProfile(fnsBRisolate[28]))
 
 beep(sound = "fanfare")
 ```
@@ -188,26 +224,13 @@ BR2 primer length: 20 -  TCDGGRTGNCCRAARAAYCA
 
 Quality notes:
 
-12 Forward: cut after 220, but caught 2 controls
+12 Forward: cut after 220
 
 12 Reverse: cut after 220
 
-BF2 Forward: cut after 240
+BF2 Forward: cut after 240, potentially from 0-50 also?
 
-BR2 Reverse: these are a hot mess. Run aggregates
-
-```{r aggregatetesting}
-plotQualityProfile(fns12Fisolate[1:10], aggregate = T)
-
-plotQualityProfile(fns12Risolate, aggregate = T)
-
-plotQualityProfile(fnsBFisolate, aggregate = T)
-
-plotQualityProfile(fnsBRisolate, aggregate = T)
-
-beep(sound = "fanfare")
-
-```
+BR2 Reverse: these are a hot mess. Run more randoms. Post-randoms - there's a consistent bad low quality spike around 50-60. Trim from 60-200
 
 # Have not localized code from here on
 
@@ -221,6 +244,8 @@ path_filt12R <- "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Filtered/12S
 
 path_filtBF <- "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Filtered/BF Forward"
 path_filtBR <- "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Filtered/BF Reverse"
+
+?filterAndTrim
 ```
 
 
@@ -233,37 +258,35 @@ filtout12F <- filterAndTrim(file.path(path_raw12F, fastqs12F), file.path(path_fi
 
 saveRDS(filtout12F, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12F_FilteredOutputs.rds")
 ```
-PNW23_BOWU_MR1 did not have any reads left after the filter, file was not written. Image saved in output folder
-
-## NTS - a bit concerned why the control files are still progressing. Might run separate quality profiles of them later. Halt the rest. Proceeding the next day. The controls are very full (not good), but need to proceed regardless. Will spend until March 5th working on this set to figure out if the data is usable, then either make decision on continuing it or switch to AMC. PNW has fewer samples and processing will take less time, so use it as an exercise.
-
-
-```{r filttroubleshooting}
-plotQualityProfile("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Raw/12S/Read1/PNW23_BOWU_MR1.fastq.gz")
-ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/FiltElim_PNW23_BOWU_MR1.png", plot = plotQualityProfile("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Raw/12S/Read1/PNW23_BOWU_MR1.fastq.gz"))
-
-```
-
+AMC23_C721_MR1 did not have any reads left after the filter, file was not written. Image saved in output folder
 
 ```{r filt_12R}
-filtout12R <- filterAndTrim(file.path(path_raw12R, fastqs12R), file.path(path_filt12R, paste0(names12R, "filt.fastq.gz")), trimLeft = 27, truncLen = 200, maxEE = 2, maxN = 0, verbose = TRUE)
+filtout12R <- filterAndTrim(file.path(path_raw12R, fastqs12R), file.path(path_filt12R, paste0(names12R, "filt.fastq.gz")), trimLeft = 27, truncLen = 220, maxEE = 2, maxN = 0, verbose = TRUE)
 
 saveRDS(filtout12R, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12R_FilteredOutputs.rds")
 ```
-
+AMC23_C721_MR2 removed
 
 ```{r filt_BF}
-filtoutBF <- filterAndTrim(file.path(path_rawBF, fastqsBF), file.path(path_filtBF, paste0(namesBF, "filt.fastq.gz")), trimLeft = 20, truncLen = 270, maxEE = 2, maxN = 0, verbose = TRUE)
+filtoutBF <- filterAndTrim(file.path(path_rawBF, fastqsBF), file.path(path_filtBF, paste0(namesBF, "filt.fastq.gz")), trimLeft = 50, truncLen = 240, maxEE = 2, maxN = 0, verbose = TRUE)
 
 saveRDS(filtoutBF, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/BF_FilteredOutputs.rds")
 ```
+AMC22_AB01_BR1 removed
+AMC23_AB04_BR1 removed
+AMC23_MB09_BR1 removed
 
 
 ```{r filt_BR}
-filtoutBR <- filterAndTrim(file.path(path_rawBR, fastqsBR), file.path(path_filtBR, paste0(namesBR, "filt.fastq.gz")), trimLeft = 20, truncLen = 240, maxEE = 2, maxN = 0, verbose = TRUE)
+filtoutBR <- filterAndTrim(file.path(path_rawBR, fastqsBR), file.path(path_filtBR, paste0(namesBR, "filt.fastq.gz")), trimLeft = 60, truncLen = 200, maxEE = 2, maxN = 0, verbose = TRUE)
 
 saveRDS(filtoutBR, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/BR_FilteredOutputs.rds")
 ```
+AMC22_AB01_BR2 removed
+AMC23_AB04_BR2 removed
+AMC23_MB09_BR2 removed
+
+
 
 # Explore filtered output 
 
@@ -280,7 +303,6 @@ filtout12F[order(filtout12F[,2], decreasing=FALSE),]
 colSums(filtout12F)
 ```
 
-The controls of concern went from 87249 and 78352 raw reads to 1461 and 1700 filtered reads. Still higher than 5 other 'real' samples, but my instinct is that the high raw read amount was due to high remaining numbers of primer dimers left from the sequencing process.
 
 ```{r assess filt_12R}
 filtout12R
@@ -293,7 +315,6 @@ filtout12R[order(filtout12R[,2], decreasing=FALSE),]
 colSums(filtout12R)
 ```
 
-### NTS: Double check exactly how to trim off the primers on the reverse reads. These filtered read numbers are suspiciously high
 
 ```{r assess filt_BF}
 filtoutBF
@@ -306,7 +327,6 @@ filtoutBF[order(filtoutBF[,2], decreasing=FALSE),]
 colSums(filtoutBF)
 ```
 
-### NTS: Check the trim parameters for the BF2/BR2 samples. It isn't filtering out as much as the 12S samples. Could be appropriate but also maybe not.
 
 ```{r assess filt_BR}
 filtoutBR
@@ -321,13 +341,13 @@ colSums(filtoutBR)
 
 # Look at filtered trends
 ```{r filtertrends}
-filttrend12F <- ggplot(as.data.frame(filtout12F)) + geom_point(aes(row.names(filtout12F), reads.in), color = "blue") + geom_point(aes(row.names(filtout12F), reads.out), color = "orange") + ggtitle("Filter Trends for PNW 12S Forward Reads")
+filttrend12F <- ggplot(as.data.frame(filtout12F)) + geom_point(aes(row.names(filtout12F), reads.in), color = "blue") + geom_point(aes(row.names(filtout12F), reads.out), color = "orange") + ggtitle("Filter Trends for AMC 12S Forward Reads")
 
-filttrend12R <- ggplot(as.data.frame(filtout12R)) + geom_point(aes(row.names(filtout12R), reads.in), color = "blue") + geom_point(aes(row.names(filtout12R), reads.out), color = "orange") + ggtitle("Filter Trends for PNW 12S Reverse Reads")
+filttrend12R <- ggplot(as.data.frame(filtout12R)) + geom_point(aes(row.names(filtout12R), reads.in), color = "blue") + geom_point(aes(row.names(filtout12R), reads.out), color = "orange") + ggtitle("Filter Trends for AMC 12S Reverse Reads")
 
-filttrendBF <- ggplot(as.data.frame(filtoutBF)) + geom_point(aes(row.names(filtoutBF), reads.in), color = "blue") + geom_point(aes(row.names(filtoutBF), reads.out), color = "orange") + ggtitle("Filter Trends for PNW BF2/BR2 Forward Reads")
+filttrendBF <- ggplot(as.data.frame(filtoutBF)) + geom_point(aes(row.names(filtoutBF), reads.in), color = "blue") + geom_point(aes(row.names(filtoutBF), reads.out), color = "orange") + ggtitle("Filter Trends for AMC BF2/BR2 Forward Reads")
 
-filttrendBR <- ggplot(as.data.frame(filtoutBR)) + geom_point(aes(row.names(filtoutBR), reads.in), color = "blue") + geom_point(aes(row.names(filtoutBR), reads.out), color = "orange") + ggtitle("Filter Trends for PNW BF2/BR2 Reverse Reads")
+filttrendBR <- ggplot(as.data.frame(filtoutBR)) + geom_point(aes(row.names(filtoutBR), reads.in), color = "blue") + geom_point(aes(row.names(filtoutBR), reads.out), color = "orange") + ggtitle("Filter Trends for AMC BF2/BR2 Reverse Reads")
 
 
 ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/FilterTrends_12F.png", filttrend12F)
@@ -339,15 +359,18 @@ ggsave("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/FilterTre
 just out of curiosity's sake, let's also explore some quality profiles again from the filtered reads
 
 ```{r plotfiltered}
-plotQualityProfile("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Filtered/12S Forward/PNW22_C914_MR1filt.fastq.gz")
-
-plotQualityProfile("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Filtered/12S Forward/PNW23_C523_MR1filt.fastq.gz")
 
 #Compare post and pre-filter and trim
 
-plotQualityProfile("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Filtered/12S Reverse/PNW22_MATD_MR2filt.fastq.gz")
+plotQualityProfile("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Filtered/12S Reverse/AMC22_MB01_MR2filt.fastq.gz")
 
-plotQualityProfile("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Raw/12S/Read2/PNW22_MATD_MR2.fastq.gz")
+plotQualityProfile("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Raw/12S/Read2/AMC22_MB01_MR2.fastq.gz")
+
+# 
+
+plotQualityProfile("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Filtered/12S Reverse/AMC23_SU03_MR2filt.fastq.gz")
+
+plotQualityProfile("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Raw/12S/Read2/AMC23_SU03_MR2.fastq.gz")
 ```
 
 # Error Rates and Dereplication
@@ -355,7 +378,7 @@ plotQualityProfile("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Raw/12S/R
 First we need to set a seed and make sure the paths are all still set.
 
 ```{r error setup}
-set.seed(4350)
+set.seed(0743)
 
 # Set the names for the filtered files we'll be using
 
@@ -449,19 +472,19 @@ beep(sound = "fanfare")
 
 # Infer sample composition
 ```{r samplecomposition}
-dada12F <- dada(derep12F, err = err12F, mulithread = FALSE)
+dada12F <- dada(derep12F, err = err12F, multithread = FALSE)
 print("dada 12F finished")
 beep(sound = "coin")
 
-dada12R <- dada(derep12R, err = err12R, mulithread = FALSE)
+dada12R <- dada(derep12R, err = err12R, multithread = FALSE)
 print("dada 12R finished")
 beep(sound = "coin")
 
-dadaBF <- dada(derepBF, err = errBF, mulithread = FALSE)
+dadaBF <- dada(derepBF, err = errBF, multithread = FALSE)
 print("dada BF finished")
 beep(sound = "coin")
 
-dadaBR <- dada(derepBR, err = errBR, mulithread = FALSE)
+dadaBR <- dada(derepBR, err = errBR, multithread = FALSE)
 print("dada BR finished")
 beep(sound = "fanfare")
 ```
@@ -508,15 +531,13 @@ saveRDS(seqtabBR.nochim, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dat
 beep(sound = "coin")
 ```
 
-### NTS: decide whether or not to do the QA imaging step (DNASeqAnalysis_2.rmd file, before the negative control)
 
 # Set Negative Control
 
 The process from here on is to download a reference sequence library in .fa.gz format, then use phyloseq to assignTaxonomy to the entire seqtab.nochim objects. Then identify which species are present in the negative controls, and subtract them from the samples (either all samples or batches). This is the decontam process in DNASeqAnalysis_3.rmd. We will subtract the control species from batches of samples, based on which controls were collected, filtered, and extracted with which 'real samples.' Refer to the field and lab notebooks to generate this list. This will probably get messy and might even cross projects. 
 
-[] Use this working PNW code to progress the AMC repo 
-[] Generate list of which control samples will act as negative sequence controls for which samples (not project specific)
-[] Clean species list and download reference libraries for the 12S primers and BF2/BR2 COI primers
+
+[] download reference libraries for the 12S primers and BF2/BR2 COI primers
 [] AssignTaxonomy
 [] Proceed with the decontam process
 [] Remove any unwanted taxa
