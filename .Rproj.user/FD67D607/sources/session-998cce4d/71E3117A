@@ -1,0 +1,28 @@
+{
+    "id": "71E3117A",
+    "path": null,
+    "project_path": null,
+    "type": "object_explorer",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1711080660764.0,
+    "source_on_save": false,
+    "relative_order": 6,
+    "properties": {
+        "id": "60716b1232ff403f9ba30091d5b9f136",
+        "name": "derep12F",
+        "title": "derep12F",
+        "language": "R",
+        "source_window_id": "",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1956752998000,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1711080660764,
+    "read_only": false,
+    "read_only_alternatives": []
+}
