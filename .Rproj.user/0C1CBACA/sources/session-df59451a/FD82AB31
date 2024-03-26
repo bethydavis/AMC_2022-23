@@ -3,9 +3,9 @@
     "path": "C:/Users/bydav/Desktop/GitHub/UM_FSM_AMC22-23/AMCnotes.Rmd",
     "project_path": "AMCnotes.Rmd",
     "type": "r_markdown",
-    "hash": "0",
+    "hash": "3370613051",
     "contents": "",
-    "dirty": true,
+    "dirty": false,
     "created": 1711391048157.0,
     "source_on_save": false,
     "relative_order": 3,
@@ -17,11 +17,11 @@
         "docOutlineVisible": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1710919875,
+    "lastKnownWriteTime": 1711424109,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1711391831993,
+    "last_content_update": 1711424109094,
     "read_only": false,
     "read_only_alternatives": []
 }
