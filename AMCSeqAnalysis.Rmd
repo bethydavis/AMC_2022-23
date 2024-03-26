@@ -20,13 +20,19 @@ if(!require("BiocManager", quietly = TRUE))
 BiocManager::install("dada2")
 install.packages("ggplot2")
 install.packages("beepr")
-
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("phyloseq")
+install.packages("vegan")
 ```
 
 ```{r loadpackages}
 library(dada2)
 library(ggplot2)
 library(beepr)
+library(phyloseq)
+library(vegan)
+library(dplyr)
 ```
 
 Prior to this Rmd, the raw fastq files have been renamed in the repo UM_FSM_Cleaning
@@ -670,6 +676,8 @@ The process from here on is to download a reference sequence library in .fa.gz f
 # Workflow Verification
 
 ```{r workflow_verification, echo = FALSE}
+seqtab12.nochim <- readRDS("G:\\My Drive\\2_UMaine FSM - Field Projects\\AMC\\Data\\dataoutputs\\12Merged Sequence No Chimera Table.rds")
+
 getN <- function(x) sum(getUniques(x))
 
 track12 <- cbind(filtout12sync, sapply(dada12F, getN), sapply(dada12R, getN), sapply(mergers12, getN), rowSums(seqtab12.nochim))
@@ -696,85 +704,39 @@ Filtering and merging lost the most number of reads across samples, but it isn't
 
 ```{r assign_taxonomy, echo = FALSE}
 # Very slow and intensive
-all.taxa <- assignTaxonomy(seqtab.nochim, 'C:/Users/bydav/Desktop/AVS 554/prov_silva_nr99_v138_train_set.fa.gz', tryRC = TRUE)
-
-
-seqs <- getSequences(system.file("extdata", "example_seqs.fa", package="dada2"))
-training_fasta <- system.file("extdata", "example_train_set.fa.gz", package="dada2")
-taxa <- assignTaxonomy(seqs, training_fasta)
-taxa80 <- assignTaxonomy(seqs, training_fasta, minBoot=80, multithread=2)
-
+all.taxa <- assignTaxonomy(seqtab12.nochim, 'C:/Users/bydav/Desktop/a04_REFDBdada.fasta', tryRC = TRUE, verbose = TRUE)
+beep(sound = "fanfare")
 ```
 
+
+
 ```{r taxonomy_results, echo = FALSE}
-saveRDS(all.taxa, 'C:/Users/bydav/Desktop/AVS 554/Output/Lab4_taxa_silva_rds.rds')
-write.csv(all.taxa, 'C:/Users/bydav/Desktop/AVS 554/Output/Lab4_taxa_silva_csv.csv')
+saveRDS(all.taxa, "G:\\My Drive\\2_UMaine FSM - Field Projects\\AMC\\Data\\dataoutputs\\12SAMC_AssignedTaxa.rds")
+write.csv(all.taxa, 'G:\\My Drive\\2_UMaine FSM - Field Projects\\AMC\\Data\\dataoutputs\\12SAMC_AssignedTaxa.csv')
 ```
 
 # Phyloseq
 
-Check that sample names match, if not change manually - don't rely on code to fix it
+Load in a metadata file - make sure the sample names and order match between it and the seqtab
 ```{r name_check, include = FALSE}
-row.names(meta) 
-row.names(seqtab.nochim)
+meta <- read.csv("C:/Users/bydav/Desktop/AMCMeta.csv")
+
+row.names(seqtab12.nochim)
+
+
 
 # Convince R by force that they match - this is a flat replacement, not a match-up
-row.names(seqtab.nochim) <- row.names(meta) 
+row.names(meta) <- row.names(seqtab12.nochim) 
+
 ```
 
 ```{r ps_object, echo = FALSE}
 # Create phyloseq object with all samples
-EX_ps <- phyloseq(otu_table(seqtab.nochim, taxa_are_rows=FALSE), sample_data(meta), tax_table(all.taxa.sp))
+EX_ps <- phyloseq(otu_table(seqtab12.nochim, taxa_are_rows=FALSE), sample_data(meta), tax_table(all.taxa))
 
 EX_ps
-# Need to add a column that defines if a sample is a Sample or Control, and a column that lists which batch number (for decontam) each sample belongs to
 ```
-# RESULT:
-34 samples made it this far
 
-######################################################
-# Alpha Diversity Teaser
-######################################################
-
-```{r adiversity_preview, echo = FALSE}
-plot_richness(EX_ps, x="Diet", measures=c("Observed", "Shannon", "Chao1", "Simpson"), color="Treatment") + theme(axis.text.x = element_text(angle = 60, hjust = 1)) + title("Alpha Diversity Preview by Treatment")
-```
-Notes:
-
-- Hopefully, diversity/richness is lower in the Negative controls than real samples
-- 'measures' are some of the alpha diversity measures you can use
-- You can change the color to any color of your choice
-
-# RESULT: 
-In both the Observed and Chao1 metrics, the negative controls and mock sample treatment labels reflect a consistent (clustered) low diversity compared to the other treatments, though the experimental treatments have quite varied (high spread) alpha diversity for this pre-richness peek. Shannon diversity metrics report a middling diversity for the negative controls,  however the Simpson metric reports a high negative control diversity (comparatively) around 0.95, with experimental treatment datapoints ranging from 0.21 to 1 for Pelleted Alfalfa and 0.31 to 1 for Loose Alfalfa
-
-Assess negative control richness compared to real samples
-
-```{r taxa_sums, echo = FALSE}
-plot(sort(taxa_sums(EX_ps), TRUE), type="h", ylim=c(0, 20))
-```
-# ISSUE - How to interpret this graph?
-This shows how populated each taxa group is
-
-```{r simple_ordination, echo = FALSE}
-EX.ord <- ordinate(EX_ps, 
-                   #calculate similarities
-                   method ="PCoA", 
-                   #ordination type 
-                   "bray", binary = FALSE) 
-#similarity type. Jaccard is binary, Bray can be binary (unweighted) or not (weighted)
-
-plot_ordination(EX_ps, EX.ord, type="samples", color="Treatment", title="Bray Non-Binary PCoA Simple Ordination")
-```
-Initial clustering by extraction/sequencing batch or confounding variables implies contamination issues (see next section). Horse-shoe patterns indicate underlying patterns to the data
-
-# RESULT: 
-
-Jaccard - No obvious clustering is seen for the negative, pelleted, or loose alfalfa overall, though the week-based results of pelleted alfalfa wk 2 and loose alfalfa week 1 are closer together than the other treatments. Slight horseshoe curve possible. Negative control outliers
-
-Bray Binary - More obvious clustering of pelleted alfalfa wk 1 and 2 data and a clearer, more curved horseshoe shape. Negative control outliers
-
-Bray Non-Binary - strong horseshow pattern, negative control outliers but much less clustering of data
 
 ######################################################
 # Decontam with Negative Controls (Ishaq Method)
@@ -786,43 +748,172 @@ Dr. Ishaq's method creates vectors out of the SV table data for negative control
 
 
 # Subset controls
-EX_ps_controls = subset_samples(EX_ps, Sample_type == "NegCon_swab" | Sample_type == "NegCon_PCR" | Sample_type == "Mock") 
-# CHANGE ME to the column name that holds the variables associated with being a negative control
+EX_ps_controls = subset_samples(EX_ps, Type == "NegCon") 
 
 EX_ps_controls <- prune_taxa(taxa_sums(EX_ps_controls) > 0, EX_ps_controls)
 
 # To view columns in a phyloseq object:
-sample_data(EX_ps)$Treatment
+sample_data(EX_ps)$Fbatch
 
 # subset each DNA extraction batch
-batch1 = subset_samples(EX_ps_NCclean, DNA_extraction_batch == "1") #23 samples 
-batch2 = subset_samples(EX_ps_NCclean, DNA_extraction_batch == "2") #22 samples
+fbatch2 = subset_samples(EX_ps, Fbatch == "2")  
+
 
 # subset controls and prune to only those taxa
-batch1_kit = subset_samples(batch1, Sample_type == "NegCon_kit")
-batch2_kit = subset_samples(batch2, Sample_type == "NegCon_kit")
+fbatch2_kit = subset_samples(fbatch2, Type == "NegCon")
 
-batch1_kit <- prune_taxa(taxa_sums(batch1_kit) > 0, batch1_kit)
-batch2_kit <- prune_taxa(taxa_sums(batch2_kit) > 0, batch2_kit)
 
-# Make the taxa names into a vector so you can remove them, then use the keep vector for the prune taxa argument, because it wants the argument to be true (matching), and repeat for both batches
-b1_control_vec <- as.vector(taxa_names(batch1_kit)) 
-b1_vec <- as.vector(taxa_names(batch1)) 
-b1_keep <- setdiff(b1_vec, b1_control_vec)
-b1_clean <- prune_taxa(b1_keep, batch1)
+fbatch2_kit <- prune_taxa(taxa_sums(fbatch2_kit) > 0, fbatch2_kit)
 
-b2_control_vec <- as.vector(taxa_names(batch2_kit)) 
-b2_vec <- as.vector(taxa_names(batch2)) 
-b2_keep <- setdiff(b2_vec, b2_control_vec)
-b2_clean <- prune_taxa(b2_keep, batch2)
 
+# Make the taxa names into a vector so you can remove them, then use the keep vector for the prune taxa argument, because it wants the argument to be true (matching), and repeat for all batches
+fb2_control_vec <- as.vector(taxa_names(fbatch2_kit)) 
+fb2_vec <- as.vector(taxa_names(fbatch2)) 
+fb2_keep <- setdiff(fb2_vec, fb2_control_vec)
+fb2_clean <- prune_taxa(fb2_keep, fbatch2)
+```
+
+
+use the same framework as ^ to clean all batches and then merge together into a clean phyloseq object - make this into a loop after MSWC
+```{r}
+# batch 3
+fbatch3 = subset_samples(EX_ps, Fbatch == "3")  
+fbatch3_kit = subset_samples(fbatch3, Type == "NegCon")
+fbatch3_kit <- prune_taxa(taxa_sums(fbatch3_kit) > 0, fbatch3_kit)
+fb3_control_vec <- as.vector(taxa_names(fbatch3_kit)) 
+fb3_vec <- as.vector(taxa_names(fbatch3)) 
+fb3_keep <- setdiff(fb3_vec, fb3_control_vec)
+fb3_clean <- prune_taxa(fb3_keep, fbatch3)
+
+# batch 4
+#fbatch4 = subset_samples(EX_ps, Fbatch == "4")  
+#fbatch4_kit = subset_samples(fbatch4, Type == "NegCon")
+#fbatch4_kit <- prune_taxa(taxa_sums(fbatch4_kit) > 0, fbatch4_kit)
+#fb4_control_vec <- as.vector(taxa_names(fbatch4_kit)) 
+#fb4_vec <- as.vector(taxa_names(fbatch4)) 
+#fb4_keep <- setdiff(fb4_vec, fb4_control_vec)
+#fb4_clean <- prune_taxa(fb4_keep, fbatch4)
+
+# batch 5
+fbatch5 = subset_samples(EX_ps, Fbatch == "5")  
+fbatch5_kit = subset_samples(fbatch5, Type == "NegCon")
+fbatch5_kit <- prune_taxa(taxa_sums(fbatch5_kit) > 0, fbatch5_kit)
+fb5_control_vec <- as.vector(taxa_names(fbatch5_kit)) 
+fb5_vec <- as.vector(taxa_names(fbatch5)) 
+fb5_keep <- setdiff(fb5_vec, fb5_control_vec)
+fb5_clean <- prune_taxa(fb5_keep, fbatch5)
+
+# batch 6
+fbatch6 = subset_samples(EX_ps, Fbatch == "6")  
+fbatch6_kit = subset_samples(fbatch6, Type == "NegCon")
+fbatch6_kit <- prune_taxa(taxa_sums(fbatch6_kit) > 0, fbatch6_kit)
+fb6_control_vec <- as.vector(taxa_names(fbatch6_kit)) 
+fb6_vec <- as.vector(taxa_names(fbatch6)) 
+fb6_keep <- setdiff(fb6_vec, fb6_control_vec)
+fb6_clean <- prune_taxa(fb6_keep, fbatch6)
+
+# batch 7
+fbatch7 = subset_samples(EX_ps, Fbatch == "7")  
+fbatch7_kit = subset_samples(fbatch7, Type == "NegCon")
+fbatch7_kit <- prune_taxa(taxa_sums(fbatch7_kit) > 0, fbatch7_kit)
+fb7_control_vec <- as.vector(taxa_names(fbatch7_kit)) 
+fb7_vec <- as.vector(taxa_names(fbatch7)) 
+fb7_keep <- setdiff(fb7_vec, fb7_control_vec)
+fb7_clean <- prune_taxa(fb7_keep, fbatch7)
+
+# batch 8
+fbatch8 = subset_samples(EX_ps, Fbatch == "8")  
+fbatch8_kit = subset_samples(fbatch8, Type == "NegCon")
+fbatch8_kit <- prune_taxa(taxa_sums(fbatch8_kit) > 0, fbatch8_kit)
+fb8_control_vec <- as.vector(taxa_names(fbatch8_kit)) 
+fb8_vec <- as.vector(taxa_names(fbatch8)) 
+fb8_keep <- setdiff(fb8_vec, fb8_control_vec)
+fb8_clean <- prune_taxa(fb8_keep, fbatch8)
+
+# batch 9
+fbatch9 = subset_samples(EX_ps, Fbatch == "9")  
+fbatch9_kit = subset_samples(fbatch9, Type == "NegCon")
+fbatch9_kit <- prune_taxa(taxa_sums(fbatch9_kit) > 0, fbatch9_kit)
+fb9_control_vec <- as.vector(taxa_names(fbatch9_kit)) 
+fb9_vec <- as.vector(taxa_names(fbatch9)) 
+fb9_keep <- setdiff(fb9_vec, fb9_control_vec)
+fb9_clean <- prune_taxa(fb9_keep, fbatch9)
+
+# batch 10
+fbatch10 = subset_samples(EX_ps, Fbatch == "10")  
+fbatch10_kit = subset_samples(fbatch10, Type == "NegCon")
+fbatch10_kit <- prune_taxa(taxa_sums(fbatch10_kit) > 0, fbatch10_kit)
+fb10_control_vec <- as.vector(taxa_names(fbatch10_kit)) 
+fb10_vec <- as.vector(taxa_names(fbatch10)) 
+fb10_keep <- setdiff(fb10_vec, fb10_control_vec)
+fb10_clean <- prune_taxa(fb10_keep, fbatch10)
+
+# batch 11
+fbatch11 = subset_samples(EX_ps, Fbatch == "11")  
+fbatch11_kit = subset_samples(fbatch11, Type == "NegCon")
+fbatch11_kit <- prune_taxa(taxa_sums(fbatch11_kit) > 0, fbatch11_kit)
+fb11_control_vec <- as.vector(taxa_names(fbatch11_kit)) 
+fb11_vec <- as.vector(taxa_names(fbatch11)) 
+fb11_keep <- setdiff(fb11_vec, fb11_control_vec)
+fb11_clean <- prune_taxa(fb11_keep, fbatch11)
+
+# batch 12
+#fbatch12 = subset_samples(EX_ps, Fbatch == "12")  
+#fbatch12_kit = subset_samples(fbatch12, Type == "NegCon")
+#fbatch12_kit <- prune_taxa(taxa_sums(fbatch12_kit) > 0, fbatch12_kit)
+#fb12_control_vec <- as.vector(taxa_names(fbatch12_kit)) 
+#fb12_vec <- as.vector(taxa_names(fbatch12)) 
+#fb12_keep <- setdiff(fb12_vec, fb12_control_vec)
+#fb12_clean <- prune_taxa(fb12_keep, fbatch12)
+
+# batch 13
+fbatch13 = subset_samples(EX_ps, Fbatch == "13")  
+fbatch13_kit = subset_samples(fbatch13, Type == "NegCon")
+fbatch13_kit <- prune_taxa(taxa_sums(fbatch13_kit) > 0, fbatch13_kit)
+fb13_control_vec <- as.vector(taxa_names(fbatch13_kit)) 
+fb13_vec <- as.vector(taxa_names(fbatch13)) 
+fb13_keep <- setdiff(fb13_vec, fb13_control_vec)
+fb13_clean <- prune_taxa(fb13_keep, fbatch13)
+
+# batch 14
+fbatch14 = subset_samples(EX_ps, Fbatch == "14")  
+fbatch14_kit = subset_samples(fbatch14, Type == "NegCon")
+fbatch14_kit <- prune_taxa(taxa_sums(fbatch14_kit) > 0, fbatch14_kit)
+fb14_control_vec <- as.vector(taxa_names(fbatch14_kit)) 
+fb14_vec <- as.vector(taxa_names(fbatch14)) 
+fb14_keep <- setdiff(fb14_vec, fb14_control_vec)
+fb14_clean <- prune_taxa(fb14_keep, fbatch14)
+
+# batch 15
+fbatch15 = subset_samples(EX_ps, Fbatch == "15")  
+fbatch15_kit = subset_samples(fbatch15, Type == "NegCon")
+fbatch15_kit <- prune_taxa(taxa_sums(fbatch15_kit) > 0, fbatch15_kit)
+fb15_control_vec <- as.vector(taxa_names(fbatch15_kit)) 
+fb15_vec <- as.vector(taxa_names(fbatch15)) 
+fb15_keep <- setdiff(fb15_vec, fb15_control_vec)
+fb15_clean <- prune_taxa(fb15_keep, fbatch15)
+
+# batch 0
+
+fbatch0 = subset_samples(EX_ps, Fbatch == "0")  
+fbatch0_kit = subset_samples(fbatch0, Type == "NegCon")
+fbatch0_kit <- prune_taxa(taxa_sums(fbatch0_kit) > 0, fbatch0_kit)
+fb0_control_vec <- as.vector(taxa_names(fbatch0_kit)) 
+fb0_vec <- as.vector(taxa_names(fbatch0)) 
+fb0_keep <- setdiff(fb0_vec, fb0_control_vec)
+fb0_clean <- prune_taxa(fb0_keep, fbatch0)
+
+```
+
+```{r}
 # Merge the phyloseq objects back together, then remove any blank taxa or samples
-EX_ps_NC_batch_clean <- merge_phyloseq(b1_clean, b2_clean) 
+EX_ps_NC_batch_clean <- merge_phyloseq(fb0_clean, fb2_clean, fb3_clean, fb5_clean, fb6_clean, fb7_clean, fb8_clean, fb9_clean, fb11_clean, fb14_clean, fb15_clean) 
 
 # Clean out taxa/SV columns that are no longer present
 EX_ps_NC_batch_clean <- prune_taxa(taxa_sums(EX_ps_NC_batch_clean) > 0, EX_ps_NC_batch_clean) 
 
 EX_ps_NC_batch_clean <- prune_samples(sample_sums(EX_ps_NC_batch_clean) > 0, EX_ps_NC_batch_clean)
+EX_ps_NC_batch_clean
 ```
 
 # NOTE - Removed Mock here
@@ -832,10 +923,9 @@ EX_ps_NC_batch_clean <- prune_samples(sample_sums(EX_ps_NC_batch_clean) > 0, EX_
 
 EX_cleaner.ord <- ordinate(EX_ps_NC_batch_clean, method ="PCoA", "jaccard", binary = TRUE) 
  
-plot_ordination(EX_ps_NC_batch_clean, EX_cleaner.ord, type="samples", color="Treatment", title="Jaccard Binary Ordination Post-Decontam")
+plot_ordination(EX_ps_NC_batch_clean, EX_cleaner.ord, type="samples", color="Fbatch", title="Prelim 12S Jaccard Binary Ordination Post-Decontam")
 ```
 
-# ISSUE: Examine results. Explain what type of negative controls used and did you notice clustering by batch before and after removing contaminants?
 
 ######################################################
 # Remove Unwanted Taxa from Chloroplast and Mitochondria with Dplyr
@@ -854,8 +944,9 @@ EX_ps_clean <- EX_ps_NC_batch_clean %>%
 
 EX_ps_clean <- EX_ps_NC_batch_clean %>% 
   # CHANGE ME to reflect the phyloseq object name you have 
-  subset_taxa(Kingdom == "Bacteria" & Family != "Mitochondria" & Order != "Chloroplast") 
+  subset_taxa(Kingdom != "Bacteria" & Genus != "Homo") 
 # CHANGE ME to the things you want to remove
+# 
 ```
 
 ```{r clean_columns, echo = FALSE}
@@ -863,7 +954,7 @@ EX_ps_clean <- prune_taxa(taxa_sums(EX_ps_clean) > 0, EX_ps_clean)
 EX_ps_clean <- prune_samples(sample_sums(EX_ps_clean) > 0, EX_ps_clean)
 
 EX_ps_clean
-saveRDS(EX_ps_clean, 'C:/Users/bydav/Desktop/AVS 554/Output/EX_ps_clean_phyloseq_object.RDS')
+saveRDS(EX_ps_clean, 'C:/Users/bydav/Desktop/12SPrelim_EX_ps_clean.RDS')
 ```
 
 # ####################
@@ -876,7 +967,7 @@ Rarefaction curves are an important precursor to alpha diversity examinations an
 
 ```{r rarecurve, echo = FALSE}
 rc <-as.data.frame(otu_table(EX_ps_clean))
-test <- rarecurve(rc, step = 10, cex=0.5, label = TRUE)
+test <- rarecurve(rc, step = 10, cex=0.5, label = FALSE)
 ```
 
 ```{r curve_results, echo = FALSE}
@@ -896,13 +987,14 @@ raremax <- max(rowSums(otu_table(EX_ps_clean)))
 raremax
 raremin <- min(rowSums(otu_table(EX_ps_clean)))
 raremin
+
+sort(rowSums(otu_table(EX_ps_clean)))
 ```
 
 
 # RESULT:
-There are 13 samples with fewer than 10,000 SVs in them. The largest number of SVs in a sample is 213655, and the smallest number of SVs in a sample is 3592
+The largest number of SVs in a sample is 42448, and the smallest number of SVs in a sample is 3
 
-The Pelleted Alfalfa (particularly weeks 1 and 2) tended to have a much higher number of SVs than any of the Loose alfalfa lambs
 
 Make a rareified phyloseq object
 ```{r rar_ps, echo = FALSE}
@@ -912,24 +1004,11 @@ EX_ps_clean.rar <- rarefy_even_depth(EX_ps_clean, sample.size=5000,
       trimOTUs=TRUE, #remove SVs left empty (called OTUs here but really they are SVs) 
       rngseed=711, verbose=TRUE)
 
-saveRDS(EX_ps_clean.rar, 'C:/Users/bydav/Desktop/AVS 554/Output/EX_ps_clean_rarefied_phyloseq_object.RDS')
+EX_ps_clean.rar
 
-write.csv(otu_table(EX_ps_clean.rar), 'C:/Users/bydav/Desktop/AVS 554/Output/EX_ps_clean_rarefied_phyloseq_object.csv')
+saveRDS(EX_ps_clean.rar, 'C:/Users/bydav/Desktop/12SPrelim_EX_ps_cleanrar.RDS')
+
 ```
-# RESULT: 
-sample.size set to 5000
-
-`set.seed(711)` was used to initialize repeatable random subsampling.
-Please record this for your records so others can reproduce.
-Try `set.seed(711); .Random.seed` for the full vector
-
-6 samples removedbecause they contained fewer reads than `sample.size`.
-Up to first five removed samples are: 
-
-LooseAlfalfa_wk0_13LooseAlfalfa_wk1_81PelletedAlfalfa_wk0_29PelletedAlfalfa_wk0_93LooseAlfalfa_wk2_81
-...
-2699OTUs were removed because they are no longer 
-present in any sample after random subsampling
 
 ######################################################
 # Graphics and Tests
@@ -1581,8 +1660,8 @@ write.table(sort_lm_matrix, file = 'C:/Users/bydav/Desktop/AVS 554/Output/lm_res
 ```{r unique, echo = FALSE}
 taxa_abundance_bars(
 taxa_filter(EX_ps_clean.rar, frequency = 0.8),
-classification = 'Phylum', treatment = c('Week', 'Treatment'),
-subset = c('0', '1', '2'), transformation = 'none')
+classification = 'Phylum', treatment = c('Treatment'),
+subset = c('Pre', 'Post'), transformation = 'none')
 
 taxa_abundance_bars(
 unique_taxa(EX_ps_clean, c('Week', 'Sheep_ID')),
@@ -1590,13 +1669,16 @@ classification = 'Phylum', transformation = 'none')
 ```
 
 ```{r heatmap, echo = FALSE}
+
+
+
 EX_ps_clean.rar.glom = tax_glom(EX_ps_clean.rar, "Family")
 
 plot_heatmap(EX_ps_clean.rar, fill="Family") + facet_grid(Diet~Week, space="free", scales="free") + theme(legend.position = "bottom") + theme(axis.text.x = element_blank())
 
 plot_heatmap(EX_ps_clean.rar, fill="Family") + theme(legend.position = "bottom") + theme(axis.text.x = element_blank())
 
-taxabund0 <- abundance_heatmap(EX_ps_clean.rar, classification = 'Phylum', treatment = c('Week'), subset = '0')
+taxabund0 <- abundance_heatmap(EX_ps_clean.rar, classification = 'Family', treatment = c('Treatment'), subset = 'Pre')
 
 taxabund1 <- abundance_heatmap(EX_ps_clean.rar, classification = 'Phylum', treatment = c('Week'), subset = '1')
 
@@ -1610,25 +1692,53 @@ ggarrange(taxabund0, taxabund1, taxabund2, nrow = 2, ncol = 2, labels = NULL, co
 ```
 
 ```{r 100bar, echo = FALSE}
+## Family
+
 # All Taxa
 EX_ps_clean.rar.stacked = transform_sample_counts(EX_ps_clean.rar, function(x) x / sum(x) )
+plot_bar(EX_ps_clean.rar.stacked, fill="Family")
 
-plot_bar(EX_ps_clean.rar.stacked, fill="Phylum")
-
-# Top 100 by abundance only
-physeqhigh = prune_taxa(taxa_names(EX_ps_clean.rar)[1:100], EX_ps_clean.rar)
-
+# Top 50 by abundance only
+physeqhigh = prune_taxa(taxa_names(EX_ps_clean.rar)[1:50], EX_ps_clean.rar)
 physeqhighbars = transform_sample_counts(physeqhigh, function(x) x / sum(x) )
-plot_bar(physeqhighbars, fill="Phylum")
+plot_bar(physeqhighbars, fill="Family")
 
-# Lowest 100 by abundance only
-physeqlow = prune_taxa(taxa_names(EX_ps_clean.rar)[5968:6068], EX_ps_clean.rar)
+# Lowest 50 by abundance only
+physeqlow = prune_taxa(taxa_names(EX_ps_clean.rar)[60:110], EX_ps_clean.rar)
 physeqlowbars = transform_sample_counts(physeqlow, function(x) x / sum(x) )
-plot_bar(physeqlowbars, fill="Phylum")
+plot_bar(physeqlowbars, fill="Family")
+
+prelimLWA <- subset_samples(EX_ps_clean.rar, TreatType != "")
+
+# Top 20 by prelim LWA treatment
+topprelimLWA <- prune_taxa(taxa_names(prelimLWA)[1:20], prelimLWA)
+topprelimLWAbars = transform_sample_counts(topprelimLWA, function(x) x / sum(x) )
+
+# Facet grid (abundance)
+plot_bar(topprelimLWAbars, "Family", fill="Family", facet_grid=~TreatType) + theme(legend.position = "bottom") + theme(axis.title.x = element_blank()) + theme(axis.ticks = element_blank()) + theme(axis.text.x = element_blank())
+
+# Stacked plots (species proportions)
+plot_bar(topprelimLWAbars, fill="Family") + theme(legend.position = "right") + theme(axis.title.x = element_blank()) + theme(axis.ticks = element_blank())
+
+## 
+# Low 20 by prelim LWA treatment
+lowprelimLWA <- prune_taxa(taxa_names(prelimLWA)[90:110], prelimLWA)
+lowprelimLWAbars = transform_sample_counts(lowprelimLWA, function(x) x / sum(x) )
+
+
+# Facet grid (abundance)
+plot_bar(lowprelimLWAbars, "Family", fill="Family", facet_grid=~TreatType) + theme(legend.position = "bottom") + theme(axis.title.x = element_blank()) + theme(axis.ticks = element_blank()) + theme(axis.text.x = element_blank())
+
+# Stacked plots (species proportions)
+plot_bar(lowprelimLWAbars, fill="Family") + theme(legend.position = "right") + theme(axis.title.x = element_blank()) + theme(axis.ticks = element_blank())
+
+
 ```
 
 ```{r dendro, echo = FALSE}
 dendrogram_phyloseq(EX_ps_clean.rar, treatment = c('Treatment'), method = 'bray',colors = 'spectral')
+
+dendrogram_phyloseq(EX_ps_clean.rar, colors = 'spectral')
 ```
 
 ```{r taxa_dist}
