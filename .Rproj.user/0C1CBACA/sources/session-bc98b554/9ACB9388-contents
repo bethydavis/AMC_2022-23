@@ -123,6 +123,8 @@ sample(1:78, 6, replace = FALSE)
 
 
 ```{r qualityplotgeneration}
+
+# how to save with the config setup: ggsave("testsave.png", path = path_outputs, plot = test)
 # 12S Forward:
 plotQualityProfile(fns12Fisolate[75])
 ggsave("C:/Users/bydav/Desktop/MathFilterTestAMC/12ForwardQuality_RNG75.png", plot = plotQualityProfile(fns12Fisolate[75]))
@@ -681,7 +683,7 @@ The process from here on is to download a reference sequence library in .fa.gz f
 # Workflow Verification
 
 ```{r workflow_verification, echo = FALSE}
-seqtab12.nochim <- readRDS("G:\\My Drive\\2_UMaine FSM - Field Projects\\AMC\\Data\\dataoutputs\\12Merged Sequence No Chimera Table.rds")
+seqtab12.nochim <- readRDS("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12Merged Sequence No Chimera Table.rds")
 
 getN <- function(x) sum(getUniques(x))
 
@@ -716,8 +718,8 @@ beep(sound = "fanfare")
 
 
 ```{r taxonomy_results, echo = FALSE}
-saveRDS(all.taxa, "G:\\My Drive\\2_UMaine FSM - Field Projects\\AMC\\Data\\dataoutputs\\12SAMC_AssignedTaxa.rds")
-write.csv(all.taxa, 'G:\\My Drive\\2_UMaine FSM - Field Projects\\AMC\\Data\\dataoutputs\\12SAMC_AssignedTaxa.csv')
+saveRDS(all.taxa, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12SAMC_AssignedTaxa.rds")
+write.csv(all.taxa, 'G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12SAMC_AssignedTaxa.csv')
 ```
 
 # Phyloseq

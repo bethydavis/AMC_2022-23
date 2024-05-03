@@ -1,7 +1,7 @@
 ---
-title: "AMCSeqAnalysis"
+title: "AMCCOI"
 author: "BYDavis"
-date: "2024-02-29"
+date: "2024-04-17"
 output: pdf_document
 ---
 
@@ -13,47 +13,15 @@ Markdown file to analyze AMC water eDNA samples, using Dr. Sue Ishaq's DNA Seque
 
 Debugging statements are preceded with ###
 
-# Install and load relevant packages
-```{r packageinstall}
-if(!require("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
-BiocManager::install("dada2")
-install.packages("ggplot2")
-install.packages("beepr")
-if (!require("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-BiocManager::install("phyloseq")
-install.packages("vegan")
-```
-
-```{r loadpackages}
-library(dada2)
-library(ggplot2)
-library(beepr)
-library(phyloseq)
-library(vegan)
-library(dplyr)
+# Set up packages and paths with config file
+```{r COI_config}
+source("AMCCOI_config.R")
 ```
 
 Prior to this Rmd, the raw fastq files have been renamed in the repo UM_FSM_Cleaning
 
 # Set folder paths and file types
 ```{r raw_paths, echo = FALSE}
-# For the 12S samples:
-
-# Set the file paths for the raw fastqs
-path_raw12F <- "C:/Users/bydav/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Raw/12S/Read1"
-path_raw12R <- "C:/Users/bydav/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Raw/12S/Read2"
-
-# Specify file name formats
-fns12F <- list.files(path_raw12F)
-fastqs12F <- fns12F[grepl('.gz$', fns12F)]
-
-fns12R <- list.files(path_raw12R)
-fastqs12R <- fns12R[grepl('.gz$', fns12R)]
-
-###  print(fastqs12F)
-
 # For the BF2 samples:
 
 # Set the file paths for the raw fastqs
@@ -69,21 +37,12 @@ fastqsBR <- fnsBR[grepl('.gz$', fnsBR)]
 
 # The file paths still include the desktop.ini file, so let's specify a file path to lead future code only to the fastq files in the folder
 
-fns12Fisolate <- file.path(path_raw12F, fastqs12F)
-fns12Risolate <- file.path(path_raw12R, fastqs12R)
-
 fnsBFisolate <- file.path(path_rawBF, fastqsBF)
 fnsBRisolate <- file.path(path_rawBR, fastqsBR)
 
 # Set sample names to a vector
 # Remove path and the .gz extension
-names12Ffast <- tools::file_path_sans_ext(basename(fastqs12F))
 # Repeat file_path_sans_ext to also remove the .fastq
-names12F <- tools::file_path_sans_ext(names12Ffast)
-
-names12Rfast <- tools::file_path_sans_ext(basename(fastqs12R))
-names12R <- tools::file_path_sans_ext(names12Rfast)
-
 namesBFfast <- tools::file_path_sans_ext(basename(fastqsBF))
 namesBF <- tools::file_path_sans_ext(namesBFfast)
 
@@ -91,8 +50,6 @@ namesBRfast <- tools::file_path_sans_ext(basename(fastqsBR))
 # Repeat file_path_sans_ext to also remove the .fastq
 namesBR <- tools::file_path_sans_ext(namesBRfast)
 
-# Set location to put output images and graphs
-path_outputs <- "C:/Users/bydav/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs"
 ```
 
 The sample names are already set how I want them, so I won't use/adapt Sue's file name cleaning chunk (Clean File Names for Initial Load)
@@ -102,15 +59,6 @@ The sample names are already set how I want them, so I won't use/adapt Sue's fil
 Run 4 randomly selected quality profile plots per primer per read type (forward or reverse). Number will correspond to the file order. Min is set to 2 to avoid the desktop.ini file that GoogleDrive desktop creates from being chosen
 
 ```{r random_selection}
-
-# Numbers for 12S Forward reads:
-sample(1:78, 6, replace = FALSE)
-  # Results on 3/20/2024: 75 15 63 34 35 28
-
-# Numbers for 12S Reverse reads:
-sample(1:78, 6, replace = FALSE)
-  # Results on 3/20/2024: 70 40 69 38  5 10
-
 # Numbers for BF2 Forward reads:
 sample(1:78, 6, replace = FALSE)
   # Results on 3/20/2024: 48 64 20 57 15 11
@@ -118,59 +66,9 @@ sample(1:78, 6, replace = FALSE)
 # Numbers for BF2 Reverse reads:
 sample(1:78, 6, replace = FALSE)
   # Results on 3/20/2024: 15, 49, 56, 78, 11, 28
-
 ```
 
-
-```{r qualityplotgeneration}
-
-# how to save with the config setup: ggsave("testsave.png", path = path_outputs, plot = test)
-# 12S Forward:
-plotQualityProfile(fns12Fisolate[75])
-ggsave("C:/Users/bydav/Desktop/MathFilterTestAMC/12ForwardQuality_RNG75.png", plot = plotQualityProfile(fns12Fisolate[75]))
-
-plotQualityProfile(fns12Fisolate[15])
-ggsave("C:/Users/bydav/Desktop/MathFilterTestAMC/12ForwardQuality_RNG15.png", plot = plotQualityProfile(fns12Fisolate[15]))
-
-plotQualityProfile(fns12Fisolate[63])
-ggsave("C:/Users/bydav/Desktop/MathFilterTestAMC/12ForwardQuality_RNG63.png", plot = plotQualityProfile(fns12Fisolate[63]))
-
-plotQualityProfile(fns12Fisolate[34])
-ggsave("C:/Users/bydav/Desktop/MathFilterTestAMC/12ForwardQuality_RNG34.png", plot = plotQualityProfile(fns12Fisolate[34]))
-
-plotQualityProfile(fns12Fisolate[35])
-ggsave("C:/Users/bydav/Desktop/MathFilterTestAMC/12ForwardQuality_RNG35.png", plot = plotQualityProfile(fns12Fisolate[35]))
-
-plotQualityProfile(fns12Fisolate[28])
-ggsave("C:/Users/bydav/Desktop/MathFilterTestAMC/12ForwardQuality_RNG28.png", plot = plotQualityProfile(fns12Fisolate[28]))
-
-beep(sound = "fanfare")
-
-```
-
-```{r}
-# 12S Reverse:
-plotQualityProfile(fns12Risolate[70])
-ggsave("C:/Users/bydav/Desktop/MathFilterTestAMC/12ReverseQuality_RNG70.png", plot = plotQualityProfile(fns12Risolate[70]))
-
-plotQualityProfile(fns12Risolate[40])
-ggsave("C:/Users/bydav/Desktop/MathFilterTestAMC/12ReverseQuality_RNG40.png", plot = plotQualityProfile(fns12Risolate[40]))
-
-plotQualityProfile(fns12Risolate[69])
-ggsave("C:/Users/bydav/Desktop/MathFilterTestAMC/12ReverseQuality_RNG69.png", plot = plotQualityProfile(fns12Risolate[69]))
-
-plotQualityProfile(fns12Risolate[38])
-ggsave("C:/Users/bydav/Desktop/MathFilterTestAMC/12ReverseQuality_RNG38.png", plot = plotQualityProfile(fns12Risolate[38]))
-
-plotQualityProfile(fns12Risolate[5])
-ggsave("C:/Users/bydav/Desktop/MathFilterTestAMC/12ReverseQuality_RNG5.png", plot = plotQualityProfile(fns12Risolate[5]))
-
-plotQualityProfile(fns12Risolate[10])
-ggsave("C:/Users/bydav/Desktop/MathFilterTestAMC/12ReverseQuality_RNG10.png", plot = plotQualityProfile(fns12Risolate[10]))
-
-beep(sound = "fanfare")
-
-```
+## NTS: keep working at cleaning out the 12S from here
 
 ```{r}
 # B Forward:
@@ -1005,3 +903,4 @@ proportionslamb <- taxa_proportions(EX_ps_clean.rar, 'Phylum', treatment = c('Sh
 
 ggplot(proportionslamb, aes(x = Sheep_ID, y = Proportion, fill = Phylum)) + geom_col(position = "fill") + theme(axis.text.x = element_text(angle = 60, hjust = 1))
 ```
+
