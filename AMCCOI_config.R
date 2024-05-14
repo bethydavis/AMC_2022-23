@@ -30,7 +30,7 @@ suppressPackageStartupMessages({
 # Set up output folder and version
 
   # Set version and date for each time the analysis script is run - SET THIS EVERY TIME
-versiondate <- c("5-May02-2024/")
+versiondate <- c("5-May03-2024/")
   # base output folder
 base_outputs <- "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB"
 
@@ -44,24 +44,24 @@ dir.create(output_version, showWarnings = FALSE)
 path_outputs <- output_version
 
 # Set paths
-path_raw12F <- "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Raw/BF2BR2/Read1"
-path_raw12R <- "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Raw/BF2BR2/Read2"
+path_rawBF <- "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Raw/BF2BR2/Read1"
+path_rawBR <- "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Raw/BF2BR2/Read2"
 
 # Set filter folder and version
-base_filt12F <- "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Filtered/BF Forward"
-base_filt12R <- "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Filtered/BR Reverse"
+base_filtBF <- "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Filtered/BF Forward"
+base_filtBR <- "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Filtered/BR Reverse"
 
-filtF_version <- paste(base_filt12F, versiondate, sep = "/")
-filtR_version <- paste(base_filt12R, versiondate, sep = "/")
+filtF_version <- paste(base_filtBF, versiondate, sep = "/")
+filtR_version <- paste(base_filtBR, versiondate, sep = "/")
 
 dir.create(filtF_version, showWarnings = FALSE)
 dir.create(filtR_version, showWarnings = FALSE)
 
-path_filt12F <- filtF_version
-path_filt12R <- filtR_version
+path_filtBF <- filtF_version
+path_filtBR <- filtR_version
 
 # Identify metadata and reference database locations
-meta <- read.csv("C:/Users/bydav/Desktop/AMCMeta.csv")
-refDB_COI <- 
+#meta <- read.csv("C:/Users/bydav/Desktop/AMCMeta.csv")
+#refDB_COI <- 
   
 

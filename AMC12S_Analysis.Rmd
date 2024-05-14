@@ -358,6 +358,8 @@ head(track12)
 
 Filtering and merging lost the most number of reads across samples, but it isn't a constant enough effect to seem like a full error. May confer with Andy on if the filtering criteria are too strict
 
+### NTS: review refdb and make sure the parameters are satisfactory, then proceed from here
+
 # Assign Taxonomy
 ```{r assign_taxonomy, echo = FALSE}
 # Very slow and intensive
