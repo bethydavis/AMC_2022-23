@@ -55,6 +55,7 @@ base_filt12R <- "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Filtered/12S
 filtF_version <- paste(base_filt12F, versiondate, sep = "/")
 filtR_version <- paste(base_filt12R, versiondate, sep = "/")
 
+# Create filter folders if they don't already exist, and set the path object
 dir.create(filtF_version, showWarnings = FALSE)
 dir.create(filtR_version, showWarnings = FALSE)
 

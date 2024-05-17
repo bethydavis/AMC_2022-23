@@ -551,12 +551,14 @@ plot_ordination(EX_ps_NC_batch_clean, EX_cleaner.ord, type="samples", color="Fba
 
 
 ```{r remove_taxa, echo = FALSE}
+# Remove species that contain either Bacteria as a Kingdom or Homo as a genus. Not interested in either Bacteria or Human DNA results
 EX_ps_clean <- EX_ps_NC_batch_clean %>% 
   subset_taxa(Kingdom != "Bacteria" & Genus != "Homo") 
 
 ```
 
 ```{r clean_columns, echo = FALSE}
+# Remove empty rows made after removing Bacteria and Homo
 EX_ps_clean <- prune_taxa(taxa_sums(EX_ps_clean) > 0, EX_ps_clean) 
 EX_ps_clean <- prune_samples(sample_sums(EX_ps_clean) > 0, EX_ps_clean)
 
