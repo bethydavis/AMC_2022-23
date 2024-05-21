@@ -54,3 +54,37 @@ AMC23_C721 - AMC23_C721M - AMC23_C719 - AMC23_MB07 - AMC23_NE07 - AMC23_MB08 - "
 
 AMC23_C724 - ""C713 - ""C715 - ""MB12 - ""MB10 - ""NE04 - ""AB02 - ""MB06 - ""MB13 - ""AB03 - ""MB11 - ""MB09
 
+# 12S Analysis Notes
+Error rate seeds:
+seed on 3/22: 0743
+seed on 5/2: 9450
+
+On merging:
+3/22 note:
+* Apparently if you filter and trim separately, you cannot merge after that point, and must filterandTrim the forward and reverse reads together. (source: the DADA2 pipeline tutorial)
+Restarted filter parameters with that in mind
+
+# COI Analysis Notes
+
+## Filtering
+
+### NTS: 3/05/2024
+Parameters used for original COIB filterAndTrim:
+filtoutBF <- filterAndTrim(file.path(path_rawBF, fastqsBF), file.path(path_filtBF, paste0(namesBF, "filt.fastq.gz")), trimLeft = 20, truncLen = 270, maxEE = 2, maxN = 0, verbose = TRUE)
+filtoutBR <- filterAndTrim(file.path(path_rawBR, fastqsBR), file.path(path_filtBR, paste0(namesBR, "filt.fastq.gz")), trimLeft = 20, truncLen = 240, maxEE = 2, maxN = 0, verbose = TRUE)
+
+### NTS: 3/20/2024
+Parameters used for COIB filterAndTrim:
+filterAndTrim(file.path(path_rawBF, fastqsBF), file.path(path_filtBF, paste0(namesBF, "filt.fastq.gz")), trimLeft = 50, truncLen = 240, maxEE = 2, maxN = 0, verbose = TRUE)
+filtoutBR <- filterAndTrim(file.path(path_rawBR, fastqsBR), file.path(path_filtBR, paste0(namesBR, "filt.fastq.gz")), trimLeft = 60, truncLen = 200, maxEE = 2, maxN = 0, verbose = TRUE)
+
+### NTS: 3/22/2024. After merging the reads with the quality-guided filtering parameters (above), I'm worried about the large drops in read number, and wondering if the trimming was too aggressive, and sacrificed overlap for quality. Going to rerun the BF2/BR2 filtering, into a different output folder, with the following parameters:
+
+BF2 Forward: cut left 20, minQ = 25
+filtoutBF <- filterAndTrim(file.path(path_rawBF, fastqsBF), file.path(path_filtBF, paste0(namesBF, "filt.fastq.gz")), trimLeft = 20, minQ = 25, maxEE = 2, maxN = 0, verbose = TRUE)
+BR2 Reverse: cut left 20, minQ = 25
+filtoutBR <- filterAndTrim(file.path(path_rawBR, fastqsBR), file.path(path_filtBR, paste0(namesBR, "filt.fastq.gz")), trimLeft = 20, minQ = 25, maxEE = 2, maxN = 0, verbose = TRUE)
+
+This should target only removing the primers and low quality reads, and leave as much of the rest as possible intact for overlap
+
+### NTS: 5/03/2024. After talking to Andy about ^, involving minQ was the exact wrong thing to do. I need to remove the primers, so the trimLeft = 20 will stay, and would like to cut off at a quality score of 25. 

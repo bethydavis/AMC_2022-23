@@ -43,7 +43,7 @@ dir.create(output_version, showWarnings = FALSE)
   # Set version output as the output path for items from this run
 path_outputs <- output_version
 
-# Set paths
+# Set raw paths
 path_rawBF <- "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Raw/BF2BR2/Read1"
 path_rawBR <- "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Raw/BF2BR2/Read2"
 
@@ -61,7 +61,7 @@ path_filtBF <- filtF_version
 path_filtBR <- filtR_version
 
 # Identify metadata and reference database locations
-#meta <- read.csv("C:/Users/bydav/Desktop/AMCMeta.csv")
-#refDB_COI <- 
-  
+#meta <- read.csv("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/AMCMeta.csv")
+# Figure out how to load in fasta's properly
+#C:/Users/bydav/Desktop/RefDB_Dev/output/3-May19-2024/COI_REFDB.fasta  
 

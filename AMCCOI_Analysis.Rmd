@@ -68,7 +68,7 @@ sample(1:78, 6, replace = FALSE)
 5/03 note: run the plots again to standardize size
 ```{r}
 # B Forward:
-#ggsave("BF2ForwardQuality_RNG48.png", path = path_outputs, plot = plotQualityProfile(fnsBFisolate[48]), width = 6, height = 4, units = "in")
+ggsave("BF2ForwardQuality_RNG48.png", plot = plotQualityProfile(fnsBFisolate[48]), path = path_outputs, width = 6, height = 4, units = "in")
 
 ggsave("BF2ForwardQuality_RNG64.png", plot = plotQualityProfile(fnsBFisolate[64]), path = path_outputs, width = 6, height = 4, units = "in")
 
@@ -114,41 +114,20 @@ BF2 Forward: cut after 240, potentially from 0-50 also?
 
 BR2 Reverse: these are a hot mess. Run more randoms. Post-randoms - there's a consistent bad low quality spike around 50-60. Trim from 60-200
 
-### NTS: 3/05/2024
-Parameters used for original COIB filterAndTrim:
-filtoutBF <- filterAndTrim(file.path(path_rawBF, fastqsBF), file.path(path_filtBF, paste0(namesBF, "filt.fastq.gz")), trimLeft = 20, truncLen = 270, maxEE = 2, maxN = 0, verbose = TRUE)
-filtoutBR <- filterAndTrim(file.path(path_rawBR, fastqsBR), file.path(path_filtBR, paste0(namesBR, "filt.fastq.gz")), trimLeft = 20, truncLen = 240, maxEE = 2, maxN = 0, verbose = TRUE)
-
-### NTS: 3/20/2024
-Parameters used for COIB filterAndTrim:
-filterAndTrim(file.path(path_rawBF, fastqsBF), file.path(path_filtBF, paste0(namesBF, "filt.fastq.gz")), trimLeft = 50, truncLen = 240, maxEE = 2, maxN = 0, verbose = TRUE)
-filtoutBR <- filterAndTrim(file.path(path_rawBR, fastqsBR), file.path(path_filtBR, paste0(namesBR, "filt.fastq.gz")), trimLeft = 60, truncLen = 200, maxEE = 2, maxN = 0, verbose = TRUE)
-
-### NTS: 3/22/2024. After merging the reads with the quality-guided filtering parameters (above), I'm worried about the large drops in read number, and wondering if the trimming was too aggressive, and sacrificed overlap for quality. Going to rerun the BF2/BR2 filtering, into a different output folder, with the following parameters:
-
-BF2 Forward: cut left 20, minQ = 25
-filtoutBF <- filterAndTrim(file.path(path_rawBF, fastqsBF), file.path(path_filtBF, paste0(namesBF, "filt.fastq.gz")), trimLeft = 20, minQ = 25, maxEE = 2, maxN = 0, verbose = TRUE)
-BR2 Reverse: cut left 20, minQ = 25
-filtoutBR <- filterAndTrim(file.path(path_rawBR, fastqsBR), file.path(path_filtBR, paste0(namesBR, "filt.fastq.gz")), trimLeft = 20, minQ = 25, maxEE = 2, maxN = 0, verbose = TRUE)
-
-This should target only removing the primers and low quality reads, and leave as much of the rest as possible intact for overlap
 
 ### NTS: 5/03/2024. After talking to Andy about ^, involving minQ was the exact wrong thing to do. I need to remove the primers, so the trimLeft = 20 will stay, and would like to cut off at a quality score of 25. 
 
 
 # Begin filtering process
 
-First set directories for a new set of folders - the locations that the filtered files will go into
-
+Set name format for the filtered files
 ```{r filterlocale}
 
-
-filt12F <- file.path(path_filt12F, "filtered", paste0(sample.names, "_F_filt.fastq.gz"))
-filtRs <- file.path(path, "filtered", paste0(sample.names, "_R_filt.fastq.gz"))
-names(filtFs) <- sample.names
-names(filtRs) <- sample.names
+filtF <- file.path(path_filtBF, "filtered", paste0(sample.names, "_F_filt.fastq.gz"))
+filtR <- file.path(path_filtBR, "filtered", paste0(sample.names, "_R_filt.fastq.gz"))
 ```
 
+### NTS: Start here 5/21
 
 Running the reads separate even when I do have pairs because the BF2/BR2 has a mismatch in number of files currently and I'd rather do them all the same. From my understanding, this may let some lower quality reads through since it'll allow individual reads pass when it wouldn't pass as a pair, but I figure the trim settings will already take care of most of the issues, and there are further cleaning steps too.
 
@@ -176,7 +155,7 @@ AMC23_MB09_BR2 removed
 filtoutBsync <- filterAndTrim(file.path(path_rawBF, fastqsBF), file.path(path_filtBF, paste0(namesBF, "filt.fastq.gz")), file.path(path_rawBR, fastqsBR), file.path(path_filtBR, paste0(namesBR, "filt.fastq.gz")), trimLeft = c(20,20), minQ=c(25,25), maxN=0, maxEE=c(2,2), verbose=TRUE) 
 
 
-saveRDS(filtoutBsync, "C:/Users/bydav/Desktop/MathFilterTestAMC/BSync_FilteredOutputs.rds)
+saveRDS(filtoutBsync, "C:/Users/bydav/Desktop/MathFilterTestAMC/BSync_FilteredOutputs.rds")
 ```
 AMC22_AB01_BR2 and BR1 removed
 AMC23_MB09_BR2 and BR1 removed
@@ -194,7 +173,7 @@ filtoutBR <- readRDS("C:/Users/bydav/Desktop/MathFilterTestAMC/BR_FilteredOutput
 
 filtout12sync <- readRDS("C:/Users/bydav/Desktop/MathFilterTestAMC/12Sync_FilteredOutputs.rds")
 
-filtoutBsync <- readRDS("C:/Users/bydav/Desktop/MathFilterTestAMC/BSync_FilteredOutputs.rds)
+filtoutBsync <- readRDS("C:/Users/bydav/Desktop/MathFilterTestAMC/BSync_FilteredOutputs.rds")
 ```
 
 # Explore filtered output 
@@ -765,99 +744,5 @@ EX_ps_clean <- prune_samples(sample_sums(EX_ps_clean) > 0, EX_ps_clean)
 
 EX_ps_clean
 saveRDS(EX_ps_clean, 'C:/Users/bydav/Desktop/12SPrelim_EX_ps_clean.RDS')
-```
-
-
-# Taxonomic Information and Maps
-
-```{r unique, echo = FALSE}
-taxa_abundance_bars(
-taxa_filter(EX_ps_clean.rar, frequency = 0.8),
-classification = 'Phylum', treatment = c('Treatment'),
-subset = c('Pre', 'Post'), transformation = 'none')
-
-taxa_abundance_bars(
-unique_taxa(EX_ps_clean, c('Week', 'Sheep_ID')),
-classification = 'Phylum', transformation = 'none')
-```
-
-```{r heatmap, echo = FALSE}
-
-
-
-EX_ps_clean.rar.glom = tax_glom(EX_ps_clean.rar, "Family")
-
-plot_heatmap(EX_ps_clean.rar, fill="Family") + facet_grid(Diet~Week, space="free", scales="free") + theme(legend.position = "bottom") + theme(axis.text.x = element_blank())
-
-plot_heatmap(EX_ps_clean.rar, fill="Family") + theme(legend.position = "bottom") + theme(axis.text.x = element_blank())
-
-taxabund0 <- abundance_heatmap(EX_ps_clean.rar, classification = 'Family', treatment = c('Treatment'), subset = 'Pre')
-
-taxabund1 <- abundance_heatmap(EX_ps_clean.rar, classification = 'Phylum', treatment = c('Week'), subset = '1')
-
-taxabund2 <- abundance_heatmap(EX_ps_clean.rar, classification = 'Phylum', treatment = c('Week'), subset = '2')
-
-taxabund0
-taxabund1
-taxabund2
-
-ggarrange(taxabund0, taxabund1, taxabund2, nrow = 2, ncol = 2, labels = NULL, common.legend = TRUE)
-```
-
-```{r 100bar, echo = FALSE}
-## Family
-
-# All Taxa
-EX_ps_clean.rar.stacked = transform_sample_counts(EX_ps_clean.rar, function(x) x / sum(x) )
-plot_bar(EX_ps_clean.rar.stacked, fill="Family")
-
-# Top 50 by abundance only
-physeqhigh = prune_taxa(taxa_names(EX_ps_clean.rar)[1:50], EX_ps_clean.rar)
-physeqhighbars = transform_sample_counts(physeqhigh, function(x) x / sum(x) )
-plot_bar(physeqhighbars, fill="Family")
-
-# Lowest 50 by abundance only
-physeqlow = prune_taxa(taxa_names(EX_ps_clean.rar)[60:110], EX_ps_clean.rar)
-physeqlowbars = transform_sample_counts(physeqlow, function(x) x / sum(x) )
-plot_bar(physeqlowbars, fill="Family")
-
-prelimLWA <- subset_samples(EX_ps_clean.rar, TreatType != "")
-
-# Top 20 by prelim LWA treatment
-topprelimLWA <- prune_taxa(taxa_names(prelimLWA)[1:20], prelimLWA)
-topprelimLWAbars = transform_sample_counts(topprelimLWA, function(x) x / sum(x) )
-
-# Facet grid (abundance)
-plot_bar(topprelimLWAbars, "Family", fill="Family", facet_grid=~TreatType) + theme(legend.position = "bottom") + theme(axis.title.x = element_blank()) + theme(axis.ticks = element_blank()) + theme(axis.text.x = element_blank())
-
-# Stacked plots (species proportions)
-plot_bar(topprelimLWAbars, fill="Family") + theme(legend.position = "right") + theme(axis.title.x = element_blank()) + theme(axis.ticks = element_blank())
-
-## 
-# Low 20 by prelim LWA treatment
-lowprelimLWA <- prune_taxa(taxa_names(prelimLWA)[90:110], prelimLWA)
-lowprelimLWAbars = transform_sample_counts(lowprelimLWA, function(x) x / sum(x) )
-
-
-# Facet grid (abundance)
-plot_bar(lowprelimLWAbars, "Family", fill="Family", facet_grid=~TreatType) + theme(legend.position = "bottom") + theme(axis.title.x = element_blank()) + theme(axis.ticks = element_blank()) + theme(axis.text.x = element_blank())
-
-# Stacked plots (species proportions)
-plot_bar(lowprelimLWAbars, fill="Family") + theme(legend.position = "right") + theme(axis.title.x = element_blank()) + theme(axis.ticks = element_blank())
-
-
-```
-
-
-```{r taxa_dist}
-get_taxa_unique(EX_ps_clean.rar, taxonomic.rank="Family", errorIfNULL=TRUE)
-
-proportionstreat <- taxa_proportions(EX_ps_clean.rar, 'Phylum', treatment = c('Treatment'))
-
-ggplot(proportions, aes(x = Treatment, y = Proportion, fill = Phylum)) + geom_col(position = "fill") + theme(axis.text.x = element_text(angle = 60, hjust = 1))
-
-proportionslamb <- taxa_proportions(EX_ps_clean.rar, 'Phylum', treatment = c('Sheep_ID'))
-
-ggplot(proportionslamb, aes(x = Sheep_ID, y = Proportion, fill = Phylum)) + geom_col(position = "fill") + theme(axis.text.x = element_text(angle = 60, hjust = 1))
 ```
 

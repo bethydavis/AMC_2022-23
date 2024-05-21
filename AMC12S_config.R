@@ -29,8 +29,7 @@ suppressPackageStartupMessages({
 
 # Set up output folder and version
 
-  # Set primer
-  # Set version and date for each time the analysis script is run - SET THIS EVERY TIME
+  # Set version and date for each time the analysis script is run - SET THIS EVERY TIME YOU RUN A NEW SET
 versiondate <- c("5-May02-2024/")
   # base output folder
 base_outputs <- "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S"
@@ -64,5 +63,6 @@ path_filt12R <- filtR_version
 
 
 # Identify metadata and reference database locations
-meta <- read.csv("C:/Users/bydav/Desktop/AMCMeta.csv")
-refDB_12S <- 'C:/Users/bydav/Desktop/a04_REFDBdada.fasta'
+#meta <- read.csv("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/AMCMeta.csv")
+# Figure out how to load in fasta's properly
+#C:/Users/bydav/Desktop/RefDB_Dev/output/2-May17-2024/12S_REFDB.fasta

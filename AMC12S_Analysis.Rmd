@@ -105,14 +105,11 @@ The indexes and adapters have been removed from the sequence files, but the orig
 12S Reverse primer: 27 - CATAGTGGGGTATCTAATCCCAGTTTG
 
 
-
 Quality notes:
 
 12 Forward: cut after 220
 
 12 Reverse: cut after 220
-
-
 
 
 # Begin filtering process
@@ -121,39 +118,14 @@ First set the file format and names for the filtered samples
 ```{r filterlocale}
 filt12F <- file.path(path_filt12F, "filtered", paste0(names12F, "_F_filt.fastq.gz"))
 filt12R <- file.path(path_filt12R, "filtered", paste0(names12R, "_R_filt.fastq.gz"))
-names(filtFs) <- sample.names
-names(filtRs) <- sample.names
 ```
 
-Filter according to the quality note + primer length parameters - post March 22, run the filtout12sync, not the individual trims
-
-```{r filt_12F}
-
-filtout12F <- filterAndTrim(file.path(path_raw12F, fastqs12F), file.path(path_filt12F, paste0(names12F, "filt.fastq.gz")), trimLeft = 21, truncLen = 220, maxEE = 2, maxN = 0, verbose = TRUE)
-```
-AMC23_C721_MR1 did not have any reads left after the filter, file was not written. Image saved in output folder
-
-```{r filt_12R}
-filtout12R <- filterAndTrim(file.path(path_raw12R, fastqs12R), file.path(path_filt12R, paste0(names12R, "filt.fastq.gz")), trimLeft = 27, truncLen = 220, maxEE = 2, maxN = 0, verbose = TRUE)
-```
-AMC23_C721_MR2 removed
-
+Filter according to the quality note + primer length parameters 
 ```{r filt12}
 filtout12sync <- filterAndTrim(file.path(path_raw12F, fastqs12F), file.path(path_filt12F, paste0(names12F, "filt.fastq.gz")), file.path(path_raw12R, fastqs12R), file.path(path_filt12R, paste0(names12R, "filt.fastq.gz")), trimLeft = c(21,27), truncLen=c(220,220), maxN=0, maxEE=c(2,2), verbose=TRUE) 
 beep(sound = "fanfare")
 ```
 AMC23_C721_MR2 and MR1 removed
-
-
-
-## Load filt outputs back in if needed:
-```{r}
-#filtout12F <- readRDS("C:/Users/bydav/Desktop/MathFilterTestAMC/12F_FilteredOutputs.rds")
-
-#filtout12R <- readRDS("C:/Users/bydav/Desktop/MathFilterTestAMC/12R_FilteredOutputs.rds")
-
-#filtout12sync <- readRDS("C:/Users/bydav/Desktop/MathFilterTestAMC/12Sync_FilteredOutputs.rds")
-```
 
 
 # Explore filtered output 
@@ -171,19 +143,10 @@ colSums(filtout12sync)
 
 # Look at filtered trends
 ```{r filtertrends}
-#filttrend12F <- ggplot(as.data.frame(filtout12F)) + geom_point(aes(row.names(filtout12F), reads.in), color = "blue") + geom_point(aes(row.names(filtout12F), reads.out), color = "orange") + ggtitle("Filter Trends for AMC 12S Forward Reads")
-#filttrend12F
-
-#filttrend12R <- ggplot(as.data.frame(filtout12R)) + geom_point(aes(row.names(filtout12R), reads.in), color = "blue") + geom_point(aes(row.names(filtout12R), reads.out), color = "orange") + ggtitle("Filter Trends for AMC 12S Reverse Reads")
-#filttrend12R
-
-
 filttrend12sync <- ggplot(as.data.frame(filtout12sync)) + geom_point(aes(row.names(filtout12sync), reads.in), color = "blue") + geom_point(aes(row.names(filtout12sync), reads.out), color = "orange") + ggtitle("Filter Trends for AMC 12 Synced Forward Reads")
 filttrend12sync
 
 ggsave("FilterTrends_12Sync.png", plot = filttrend12sync, path = path_outputs, width = 6, height = 4, units = "in")
-#ggsave("FilterTrends_12F.png", plot = filttrend12F, path = path_outputs, width = 6, height = 4, units = "in")
-#ggsave("FilterTrends_12R.png", plot = filttrend12R, path = path_outputs, width = 6, height = 4, units = "in")
 ```
 
 just out of curiosity's sake, let's also explore some quality profiles again from the filtered reads
@@ -203,9 +166,6 @@ plotQualityProfile("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/Filtered/
 # Error Rates and Dereplication
 
 First we need to set a seed and make sure the paths are all still set.
-
-seed on 3/22: 0743
-seed on 5/2: 9450
 
 ```{r error setup}
 set.seed(9450)
@@ -243,7 +203,6 @@ derep12R <- derepFastq(filtnames12R, verbose=TRUE)
 Now that the names are set up, we can run the simulations to learn and estimate the number of errors in each filtered folder. This step is in Sue's code (and is the source of the saveRDS and plotErrors lines), but using the default parameters from the dada2 workflow
 
 The default nbases is 1e8. Using this default since Sue's 1e6 parameter filled up after only one sample
-
 
 ## Error Rates
 ```{r errorrates}
@@ -284,105 +243,76 @@ beep(sound = "fanfare")
 # Save all in case I need to reload the dada objects
 saveRDS(dada12F, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/5-May02-2024/12Forward_SampleComp.rds")
 saveRDS(dada12R, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/5-May02-2024/12Reverse_SampleComp.rds")
+
+dada12F <- readRDS("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/5-May02-2024/12Forward_SampleComp.rds")
+dada12R <- readRDS("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/5-May02-2024/12Reverse_SampleComp.rds")
 ```
 
 
 Merge paired reads
-
-3/22 note:
-* Apparently if you filter and trim separately, you cannot merge after that point, and must filterandTrim the forward and reverse reads together. (source: the DADA2 pipeline tutorial)
-Restarting with that in mind
 ```{r}
 mergers12 <- mergePairs(dada12F, path_filt12F, dada12R, path_filt12R, verbose=TRUE)
+
+# Update formatting into a matrix array
+mergers12 <- makeSequenceTable(mergers12)
+
 # Inspect the merger data.frame from the first sample
 head(mergers12[[1]])
 
 saveRDS(mergers12, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/5-May02-2024/12MergedSampleComp.rds")
+
 ```
 
-Now make a sequence table (A for unmerged, B for merged)
-Starting 5/2, just do the merged (unless wanting to test)
 
-A - Unmerged:
-
-```{r seqtabA}
-seqtab12F <- makeSequenceTable(dada12F)
-dim(seqtab12F)
-saveRDS(seqtab12F, "C:/Users/bydav/Desktop/MathFilterTestAMC/12F Sequence Table.rds")
-
-seqtab12R <- makeSequenceTable(dada12R)
-dim(seqtab12R)
-saveRDS(seqtab12R, "C:/Users/bydav/Desktop/MathFilterTestAMC/12R Sequence Table.rds")
-```
-
-# Remove Chimeras A
-```{r nochimA}
-seqtab12F.nochim <- removeBimeraDenovo(seqtab12F, method = "consensus", multithread = FALSE, verbose = TRUE)
-dim(seqtab12F.nochim)
-saveRDS(seqtab12F.nochim, "C:/Users/bydav/Desktop/MathFilterTestAMC/12F Sequence No Chimera Table.rds")
-
-seqtab12R.nochim <- removeBimeraDenovo(seqtab12R, method = "consensus", multithread = FALSE, verbose = TRUE)
-dim(seqtab12R.nochim)
-saveRDS(seqtab12R.nochim, "C:/Users/bydav/Desktop/MathFilterTestAMC/12R Sequence No Chimera Table.rds")
-
-beep(sound = "coin")
-```
-
-B - Merged:
-Since the merge has already happened, we don't require making a sequence table before removing chimeras
-
-# Remove Chimeras B
+# Remove Chimeras
 ```{r nochimB}
+
 seqtab12.nochim <- removeBimeraDenovo(mergers12, method = "consensus", multithread = FALSE, verbose = TRUE)
+# Save output
 saveRDS(seqtab12.nochim, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/5-May02-2024/12Merged Sequence No Chimera Table.rds")
 
 beep(sound = "coin")
 ```
 
+
+
 # Workflow Verification
 Reload seqtab if needed
 ```{r reload seqtab}
-seqtab12.nochim <- readRDS("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12Merged Sequence No Chimera Table.rds")
+seqtab12.nochim <- readRDS("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/5-May02-2024/12Merged Sequence No Chimera Table.rds")
 ```
 
-### NTS: This chunk is no longer working, as seqtab.nochim is in the form of a list. Did the structure of the output change (it used to work)? Confer on if the results need the verification, espec. after running COI
+### NTS: Find a way for this to work even with samples that are dropped (ie inserting NAs for dropped rows)
 ```{r workflow_verification, echo = FALSE}
 getN <- function(x) sum(getUniques(x))
 
 track12 <- cbind(filtout12sync, sapply(dada12F, getN), sapply(dada12R, getN), sapply(mergers12, getN), rowSums(seqtab12.nochim))
 
 colnames(track12) <- c("input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim")
-#rownames(track) <- sample.names
-head(track12)
+
+# Save the results of the workflow verification
+write.csv(track12, file.path(path_outputs, "12S_WorkflowVerification.csv"))
 ```
-
-Filtering and merging lost the most number of reads across samples, but it isn't a constant enough effect to seem like a full error. May confer with Andy on if the filtering criteria are too strict
-
-### NTS: review refdb and make sure the parameters are satisfactory, then proceed from here
 
 # Assign Taxonomy
 ```{r assign_taxonomy, echo = FALSE}
 # Very slow and intensive
-all.taxa <- assignTaxonomy(seqtab12.nochim, 'C:/Users/bydav/Desktop/SpeciesList_Cleaning2024/a04_REFDBdada.fasta', tryRC = TRUE, verbose = TRUE)
+all.taxa <- assignTaxonomy(seqtab12.nochim, 'C:/Users/bydav/Desktop/RefDB_Dev/output/2-May17-2024/12S_REFDB.fasta', tryRC = TRUE, verbose = TRUE)
 beep(sound = "fanfare")
+
+write.csv(all.taxa, file.path(path_outputs, "12SAMC_AssignedTaxa.csv"), row.names = FALSE)
 ```
 
-
-
-```{r taxonomy_results, echo = FALSE}
-saveRDS(all.taxa, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12SAMC_AssignedTaxa.rds")
-write.csv(all.taxa, 'G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12SAMC_AssignedTaxa.csv')
-```
-
+### NTS: Continue here 5/21
 # Phyloseq
 
 Load in a metadata file - make sure the sample names and order match between it and the seqtab
 ```{r name_check, include = FALSE}
-meta <- read.csv("C:/Users/bydav/Desktop/AMCMeta.csv")
 row.names(seqtab12.nochim)
+row.names(meta)
 
 
-# Convince R by force that they match - this is a flat replacement, not a match-up
+# Convince R by force that they match - this is a flat replacement, not a match-up - find a better way that doesn't flat replace
 row.names(meta) <- row.names(seqtab12.nochim) 
 ```
 
@@ -566,49 +496,4 @@ EX_ps_clean
 saveRDS(EX_ps_clean, 'C:/Users/bydav/Desktop/12SPrelim_EX_ps_clean.RDS')
 ```
 
-
-# Taxonomic Information and Maps
-
-```{r 100bar, echo = FALSE}
-## Family
-
-# All Taxa
-EX_ps_clean.rar.stacked = transform_sample_counts(EX_ps_clean.rar, function(x) x / sum(x) )
-plot_bar(EX_ps_clean.rar.stacked, fill="Family")
-
-# Top 50 by abundance only
-physeqhigh = prune_taxa(taxa_names(EX_ps_clean.rar)[1:50], EX_ps_clean.rar)
-physeqhighbars = transform_sample_counts(physeqhigh, function(x) x / sum(x) )
-plot_bar(physeqhighbars, fill="Family")
-
-# Lowest 50 by abundance only
-physeqlow = prune_taxa(taxa_names(EX_ps_clean.rar)[60:110], EX_ps_clean.rar)
-physeqlowbars = transform_sample_counts(physeqlow, function(x) x / sum(x) )
-plot_bar(physeqlowbars, fill="Family")
-
-prelimLWA <- subset_samples(EX_ps_clean.rar, TreatType != "")
-
-# Top 20 by prelim LWA treatment
-topprelimLWA <- prune_taxa(taxa_names(prelimLWA)[1:20], prelimLWA)
-topprelimLWAbars = transform_sample_counts(topprelimLWA, function(x) x / sum(x) )
-
-# Facet grid (abundance)
-plot_bar(topprelimLWAbars, "Family", fill="Family", facet_grid=~TreatType) + theme(legend.position = "bottom") + theme(axis.title.x = element_blank()) + theme(axis.ticks = element_blank()) + theme(axis.text.x = element_blank())
-
-# Stacked plots (species proportions)
-plot_bar(topprelimLWAbars, fill="Family") + theme(legend.position = "right") + theme(axis.title.x = element_blank()) + theme(axis.ticks = element_blank())
-
-## 
-# Low 20 by prelim LWA treatment
-lowprelimLWA <- prune_taxa(taxa_names(prelimLWA)[90:110], prelimLWA)
-lowprelimLWAbars = transform_sample_counts(lowprelimLWA, function(x) x / sum(x) )
-
-
-# Facet grid (abundance)
-plot_bar(lowprelimLWAbars, "Family", fill="Family", facet_grid=~TreatType) + theme(legend.position = "bottom") + theme(axis.title.x = element_blank()) + theme(axis.ticks = element_blank()) + theme(axis.text.x = element_blank())
-
-# Stacked plots (species proportions)
-plot_bar(lowprelimLWAbars, fill="Family") + theme(legend.position = "right") + theme(axis.title.x = element_blank()) + theme(axis.ticks = element_blank())
-
-```
 
