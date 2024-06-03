@@ -122,7 +122,7 @@ filt12R <- file.path(path_filt12R, "filtered", paste0(names12R, "_R_filt.fastq.g
 
 Filter according to the quality note + primer length parameters 
 ```{r filt12}
-filtout12sync <- filterAndTrim(file.path(path_raw12F, fastqs12F), file.path(path_filt12F, paste0(names12F, "filt.fastq.gz")), file.path(path_raw12R, fastqs12R), file.path(path_filt12R, paste0(names12R, "filt.fastq.gz")), trimLeft = c(21,27), truncLen=c(220,220), maxN=0, maxEE=c(2,2), verbose=TRUE) 
+filtout12sync <- filterAndTrim(file.path(path_raw12F, fastqs12F), file.path(path_filt12F, paste0(names12F, "filt.fastq.gz")), file.path(path_raw12R, fastqs12R), file.path(path_filt12R, paste0(names12R, "filt.fastq.gz")), trimLeft = c(21,27), trimRight=c(80), maxN=0, maxEE=c(2,2), verbose=TRUE) 
 beep(sound = "fanfare")
 ```
 AMC23_C721_MR2 and MR1 removed
@@ -139,6 +139,8 @@ filtout12sync[order(filtout12sync[,2], decreasing=FALSE),]
 
 # Compare total raw in and filtered out read amounts
 colSums(filtout12sync)
+
+write.csv(filtout12sync, file.path(path_outputs, "FiltoutputTable.csv"))
 ```
 
 # Look at filtered trends
@@ -209,14 +211,14 @@ The default nbases is 1e8. Using this default since Sue's 1e6 parameter filled u
 # Forward error rates
 err12F <- learnErrors(derep12F, multithread = FALSE, randomize = TRUE)
 
-saveRDS(err12F, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/5-May02-2024/12Forward_Error.rds")
+saveRDS(err12F, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/6-Jun03-2024/12Forward_Error.rds")
 
 ggsave("12Forward_ErrorPlot.png", path = path_outputs, plotErrors(err12F, nominalQ = TRUE), width = 6, height = 4, units = "in") 
 
 # Reverse error rates
 err12R <- learnErrors(derep12R, multithread = FALSE, randomize = TRUE)
 
-saveRDS(err12R, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/5-May02-2024/12Reverse_Error.rds")
+saveRDS(err12R, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/6-Jun03-2024/12Reverse_Error.rds")
 
 ggsave("12Reverse_ErrorPlot.png", path = path_outputs, plotErrors(err12R, nominalQ = TRUE), width = 6, height = 4, units = "in") 
 
@@ -241,11 +243,8 @@ print("dada 12R finished")
 beep(sound = "fanfare")
 
 # Save all in case I need to reload the dada objects
-saveRDS(dada12F, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/5-May02-2024/12Forward_SampleComp.rds")
-saveRDS(dada12R, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/5-May02-2024/12Reverse_SampleComp.rds")
-
-dada12F <- readRDS("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/5-May02-2024/12Forward_SampleComp.rds")
-dada12R <- readRDS("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/5-May02-2024/12Reverse_SampleComp.rds")
+saveRDS(dada12F, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/6-Jun03-2024/12Forward_SampleComp.rds")
+saveRDS(dada12R, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/6-Jun03-2024/12Reverse_SampleComp.rds")
 ```
 
 
@@ -259,7 +258,7 @@ mergers12 <- makeSequenceTable(mergers12)
 # Inspect the merger data.frame from the first sample
 head(mergers12[[1]])
 
-saveRDS(mergers12, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/5-May02-2024/12MergedSampleComp.rds")
+saveRDS(mergers12, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/6-Jun03-2024/12MergedSampleComp.rds")
 
 ```
 
@@ -269,7 +268,7 @@ saveRDS(mergers12, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutpu
 
 seqtab12.nochim <- removeBimeraDenovo(mergers12, method = "consensus", multithread = FALSE, verbose = TRUE)
 # Save output
-saveRDS(seqtab12.nochim, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/5-May02-2024/12Merged Sequence No Chimera Table.rds")
+saveRDS(seqtab12.nochim, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/6-Jun03-2024/12Merged Sequence No Chimera Table.rds")
 
 beep(sound = "coin")
 ```

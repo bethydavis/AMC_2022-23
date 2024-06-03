@@ -30,7 +30,7 @@ suppressPackageStartupMessages({
 # Set up output folder and version
 
   # Set version and date for each time the analysis script is run - SET THIS EVERY TIME YOU RUN A NEW SET
-versiondate <- c("5-May02-2024/")
+versiondate <- c("6-Jun03-2024/")
   # base output folder
 base_outputs <- "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S"
 

@@ -62,6 +62,5 @@ path_filtBR <- filtR_version
 
 # Identify metadata and reference database locations
 #meta <- read.csv("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/AMCMeta.csv")
-# Figure out how to load in fasta's properly
-#C:/Users/bydav/Desktop/RefDB_Dev/output/3-May19-2024/COI_REFDB.fasta  
+
 
