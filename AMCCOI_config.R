@@ -1,7 +1,7 @@
 # Identify packages to use
 packages = list(
-  CRAN = c("ggplot2", "vegan", "beepr"),
-  bioc = c("BiocManager", "dada2", "phyloseq"),
+  CRAN = c("ggplot2", "vegan", "beepr", "dplyr", "stringr"),
+  bioc = c("BiocManager", "dada2", "phyloseq", "decontam"),
   github = c()
 )
 
@@ -61,6 +61,6 @@ path_filtBF <- filtF_version
 path_filtBR <- filtR_version
 
 # Identify metadata and reference database locations
-#meta <- read.csv("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/AMCMeta.csv")
+meta <- read.csv("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/AMCMeta.csv", header = TRUE, row.names = 1)
 
 

@@ -246,6 +246,8 @@ seqtabB.nochim <- removeBimeraDenovo(seqtabB, method = "consensus", multithread 
 dim(seqtabB.nochim)
 saveRDS(seqtabB.nochim, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/BMerged Sequence No Chimera Table.rds")
 
+seqtabB.nochim <- readRDS("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/BMerged Sequence No Chimera Table.rds")
+
 beep(sound = "coin")
 
 dim(seqtabB.nochim)
@@ -277,21 +279,36 @@ beep(sound = "fanfare")
 write.csv(all.taxa, file.path(path_outputs, "COIAMC_AssignedTaxa.csv"))
 ```
 
+Reload
+```{r}
+all.taxa <- read.csv(file.path(path_outputs, "COIAMC_AssignedTaxa.csv"))
+```
+
+
 # Phyloseq
 
 Load in a metadata file - make sure the sample names and order match between it and the seqtab
 ```{r name_check, include = FALSE}
+# Fix seqtabB.nochim row names
+rownames <- row.names(seqtabB.nochim)
+
+regexp <- "([[:alnum:]]+_)[[:alnum:]]+"
+
+# process string
+newnames <- (str_extract(rownames, regexp))
+
+row.names(seqtabB.nochim) <- newnames
+
+# Check that row names are okay
 row.names(seqtabB.nochim)
 row.names(meta)
 
-
-# Convince R by force that they match - this is a flat replacement, not a match-up
-row.names(meta) <- row.names(seqtabB.nochim) 
+row.names(seqtabB.nochim) == row.names(meta)
 ```
 
 ```{r ps_object, echo = FALSE}
 # Create phyloseq object with all samples
-EX_ps <- phyloseq(otu_table(seqtabB.nochim, taxa_are_rows=FALSE), sample_data(meta), tax_table(all.taxa))
+EX_ps <- phyloseq(otu_table(seqtabB.nochim, taxa_are_rows=FALSE), sample_data(meta), tax_table(as.matrix(all.taxa)))
 ```
 
 

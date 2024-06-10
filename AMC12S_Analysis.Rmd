@@ -253,12 +253,12 @@ Merge paired reads
 mergers12 <- mergePairs(dada12F, path_filt12F, dada12R, path_filt12R, verbose=TRUE)
 
 # Update formatting into a matrix array
-mergers12 <- makeSequenceTable(mergers12)
+seqtab <- makeSequenceTable(mergers12)
 
 # Inspect the merger data.frame from the first sample
-head(mergers12[[1]])
+head(seqtab[[1]])
 
-saveRDS(mergers12, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/6-Jun03-2024/12MergedSampleComp.rds")
+saveRDS(seqtab, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/6-Jun03-2024/12MergedSampleComp.rds")
 
 ```
 
@@ -266,7 +266,7 @@ saveRDS(mergers12, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutpu
 # Remove Chimeras
 ```{r nochimB}
 
-seqtab12.nochim <- removeBimeraDenovo(mergers12, method = "consensus", multithread = FALSE, verbose = TRUE)
+seqtab12.nochim <- removeBimeraDenovo(seqtab, method = "consensus", multithread = FALSE, verbose = TRUE)
 # Save output
 saveRDS(seqtab12.nochim, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/6-Jun03-2024/12Merged Sequence No Chimera Table.rds")
 
@@ -278,10 +278,9 @@ beep(sound = "coin")
 # Workflow Verification
 Reload seqtab if needed
 ```{r reload seqtab}
-seqtab12.nochim <- readRDS("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/5-May02-2024/12Merged Sequence No Chimera Table.rds")
+seqtab12.nochim <- readRDS("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/6-Jun03-2024/12Merged Sequence No Chimera Table.rds")
 ```
 
-### NTS: Find a way for this to work even with samples that are dropped (ie inserting NAs for dropped rows)
 ```{r workflow_verification, echo = FALSE}
 getN <- function(x) sum(getUniques(x))
 
@@ -299,7 +298,9 @@ write.csv(track12, file.path(path_outputs, "12S_WorkflowVerification.csv"))
 all.taxa <- assignTaxonomy(seqtab12.nochim, 'C:/Users/bydav/Desktop/RefDB_Dev/output/2-May17-2024/12S_REFDB.fasta', tryRC = TRUE, verbose = TRUE)
 beep(sound = "fanfare")
 
-write.csv(all.taxa, file.path(path_outputs, "12SAMC_AssignedTaxa.csv"), row.names = FALSE)
+write.csv(all.taxa, file.path(path_outputs, "12SAMC_AssignedTaxa.csv"))
+
+all.taxa <- read.csv(file.path(path_outputs, "12SAMC_AssignedTaxa.csv"))
 ```
 
 ### NTS: Continue here 5/21
@@ -307,17 +308,22 @@ write.csv(all.taxa, file.path(path_outputs, "12SAMC_AssignedTaxa.csv"), row.name
 
 Load in a metadata file - make sure the sample names and order match between it and the seqtab
 ```{r name_check, include = FALSE}
-row.names(seqtab12.nochim)
-row.names(meta)
+rownames <- row.names(seqtab12.nochim)
 
+regexp <- "([[:alnum:]]+_)[[:alnum:]]+"
+
+# process string
+newnames <- (str_extract(rownames, regexp))
+
+row.names(seqtab12.nochim) <- newnames
+```
 
 # Convince R by force that they match - this is a flat replacement, not a match-up - find a better way that doesn't flat replace
-row.names(meta) <- row.names(seqtab12.nochim) 
-```
+
 
 ```{r ps_object, echo = FALSE}
 # Create phyloseq object with all samples
-EX_ps <- phyloseq(otu_table(seqtab12.nochim, taxa_are_rows=FALSE), sample_data(meta), tax_table(all.taxa))
+EX_ps <- phyloseq(otu_table(seqtab12.nochim, taxa_are_rows=FALSE), sample_data(meta), tax_table(as.matrix(all.taxa)))
 
 #EX_ps
 ```
