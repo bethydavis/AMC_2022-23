@@ -355,7 +355,6 @@ plot_bar(EX_ps.func, fill="Phylum") + ggtitle("Proportion by Phylum of Identifie
 ggsave("PreDecontam_IDProportions.png", path = path_outputs, plot_bar(EX_ps.func, fill="Phylum") + ggtitle("Proportion by Phylum of Identified Reads"), width = 7, height = 4, units = "in") 
 ```
 
-### All clean prior
 
 # Step 3: Decontam - From PNW
 
@@ -541,3 +540,4 @@ otu_table()   OTU Table:         [ 136 taxa and 55 samples ]
 sample_data() Sample Data:       [ 55 samples by 15 sample variables ]
 tax_table()   Taxonomy Table:    [ 136 taxa by 6 taxonomic ranks ]
 
+### All clean prior

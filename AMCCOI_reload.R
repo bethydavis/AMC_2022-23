@@ -25,3 +25,17 @@ all.taxa <- read.csv(file.path(path_outputs, "COIAMC_AssignedTaxa.csv"))
 
 # Initial Phyloseq Object
 EX_ps <- readRDS("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/InitialPhyloseq.rds")
+
+# Decontam Removed Taxa
+pstrimmed <- readRDS("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/DecontamRemoved.rds")
+
+# Cleaned Phyloseq Object
+#psCOI <- readRDS()
+
+# Stacked Bar Function for Cleaned Phyloseq
+
+# intermediate clean phyloseq
+ps_clean <- readRDS("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/Intermediate.rds")
+
+
+

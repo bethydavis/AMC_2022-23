@@ -288,7 +288,7 @@ write.csv(all.taxa, file.path(path_outputs, "COIAMC_AssignedTaxa.csv"))
 
 # Prep for Phyloseq
 
-First we need to update the row names for the seqtab12.nochim, all.taxa, and meta objects before attempting to make the phyloseq object. Since at least one sample was dropped during processing, we have to read meta in without row.names, remove the row(s) associated with the dropped sample(s), then reset the sampleID column to row.names
+First we need to update the row names for the seqtabB.nochim, all.taxa, and meta objects before attempting to make the phyloseq object. Since at least one sample was dropped during processing, we have to read meta in without row.names, remove the row(s) associated with the dropped sample(s), then reset the sampleID column to row.names
 ```{r name_check, include = FALSE}
 # Update the all.taxa row names to be the actual sequences
 all.taxa <- data.frame(all.taxa, row.names = 1)
@@ -297,7 +297,7 @@ all.taxa <- data.frame(all.taxa, row.names = 1)
 seqtabB.nochim <- seqtabB.nochim[order(row.names(seqtabB.nochim)), ]
 
 # Order the meta file by sample name
-meta <- meta[order(sample(meta)), ]
+meta <- meta[order(meta$sample), ]
 # Remove the row(s) associated with dropped sample(s) from the meta spreadsheet - the only way I can do this is one row at a time
 meta2 <- subset(meta, sample != "AMC22_AB01")
 meta2 <- subset(meta2, sample != "AMC23_AB04") 
@@ -338,177 +338,199 @@ ggsave("PreDecontam_IDProportions.png", path = path_outputs, plot_bar(EX_ps.func
 
 ### NTS: May need to repeat ^ plot, sample IDs are illegible
 
+# Step 3: Decontam - From 12S
 
-### All prior clean
+## Inspect Library Sizes
+```{r library_size, echo = FALSE}
+df <- as.data.frame(sample_data(EX_ps)) # Put sample_data into a ggplot-friendly data.frame
+df$LibrarySize <- sample_sums(EX_ps)
+df <- df[order(df$LibrarySize),]
+df$Index <- seq(nrow(df))
+ggplot(data=df, aes(x=Index, y=LibrarySize, color=Type)) + geom_point()
+
+ggsave("DecontamLibrarySize_Type.png", path = path_outputs, ggplot(data=df, aes(x=Index, y=LibrarySize, color=Type)) + geom_point() + ggtitle("COI Identified Read Numbers per Sample, by Sample Type"), width = 6, height = 4, units = "in") 
+
+```
+Controls and eDNA are intermixes
+
+Check order by year too
+```{r library_size, echo = FALSE}
+df <- as.data.frame(sample_data(EX_ps)) # Put sample_data into a ggplot-friendly data.frame
+df$LibrarySize <- sample_sums(EX_ps)
+df <- df[order(df$LibrarySize),]
+df$Index <- seq(nrow(df))
+ggplot(data=df, aes(x=Index, y=LibrarySize, color=Year)) + geom_point()
+
+ggsave("DecontamLibrarySize_Year.png", path = path_outputs, ggplot(data=df, aes(x=Index, y=LibrarySize, color=Year)) + geom_point() + ggtitle("COI Identified Read Numbers per Sample, by Collection Year"), width = 6, height = 4, units = "in") 
+```
+Unsure why it's making a gradient - figure out later, but 2022 seems to have fewer reads than 2023 - will see if that persists after decontam
 
 
-# Decontam with Negative Controls (Ishaq Method)
-Clean all batches and then merge together into a clean phyloseq object - make this into a loop after MSWC
-```{r}
-# batch 3
-fbatch3 = subset_samples(EX_ps, Fbatch == "3")  
-fbatch3_kit = subset_samples(fbatch3, Type == "NegCon")
-fbatch3_kit <- prune_taxa(taxa_sums(fbatch3_kit) > 0, fbatch3_kit)
-fb3_control_vec <- as.vector(taxa_names(fbatch3_kit)) 
-fb3_vec <- as.vector(taxa_names(fbatch3)) 
-fb3_keep <- setdiff(fb3_vec, fb3_control_vec)
-fb3_clean <- prune_taxa(fb3_keep, fbatch3)
+## Remove Contaminants
 
-# batch 4
-#fbatch4 = subset_samples(EX_ps, Fbatch == "4")  
-#fbatch4_kit = subset_samples(fbatch4, Type == "NegCon")
-#fbatch4_kit <- prune_taxa(taxa_sums(fbatch4_kit) > 0, fbatch4_kit)
-#fb4_control_vec <- as.vector(taxa_names(fbatch4_kit)) 
-#fb4_vec <- as.vector(taxa_names(fbatch4)) 
-#fb4_keep <- setdiff(fb4_vec, fb4_control_vec)
-#fb4_clean <- prune_taxa(fb4_keep, fbatch4)
+The standard decontam package uses either frequency or prevalence to identify and remove contaminants, but relies on blanks being true negative controls to use presence/absence of reads between true and negative samples to identify contaminants. Since these blank samples do have a significant number of reads, I use the Ishaq decontam method instead - isolating reads that were identified in the controls and removing them from all samples, based on which samples were extracted with which blank.
 
-# batch 5
-fbatch5 = subset_samples(EX_ps, Fbatch == "5")  
-fbatch5_kit = subset_samples(fbatch5, Type == "NegCon")
-fbatch5_kit <- prune_taxa(taxa_sums(fbatch5_kit) > 0, fbatch5_kit)
-fb5_control_vec <- as.vector(taxa_names(fbatch5_kit)) 
-fb5_vec <- as.vector(taxa_names(fbatch5)) 
-fb5_keep <- setdiff(fb5_vec, fb5_control_vec)
-fb5_clean <- prune_taxa(fb5_keep, fbatch5)
 
-# batch 6
-fbatch6 = subset_samples(EX_ps, Fbatch == "6")  
-fbatch6_kit = subset_samples(fbatch6, Type == "NegCon")
-fbatch6_kit <- prune_taxa(taxa_sums(fbatch6_kit) > 0, fbatch6_kit)
-fb6_control_vec <- as.vector(taxa_names(fbatch6_kit)) 
-fb6_vec <- as.vector(taxa_names(fbatch6)) 
-fb6_keep <- setdiff(fb6_vec, fb6_control_vec)
-fb6_clean <- prune_taxa(fb6_keep, fbatch6)
+```{r decontam_isolate, echo = FALSE}
+# subset each DNA extraction batch
+batch1 = subset_samples(EX_ps, Ebatch == "1")  
+batch2 = subset_samples(EX_ps, Ebatch == "2")
+batch3 = subset_samples(EX_ps, Ebatch == "3")  
+batch4 = subset_samples(EX_ps, Ebatch == "4")  
+batch5 = subset_samples(EX_ps, Ebatch == "5")  
+batch6 = subset_samples(EX_ps, Ebatch == "6")  
+batch7 = subset_samples(EX_ps, Ebatch == "7")  
+batch8 = subset_samples(EX_ps, Ebatch == "8")  
+batch9 = subset_samples(EX_ps, Ebatch == "9")  
+batch10 = subset_samples(EX_ps, Ebatch == "10")  
 
-# batch 7
-fbatch7 = subset_samples(EX_ps, Fbatch == "7")  
-fbatch7_kit = subset_samples(fbatch7, Type == "NegCon")
-fbatch7_kit <- prune_taxa(taxa_sums(fbatch7_kit) > 0, fbatch7_kit)
-fb7_control_vec <- as.vector(taxa_names(fbatch7_kit)) 
-fb7_vec <- as.vector(taxa_names(fbatch7)) 
-fb7_keep <- setdiff(fb7_vec, fb7_control_vec)
-fb7_clean <- prune_taxa(fb7_keep, fbatch7)
 
-# batch 8
-fbatch8 = subset_samples(EX_ps, Fbatch == "8")  
-fbatch8_kit = subset_samples(fbatch8, Type == "NegCon")
-fbatch8_kit <- prune_taxa(taxa_sums(fbatch8_kit) > 0, fbatch8_kit)
-fb8_control_vec <- as.vector(taxa_names(fbatch8_kit)) 
-fb8_vec <- as.vector(taxa_names(fbatch8)) 
-fb8_keep <- setdiff(fb8_vec, fb8_control_vec)
-fb8_clean <- prune_taxa(fb8_keep, fbatch8)
+# subset controls and prune to only those taxa
+batch1_sub = subset_samples(batch1, Type == "NegCon")
+batch2_sub = subset_samples(batch2, Type == "NegCon")
+batch3_sub = subset_samples(batch3, Type == "NegCon")
+batch4_sub = subset_samples(batch4, Type == "NegCon")
+batch5_sub = subset_samples(batch5, Type == "NegCon")
+batch6_sub = subset_samples(batch6, Type == "NegCon")
+batch7_sub = subset_samples(batch7, Type == "NegCon")
+batch8_sub = subset_samples(batch8, Type == "NegCon")
+batch9_sub = subset_samples(batch9, Type == "NegCon")
+batch10_sub = subset_samples(batch10, Type == "NegCon")
 
-# batch 9
-fbatch9 = subset_samples(EX_ps, Fbatch == "9")  
-fbatch9_kit = subset_samples(fbatch9, Type == "NegCon")
-fbatch9_kit <- prune_taxa(taxa_sums(fbatch9_kit) > 0, fbatch9_kit)
-fb9_control_vec <- as.vector(taxa_names(fbatch9_kit)) 
-fb9_vec <- as.vector(taxa_names(fbatch9)) 
-fb9_keep <- setdiff(fb9_vec, fb9_control_vec)
-fb9_clean <- prune_taxa(fb9_keep, fbatch9)
 
-# batch 10
-fbatch10 = subset_samples(EX_ps, Fbatch == "10")  
-fbatch10_kit = subset_samples(fbatch10, Type == "NegCon")
-fbatch10_kit <- prune_taxa(taxa_sums(fbatch10_kit) > 0, fbatch10_kit)
-fb10_control_vec <- as.vector(taxa_names(fbatch10_kit)) 
-fb10_vec <- as.vector(taxa_names(fbatch10)) 
-fb10_keep <- setdiff(fb10_vec, fb10_control_vec)
-fb10_clean <- prune_taxa(fb10_keep, fbatch10)
+batch1_sub <- prune_taxa(taxa_sums(batch1_sub) > 0, batch1_sub)
+batch2_sub <- prune_taxa(taxa_sums(batch2_sub) > 0, batch2_sub)
+batch3_sub <- prune_taxa(taxa_sums(batch3_sub) > 0, batch3_sub)
+batch4_sub <- prune_taxa(taxa_sums(batch4_sub) > 0, batch4_sub)
+batch5_sub <- prune_taxa(taxa_sums(batch5_sub) > 0, batch5_sub)
+batch6_sub <- prune_taxa(taxa_sums(batch6_sub) > 0, batch6_sub)
+batch7_sub <- prune_taxa(taxa_sums(batch7_sub) > 0, batch7_sub)
+batch8_sub <- prune_taxa(taxa_sums(batch8_sub) > 0, batch8_sub)
+batch9_sub <- prune_taxa(taxa_sums(batch9_sub) > 0, batch9_sub)
 
-# batch 11
-fbatch11 = subset_samples(EX_ps, Fbatch == "11")  
-fbatch11_kit = subset_samples(fbatch11, Type == "NegCon")
-fbatch11_kit <- prune_taxa(taxa_sums(fbatch11_kit) > 0, fbatch11_kit)
-fb11_control_vec <- as.vector(taxa_names(fbatch11_kit)) 
-fb11_vec <- as.vector(taxa_names(fbatch11)) 
-fb11_keep <- setdiff(fb11_vec, fb11_control_vec)
-fb11_clean <- prune_taxa(fb11_keep, fbatch11)
+# Batch 10's control has no reads, can keep all of batch10
+#batch10_sub <- prune_taxa(taxa_sums(batch10_sub) > 0, batch10_sub)
 
-# batch 12
-#fbatch12 = subset_samples(EX_ps, Fbatch == "12")  
-#fbatch12_kit = subset_samples(fbatch12, Type == "NegCon")
-#fbatch12_kit <- prune_taxa(taxa_sums(fbatch12_kit) > 0, fbatch12_kit)
-#fb12_control_vec <- as.vector(taxa_names(fbatch12_kit)) 
-#fb12_vec <- as.vector(taxa_names(fbatch12)) 
-#fb12_keep <- setdiff(fb12_vec, fb12_control_vec)
-#fb12_clean <- prune_taxa(fb12_keep, fbatch12)
 
-# batch 13
-fbatch13 = subset_samples(EX_ps, Fbatch == "13")  
-fbatch13_kit = subset_samples(fbatch13, Type == "NegCon")
-fbatch13_kit <- prune_taxa(taxa_sums(fbatch13_kit) > 0, fbatch13_kit)
-fb13_control_vec <- as.vector(taxa_names(fbatch13_kit)) 
-fb13_vec <- as.vector(taxa_names(fbatch13)) 
-fb13_keep <- setdiff(fb13_vec, fb13_control_vec)
-fb13_clean <- prune_taxa(fb13_keep, fbatch13)
+# Make the taxa names into a vector so you can remove them, then use the keep vector for the prune taxa argument, because it wants the argument to be true (matching), and repeat for both batches
+batch1_ctrl <- as.vector(taxa_names(batch1_sub)) 
+batch1_vec <- as.vector(taxa_names(batch1)) 
+batch1_kp <- setdiff(batch1_vec, batch1_ctrl)
+batch1_clean <- prune_taxa(batch1_kp, batch1)
 
-# batch 14
-fbatch14 = subset_samples(EX_ps, Fbatch == "14")  
-fbatch14_kit = subset_samples(fbatch14, Type == "NegCon")
-fbatch14_kit <- prune_taxa(taxa_sums(fbatch14_kit) > 0, fbatch14_kit)
-fb14_control_vec <- as.vector(taxa_names(fbatch14_kit)) 
-fb14_vec <- as.vector(taxa_names(fbatch14)) 
-fb14_keep <- setdiff(fb14_vec, fb14_control_vec)
-fb14_clean <- prune_taxa(fb14_keep, fbatch14)
+batch2_ctrl <- as.vector(taxa_names(batch2_sub)) 
+batch2_vec <- as.vector(taxa_names(batch2)) 
+batch2_kp <- setdiff(batch2_vec, batch2_ctrl)
+batch2_clean <- prune_taxa(batch2_kp, batch2)
 
-# batch 15
-fbatch15 = subset_samples(EX_ps, Fbatch == "15")  
-fbatch15_kit = subset_samples(fbatch15, Type == "NegCon")
-fbatch15_kit <- prune_taxa(taxa_sums(fbatch15_kit) > 0, fbatch15_kit)
-fb15_control_vec <- as.vector(taxa_names(fbatch15_kit)) 
-fb15_vec <- as.vector(taxa_names(fbatch15)) 
-fb15_keep <- setdiff(fb15_vec, fb15_control_vec)
-fb15_clean <- prune_taxa(fb15_keep, fbatch15)
+batch3_ctrl <- as.vector(taxa_names(batch3_sub)) 
+batch3_vec <- as.vector(taxa_names(batch3)) 
+batch3_kp <- setdiff(batch3_vec, batch3_ctrl)
+batch3_clean <- prune_taxa(batch3_kp, batch3)
 
-# batch 0
+batch4_ctrl <- as.vector(taxa_names(batch4_sub)) 
+batch4_vec <- as.vector(taxa_names(batch4)) 
+batch4_kp <- setdiff(batch4_vec, batch4_ctrl)
+batch4_clean <- prune_taxa(batch4_kp, batch4)
 
-fbatch0 = subset_samples(EX_ps, Fbatch == "0")  
-fbatch0_kit = subset_samples(fbatch0, Type == "NegCon")
-fbatch0_kit <- prune_taxa(taxa_sums(fbatch0_kit) > 0, fbatch0_kit)
-fb0_control_vec <- as.vector(taxa_names(fbatch0_kit)) 
-fb0_vec <- as.vector(taxa_names(fbatch0)) 
-fb0_keep <- setdiff(fb0_vec, fb0_control_vec)
-fb0_clean <- prune_taxa(fb0_keep, fbatch0)
+batch5_ctrl <- as.vector(taxa_names(batch5_sub)) 
+batch5_vec <- as.vector(taxa_names(batch5)) 
+batch5_kp <- setdiff(batch5_vec, batch5_ctrl)
+batch5_clean <- prune_taxa(batch5_kp, batch5)
+
+batch6_ctrl <- as.vector(taxa_names(batch6_sub)) 
+batch6_vec <- as.vector(taxa_names(batch6)) 
+batch6_kp <- setdiff(batch6_vec, batch6_ctrl)
+batch6_clean <- prune_taxa(batch6_kp, batch6)
+
+batch7_ctrl <- as.vector(taxa_names(batch7_sub)) 
+batch7_vec <- as.vector(taxa_names(batch7)) 
+batch7_kp <- setdiff(batch7_vec, batch7_ctrl)
+batch7_clean <- prune_taxa(batch7_kp, batch7)
+
+batch8_ctrl <- as.vector(taxa_names(batch8_sub)) 
+batch8_vec <- as.vector(taxa_names(batch8)) 
+batch8_kp <- setdiff(batch8_vec, batch8_ctrl)
+batch8_clean <- prune_taxa(batch8_kp, batch8)
+
+batch9_ctrl <- as.vector(taxa_names(batch9_sub)) 
+batch9_vec <- as.vector(taxa_names(batch9)) 
+batch9_kp <- setdiff(batch9_vec, batch9_ctrl)
+batch9_clean <- prune_taxa(batch9_kp, batch9)
+
+
+# Save the phyloseq object of identified contaminants
+pstrimmed <- merge_phyloseq(batch1_sub, batch2_sub, batch3_sub, batch4_sub, batch5_sub, batch6_sub, batch7_sub, batch8_sub, batch9_sub) 
+saveRDS(pstrimmed, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/DecontamRemoved.rds")
 
 ```
 
 ```{r}
 # Merge the phyloseq objects back together, then remove any blank taxa or samples
-EX_ps_NC_batch_clean <- merge_phyloseq(fb0_clean, fb2_clean, fb3_clean, fb5_clean, fb6_clean, fb7_clean, fb8_clean, fb9_clean, fb11_clean, fb14_clean, fb15_clean) 
+ps_clean <- merge_phyloseq(batch1_clean, batch2_clean, batch3_clean, batch4_clean, batch5_clean, batch6_clean, batch7_clean, batch8_clean, batch9_clean, batch10) 
 
 # Clean out taxa/SV columns that are no longer present
-EX_ps_NC_batch_clean <- prune_taxa(taxa_sums(EX_ps_NC_batch_clean) > 0, EX_ps_NC_batch_clean) 
+ps_clean <- prune_taxa(taxa_sums(ps_clean) > 0, ps_clean) 
+ps_clean <- prune_samples(sample_sums(ps_clean) > 0, ps_clean)
 
-EX_ps_NC_batch_clean <- prune_samples(sample_sums(EX_ps_NC_batch_clean) > 0, EX_ps_NC_batch_clean)
-EX_ps_NC_batch_clean
+ps_clean
+
+# Save in case R crashes again
+saveRDS(ps_clean, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/Intermediate.rds")
+
+ps_clean.stack <- transform_sample_counts(ps_clean, function(x) x / sum(x) )
+# Plot based on Phylum
+plot_bar(ps_clean.stack, fill="Kingdom") + ggtitle("Proportion by Kingdom of Identified Reads - COI")
 ```
+phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 19025 taxa and 52 samples ]
+sample_data() Sample Data:       [ 52 samples by 15 sample variables ]
+tax_table()   Taxonomy Table:    [ 19025 taxa by 6 taxonomic ranks ]
 
-
-```{r recheck_ordination, echo = FALSE}
-# Check simple ordination again to see if decontam worked
-
-EX_cleaner.ord <- ordinate(EX_ps_NC_batch_clean, method ="PCoA", "jaccard", binary = TRUE) 
- 
-plot_ordination(EX_ps_NC_batch_clean, EX_cleaner.ord, type="samples", color="Fbatch", title="Prelim 12S Jaccard Binary Ordination Post-Decontam")
-```
-
-
-# Remove Unwanted Taxa with Dplyr
-
+I still want to remove bacterial and plant/algae identifications, so don't save the object yet
 
 ```{r remove_taxa, echo = FALSE}
-EX_ps_clean <- EX_ps_NC_batch_clean %>% 
-  subset_taxa(Kingdom != "Bacteria" & Genus != "Homo") 
-
+# Remove plant and others
+psCOI <- ps_clean %>% 
+  subset_taxa(Kingdom != "Ascomycota") 
+psCOI <- psCOI %>% 
+  subset_taxa(Kingdom != "Bacillariophyta")
+psCOI <- psCOI %>% 
+  subset_taxa(Kingdom != "Basidiomycota")
+psCOI <- psCOI %>% 
+  subset_taxa(Kingdom != "Chlorophyta")
+psCOI <- psCOI %>% 
+  subset_taxa(Kingdom != "Oomycota")
+psCOI <- psCOI %>% 
+  subset_taxa(Kingdom != "Pseudomonadota")
+psCOI <- psCOI %>% 
+  subset_taxa(Kingdom != "Rhodophyta")
+psCOI <- psCOI %>% 
+  subset_taxa(Kingdom != "Rotifera")
+psCOI <- psCOI %>% 
+  subset_taxa(Kingdom != "Tubulinea")
+psCOI <- psCOI %>% 
+  subset_taxa(Kingdom != "Streptophyta")
 ```
 
 ```{r clean_columns, echo = FALSE}
-EX_ps_clean <- prune_taxa(taxa_sums(EX_ps_clean) > 0, EX_ps_clean) 
-EX_ps_clean <- prune_samples(sample_sums(EX_ps_clean) > 0, EX_ps_clean)
+psCOI <- prune_taxa(taxa_sums(psCOI) > 0, psCOI) 
+psCOI <- prune_samples(sample_sums(psCOI) > 0, psCOI)
 
-EX_ps_clean
-saveRDS(EX_ps_clean, 'C:/Users/bydav/Desktop/12SPrelim_EX_ps_clean.RDS')
+psCOI.stack <- transform_sample_counts(psCOI, function(x) x / sum(x) )
+# Plot based on Class
+plot_bar(psCOI.stack, fill="Class") + ggtitle("Proportion of Cleaned Reads by Class.png")
+
+psCOI
+
+ggsave("CleanedClassIDs.png", path = path_outputs, plot_bar(psCOI.stack, fill="Class") + ggtitle("Proportion of Cleaned Reads by Class.png") + ggtitle("COI Identified Clean Reads"), width = 8, height = 5, units = "in") 
+
+saveRDS(psCOI, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/CleanPhyloseq.RDS")
 ```
+phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 140 taxa and 33 samples ]
+sample_data() Sample Data:       [ 33 samples by 15 sample variables ]
+tax_table()   Taxonomy Table:    [ 140 taxa by 6 taxonomic ranks ]
 
+
+### All prior clean
