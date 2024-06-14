@@ -9,19 +9,20 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Markdown file to analyze AMC water eDNA samples, using Dr. Sue Ishaq's DNA Sequencing Analysis workflow (to start). 
+Markdown file to analyze AMC water eDNA samples, sequenced using the BF2/BR2 COI primer
 
-Debugging statements are preceded with ###
-
-# Set up packages and paths with config file
-```{r COI_config}
+# Run set-up files
+```{r COI_config, echo = FALSE}
+# config file with paths and versioning
 source("AMCCOI_config.R")
 ```
+```{r COI_reload}
+# File with previous outputs to make reloading easier
+source("AMCCOI_reload.R")
+```
 
-Prior to this Rmd, the raw fastq files have been renamed in the repo UM_FSM_Cleaning
-
-# Set folder paths and file types
-```{r raw_paths, echo = FALSE}
+# Set raw file types
+```{r raw_isolate, echo = FALSE}
 
 # Specify file name formats
 fnsBF <- list.files(path_rawBF)
@@ -44,16 +45,14 @@ namesBF <- tools::file_path_sans_ext(namesBFfast)
 namesBRfast <- tools::file_path_sans_ext(basename(fastqsBR))
 # Repeat file_path_sans_ext to also remove the .fastq
 namesBR <- tools::file_path_sans_ext(namesBRfast)
-
 ```
 
-The sample names are already set how I want them, so I won't use/adapt Sue's file name cleaning chunk (Clean File Names for Initial Load)
 
 # Check Sequence Quality
 
-Run 4 randomly selected quality profile plots per primer per read type (forward or reverse). Number will correspond to the file order. Min is set to 2 to avoid the desktop.ini file that GoogleDrive desktop creates from being chosen
+Run 6 randomly selected quality profile plots per primer per read type (forward or reverse). Number will correspond to the file order.
 
-```{r random_selection}
+```{r random_selection, echo = FALSE}
 # Numbers for BF2 Forward reads:
 sample(1:78, 6, replace = FALSE)
   # Results on 3/20/2024: 48 64 20 57 15 11
@@ -63,10 +62,8 @@ sample(1:78, 6, replace = FALSE)
   # Results on 3/20/2024: 15, 49, 56, 78, 11, 28
 ```
 
-## NTS: keep working at cleaning out the 12S from here
-
-5/03 note: run the plots again to standardize size
-```{r}
+Now generate the randomly selected plots
+```{r quality_profile, echo = FALSE}
 # B Forward:
 ggsave("BF2ForwardQuality_RNG48.png", plot = plotQualityProfile(fnsBFisolate[48]), path = path_outputs, width = 6, height = 4, units = "in")
 
@@ -80,10 +77,9 @@ ggsave("BF2ForwardQuality_RNG15.png", plot = plotQualityProfile(fnsBFisolate[15]
 
 ggsave("BF2ForwardQuality_RNG11.png", plot = plotQualityProfile(fnsBFisolate[11]), path = path_outputs, width = 6, height = 4, units = "in")
 
+# Notify when the forward plots are done
 beep(sound = "fanfare")
-```
 
-```{r}
 # B Reverse:
 ggsave("BR2ReverseQuality_RNG15.png", plot = plotQualityProfile(fnsBRisolate[15]), path = path_outputs, width = 6, height = 4, units = "in")
 
@@ -97,6 +93,7 @@ ggsave("BR2ReverseQuality_RNG11.png", plot = plotQualityProfile(fnsBRisolate[11]
 
 ggsave("BR2ReverseQuality_RNG28.png", plot = plotQualityProfile(fnsBRisolate[28]), path = path_outputs, width = 6, height = 4, units = "in")
 
+# Notify when the reverse plots are done
 beep(sound = "fanfare")
 ```
 
@@ -112,23 +109,18 @@ BR2 primer length: 20 -  TCDGGRTGNCCRAARAAYCA
 Given a desired score of 25+, trim reverse after 250 and forward after 280
 
 # Begin filtering process
-
-```{r filt12_both}
+```{r filtAndTrim, echo = TRUE}
+# Trimming parameters
 filtoutB <- filterAndTrim(file.path(path_rawBF, fastqsBF), file.path(path_filtBF, paste0(namesBF, "filt.fastq.gz")), file.path(path_rawBR, fastqsBR), file.path(path_filtBR, paste0(namesBR, "filt.fastq.gz")), trimLeft = c(20,20), trimRight=c(20,50), maxN=0, maxEE=c(2,2), verbose=TRUE) 
 
+# Save output
 saveRDS(filtoutB, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/FiltOutput.rds")
 ```
-AMC22_AB01 removed
-AMC23_AB04 removed
-AMC23_MB09 removed
+
 
 # Explore filtered output 
 
-Can look at the dimensions of each RDS output, and order by the filtered read amount, and/or look at the number of total raw reads compared to the filtered out reads
-
-```{r assess filt_BF}
-filtoutB
-dim(filtoutB)
+```{r assess_filt, echo = FALSE}
 
 # Order by filtered read amount
 filtoutB[order(filtoutB[,2], decreasing=FALSE),]
@@ -136,16 +128,20 @@ filtoutB[order(filtoutB[,2], decreasing=FALSE),]
 # Compare total raw in and filtered out read amounts
 colSums(filtoutB)
 
+# Save output
 write.csv(filtoutB, file.path(path_outputs, "FiltOutput.csv"))
 ```
 
-# Look at filtered trends
-```{r filtertrends}
 
+# Look at filtered trends
+```{r filter_trends, echo = FALSE}
+# Plot read numbers before and after trimming
 filttrendB <- ggplot(as.data.frame(filtoutB)) + geom_point(aes(row.names(filtoutB), reads.in), color = "blue") + geom_point(aes(row.names(filtoutB), reads.out), color = "orange") + ggtitle("Filter Trends for AMC BF2/BR2 Reads")
 
+# View plot
 filttrendB
 
+# Save plot
 ggsave("FilterTrends.png", plot = filttrendB, path = path_outputs, width = 6, height = 4, units = "in")
 ```
 
@@ -153,12 +149,11 @@ ggsave("FilterTrends.png", plot = filttrendB, path = path_outputs, width = 6, he
 # Error Rates and Dereplication
 
 First we need to set a seed and make sure the paths are all still set.
-
-```{r error setup}
+```{r error_setup, echo = FALSE}
+# Set seed
 set.seed(0743)
 
 # BForward
-# 
 # create a list of files in the path
 filtnamesBFinter <- list.files(path_filtBF, full.names = TRUE)
 
@@ -171,43 +166,54 @@ fastqfiltBF <- tools::file_path_sans_ext(basename(filtnamesBF))
 # Remove the .fastq extension
 namesBFfilt <- tools::file_path_sans_ext(basename(fastqfiltBF))
 
-# BReverse
+# Repeat for reverse
 filtnamesBRinter <- list.files(path_filtBR, full.names = TRUE)
 filtnamesBR <- filtnamesBRinter[grepl('.gz$', filtnamesBRinter)]
 fastqfiltBR <- tools::file_path_sans_ext(basename(filtnamesBR))
 namesBRfilt <- tools::file_path_sans_ext(basename(fastqfiltBR))
 ```
 
+
 ## Dereplication
 
-This step comes from the dada2 workflow (https://bioconductor.org/packages/devel/bioc/vignettes/dada2/inst/doc/dada2-intro.html#learn-the-error-rates), not Sue's code
+This step comes from the dada2 workflow (https://bioconductor.org/packages/devel/bioc/vignettes/dada2/inst/doc/dada2-intro.html#learn-the-error-rates)
 
-```{r derep}
+```{r derep, echo = FALSE}
 derepBF <- derepFastq(filtnamesBF, verbose = TRUE)
 derepBR <- derepFastq(filtnamesBR, verbose = TRUE)
 ```
 
 Now that the names are set up, we can run the simulations to learn and estimate the number of errors in each filtered folder. This step is in Sue's code (and is the source of the saveRDS and plotErrors lines), but using the default parameters from the dada2 workflow
 
+
 ## Error Rates
 
-```{r errorrates}
+```{r error_rates, echo = FALSE}
+# Forward error rates
 errBF <- learnErrors(derepBF, multithread = FALSE, randomize = TRUE)
 
+# Save error rates
 saveRDS(errBF, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/ForwardError.rds")
+
+# Generate and save forward error plot
 ggsave("Forward_ErrorPlot.png", path = path_outputs, plotErrors(errBF, nominalQ = TRUE), width = 6, height = 4, units = "in") 
 
-
+# Reverse error rates
 errBR <- learnErrors(derepBR, multithread = FALSE, randomize = TRUE)
+
+# Save error rates
 saveRDS(errBR, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/ReverseError.rds")
+
+# Generate and save reverse error plot
 ggsave("Reverse_ErrorPlot.png", path = path_outputs, plotErrors(errBR, nominalQ = TRUE), width = 6, height = 4, units = "in") 
 
 # This takes a long time. If you have to do it again, include this:
 beep(sound = "fanfare")
 ```
 
+
 # Infer sample composition
-```{r samplecomposition}
+```{r sample_composition, echo = FALSE}
 dadaBF <- dada(derepBF, err = errBF, multithread = FALSE)
 print("dada BF finished")
 beep(sound = "coin")
@@ -222,49 +228,49 @@ saveRDS(dadaBR, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/
 ```
 
 
-Merge paired reads
+## Merge paired reads
 
-```{r}
+```{r merge_reads, echo = FALSE}
 mergersB <- mergePairs(dadaBF, derepBF, dadaBR, derepBR, verbose = TRUE)
-head(mergersB[[1]])
 
+# Save output
 saveRDS(mergersB, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/BMergedSampleComp.rds")
 ```
 
-```{r seqtabB}
+```{r seqtab, echo = FALSE}
+# Turn into sequence table
 seqtabB <- makeSequenceTable(mergersB)
-dim(seqtabB)
-saveRDS(seqtabB, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/BMerged Sequence Table.rds")
 
-dim(seqtabB)
-table(nchar(getSequences(seqtabB)))
+# Save output
+saveRDS(seqtabB, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/BMerged Sequence Table.rds")
 ```
 
 # Remove Chimeras 
-```{r nochimB}
+```{r no_chim, echo = FALSE}
+# Remove chimeras
 seqtabB.nochim <- removeBimeraDenovo(seqtabB, method = "consensus", multithread = FALSE, verbose = TRUE)
-dim(seqtabB.nochim)
+
+# Save
 saveRDS(seqtabB.nochim, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/BMerged Sequence No Chimera Table.rds")
 
-seqtabB.nochim <- readRDS("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/BMerged Sequence No Chimera Table.rds")
-
+# Notification
 beep(sound = "coin")
-
-dim(seqtabB.nochim)
-table(nchar(getSequences(seqtabB.nochim)))
 ```
+
 
 # Workflow Verification
 
 ```{r workflow_verification, echo = FALSE}
+# Function for sum
 getN <- function(x) sum(getUniques(x))
 
-
+# Combine read numbers across workflow stages into a table
 trackB <- cbind(filtoutB, sapply(dadaBF, getN), sapply(dadaBR, getN), sapply(mergersB, getN), rowSums(seqtabB.nochim))
 
+# Set column names
 colnames(trackB) <- c("input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim")
-head(trackB)
 
+# Save output
 write.csv(trackB, file.path(path_outputs, "WorkflowVerification.csv"))
 ```
 
@@ -279,37 +285,61 @@ beep(sound = "fanfare")
 write.csv(all.taxa, file.path(path_outputs, "COIAMC_AssignedTaxa.csv"))
 ```
 
-Reload
-```{r}
-all.taxa <- read.csv(file.path(path_outputs, "COIAMC_AssignedTaxa.csv"))
-```
 
+# Prep for Phyloseq
 
-# Phyloseq
-
-Load in a metadata file - make sure the sample names and order match between it and the seqtab
+First we need to update the row names for the seqtab12.nochim, all.taxa, and meta objects before attempting to make the phyloseq object. Since at least one sample was dropped during processing, we have to read meta in without row.names, remove the row(s) associated with the dropped sample(s), then reset the sampleID column to row.names
 ```{r name_check, include = FALSE}
-# Fix seqtabB.nochim row names
-rownames <- row.names(seqtabB.nochim)
+# Update the all.taxa row names to be the actual sequences
+all.taxa <- data.frame(all.taxa, row.names = 1)
 
-regexp <- "([[:alnum:]]+_)[[:alnum:]]+"
+# Order seqtab.nochim by row names
+seqtabB.nochim <- seqtabB.nochim[order(row.names(seqtabB.nochim)), ]
 
-# process string
-newnames <- (str_extract(rownames, regexp))
+# Order the meta file by sample name
+meta <- meta[order(sample(meta)), ]
+# Remove the row(s) associated with dropped sample(s) from the meta spreadsheet - the only way I can do this is one row at a time
+meta2 <- subset(meta, sample != "AMC22_AB01")
+meta2 <- subset(meta2, sample != "AMC23_AB04") 
+meta2 <- subset(meta2, sample != "AMC23_MB09") 
 
-row.names(seqtabB.nochim) <- newnames
+# Set the sample column as row.names
+meta <- data.frame(meta2, row.names = 1)
+# Order the meta file by row.names
+meta <- meta[order(row.names(meta)), ]
 
-# Check that row names are okay
-row.names(seqtabB.nochim)
-row.names(meta)
-
-row.names(seqtabB.nochim) == row.names(meta)
+# Make sure all samples in seqtab.nochim match and are in the same order as in meta, because the next step is a flat replacement of row.names
+row.names(seqtabB.nochim) <- row.names(meta)
 ```
 
+
+# Create the Phyloseq object
 ```{r ps_object, echo = FALSE}
 # Create phyloseq object with all samples
 EX_ps <- phyloseq(otu_table(seqtabB.nochim, taxa_are_rows=FALSE), sample_data(meta), tax_table(as.matrix(all.taxa)))
+
+# SAVE 
+saveRDS(EX_ps, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/InitialPhyloseq.rds")
 ```
+
+
+# Exploratory richness plots
+```{r initial_exploratory}
+# I'd like to make a stacked bar plot, before any taxa-filtering, of the read abundances
+# Set function to make a proportional graph
+EX_ps.func <- transform_sample_counts(EX_ps, function(x) x / sum(x) )
+# Plot based on Phylum
+plot_bar(EX_ps.func, fill="Phylum") + ggtitle("Proportion by Phylum of Identified Reads - COI")
+  # Warning: Removed 79588 rows containing missing values or values outside the scale range (`geom_bar()`). 
+
+# Save plot
+ggsave("PreDecontam_IDProportions.png", path = path_outputs, plot_bar(EX_ps.func, fill="Phylum") + ggtitle("Proportion by Phylum of Identified Reads"), width = 7, height = 4, units = "in") 
+```
+
+### NTS: May need to repeat ^ plot, sample IDs are illegible
+
+
+### All prior clean
 
 
 # Decontam with Negative Controls (Ishaq Method)
