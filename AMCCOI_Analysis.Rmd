@@ -319,7 +319,7 @@ row.names(seqtabB.nochim) <- row.names(meta)
 EX_ps <- phyloseq(otu_table(seqtabB.nochim, taxa_are_rows=FALSE), sample_data(meta), tax_table(as.matrix(all.taxa)))
 
 # SAVE 
-saveRDS(EX_ps, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/InitialPhyloseq.rds")
+saveRDS(EX_ps, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/InitialPhyloseqUD.rds")
 ```
 
 
@@ -351,7 +351,7 @@ ggplot(data=df, aes(x=Index, y=LibrarySize, color=Type)) + geom_point()
 ggsave("DecontamLibrarySize_Type.png", path = path_outputs, ggplot(data=df, aes(x=Index, y=LibrarySize, color=Type)) + geom_point() + ggtitle("COI Identified Read Numbers per Sample, by Sample Type"), width = 6, height = 4, units = "in") 
 
 ```
-Controls and eDNA are intermixes
+Controls and eDNA are intermixed
 
 Check order by year too
 ```{r library_size, echo = FALSE}
@@ -534,3 +534,18 @@ tax_table()   Taxonomy Table:    [ 140 taxa by 6 taxonomic ranks ]
 
 
 ### All prior clean
+
+# Step 4: Alpha Diversity Analysis
+
+## Rarefaction
+```{r rarecurve, echo = FALSE}
+rc <-as.data.frame(otu_table(psCOI))
+test <- rarecurve(rc, step = 10, cex=0.5, label = FALSE)
+
+raremax <- max(rowSums(otu_table(psCOI))) # Max SV number is 35078
+raremin <- min(rowSums(otu_table(psCOI))) # Min SV number is 3
+rowSums(otu_table(psCOI))
+```
+
+
+## Chao Alpha Diversity

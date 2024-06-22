@@ -541,3 +541,18 @@ sample_data() Sample Data:       [ 55 samples by 15 sample variables ]
 tax_table()   Taxonomy Table:    [ 136 taxa by 6 taxonomic ranks ]
 
 ### All clean prior
+
+# Step 4: Alpha Diversity Analysis
+
+## Rarefaction
+```{r rarecurve, echo = FALSE}
+rc <-as.data.frame(otu_table(ps12S))
+test <- rarecurve(rc, step = 10, cex=0.5, label = FALSE)
+
+raremax <- max(rowSums(otu_table(ps12S))) # Max SV number is 74165
+raremin <- min(rowSums(otu_table(ps12S))) # Min SV number is 7
+rowSums(otu_table(ps12S))
+```
+
+
+## Chao Alpha Diversity

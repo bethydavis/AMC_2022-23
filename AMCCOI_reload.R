@@ -30,9 +30,10 @@ EX_ps <- readRDS("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs
 pstrimmed <- readRDS("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/DecontamRemoved.rds")
 
 # Cleaned Phyloseq Object
-#psCOI <- readRDS()
+psCOI <- readRDS("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/CleanPhyloseq.RDS")
 
 # Stacked Bar Function for Cleaned Phyloseq
+psCOI.stack <- transform_sample_counts(psCOI, function(x) x / sum(x) )
 
 # intermediate clean phyloseq
 ps_clean <- readRDS("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/Intermediate.rds")
