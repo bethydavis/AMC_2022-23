@@ -304,13 +304,15 @@ all.taxa <- assignTaxonomy(seqtab12.nochim, 'C:/Users/bydav/Desktop/RefDB_Dev/ou
 # Notify when done
 beep(sound = "fanfare")
 
+## For whatever reason, the column names for all.taxa come out staggered - the Genus column is actually species, the Family column is actually Genus, etc.
+names(all.taxa) <- c("X", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+
 # Save output
 write.csv(all.taxa, file.path(path_outputs, "12SAMC_AssignedTaxa.csv"))
 ```
 
 
 # Step 2: Transfer to Phyloseq
-### NTS: Will need to repeat this (or figure out how to otherwise add metadata) once the meta sheet is complete
 
 First we need to update the row names for the seqtab12.nochim, all.taxa, and meta objects before attempting to make the phyloseq object. Since at least one sample was dropped during processing, we have to read meta in without row.names, remove the row(s) associated with the dropped sample(s), then reset the sampleID column to row.names
 ```{r name_check, include = FALSE}
@@ -496,7 +498,7 @@ ps_clean <- prune_samples(sample_sums(ps_clean) > 0, ps_clean)
 ps_clean
 ps_clean.stack <- transform_sample_counts(ps_clean, function(x) x / sum(x) )
 # Plot based on Phylum
-plot_bar(ps_clean.stack, fill="Kingdom") + ggtitle("Proportion by Kingdom of Identified Reads - COI")
+plot_bar(ps_clean.stack, fill="Phylum") + ggtitle("Proportion by Phylum of Identified Reads - COI")
 ```
 phyloseq-class experiment-level object
 otu_table()   OTU Table:         [ 508 taxa and 58 samples ]
@@ -508,17 +510,17 @@ I still want to remove bacterial and plant/algae identifications, so don't save 
 ```{r remove_taxa, echo = FALSE}
 # Remove plant and others
 ps12S <- ps_clean %>% 
-  subset_taxa(Kingdom != "Bacillota") 
+  subset_taxa(Phylum != "Bacillota") 
 ps12S <- ps12S %>% 
-  subset_taxa(Kingdom != "Chlorophyta")
+  subset_taxa(Phylum != "Chlorophyta")
 ps12S <- ps12S %>% 
-  subset_taxa(Kingdom != "Cyanobacteriota")
+  subset_taxa(Phylum != "Cyanobacteriota")
 ps12S <- ps12S %>% 
-  subset_taxa(Kingdom != "Pseudomonadota")
+  subset_taxa(Phylum != "Pseudomonadota")
 ps12S <- ps12S %>% 
-  subset_taxa(Kingdom != "Foraminifera")
+  subset_taxa(Phylum != "Foraminifera")
 ps12S <- ps12S %>% 
-  subset_taxa(Kingdom != "Streptophyta")
+  subset_taxa(Phylum != "Streptophyta")
 ```
 
 ```{r clean_columns, echo = FALSE}
@@ -540,19 +542,7 @@ otu_table()   OTU Table:         [ 136 taxa and 55 samples ]
 sample_data() Sample Data:       [ 55 samples by 15 sample variables ]
 tax_table()   Taxonomy Table:    [ 136 taxa by 6 taxonomic ranks ]
 
-### All clean prior
-
-# Step 4: Alpha Diversity Analysis
-
-## Rarefaction
-```{r rarecurve, echo = FALSE}
-rc <-as.data.frame(otu_table(ps12S))
-test <- rarecurve(rc, step = 10, cex=0.5, label = FALSE)
-
-raremax <- max(rowSums(otu_table(ps12S))) # Max SV number is 74165
-raremin <- min(rowSums(otu_table(ps12S))) # Min SV number is 7
-rowSums(otu_table(ps12S))
-```
 
 
-## Chao Alpha Diversity
+
+

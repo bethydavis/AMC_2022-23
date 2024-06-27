@@ -282,6 +282,9 @@ write.csv(trackB, file.path(path_outputs, "WorkflowVerification.csv"))
 all.taxa <- assignTaxonomy(seqtabB.nochim, 'C:/Users/bydav/Desktop/RefDB_Dev/output/3-May19-2024/COI_REFDB.fasta', tryRC = TRUE, verbose = TRUE)
 beep(sound = "fanfare")
 
+## For whatever reason, the column names for all.taxa come out staggered - the Genus column is actually species, the Family column is actually Genus, etc.
+names(all.taxa) <- c("X", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+
 write.csv(all.taxa, file.path(path_outputs, "COIAMC_AssignedTaxa.csv"))
 ```
 
@@ -336,7 +339,6 @@ plot_bar(EX_ps.func, fill="Phylum") + ggtitle("Proportion by Phylum of Identifie
 ggsave("PreDecontam_IDProportions.png", path = path_outputs, plot_bar(EX_ps.func, fill="Phylum") + ggtitle("Proportion by Phylum of Identified Reads"), width = 7, height = 4, units = "in") 
 ```
 
-### NTS: May need to repeat ^ plot, sample IDs are illegible
 
 # Step 3: Decontam - From 12S
 
@@ -480,7 +482,7 @@ saveRDS(ps_clean, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutput
 
 ps_clean.stack <- transform_sample_counts(ps_clean, function(x) x / sum(x) )
 # Plot based on Phylum
-plot_bar(ps_clean.stack, fill="Kingdom") + ggtitle("Proportion by Kingdom of Identified Reads - COI")
+plot_bar(ps_clean.stack, fill="Phylum") + ggtitle("Proportion by Phylum of Identified Reads - COI")
 ```
 phyloseq-class experiment-level object
 otu_table()   OTU Table:         [ 19025 taxa and 52 samples ]
@@ -492,25 +494,25 @@ I still want to remove bacterial and plant/algae identifications, so don't save 
 ```{r remove_taxa, echo = FALSE}
 # Remove plant and others
 psCOI <- ps_clean %>% 
-  subset_taxa(Kingdom != "Ascomycota") 
+  subset_taxa(Phylum != "Ascomycota") 
 psCOI <- psCOI %>% 
-  subset_taxa(Kingdom != "Bacillariophyta")
+  subset_taxa(Phylum != "Bacillariophyta")
 psCOI <- psCOI %>% 
-  subset_taxa(Kingdom != "Basidiomycota")
+  subset_taxa(Phylum != "Basidiomycota")
 psCOI <- psCOI %>% 
-  subset_taxa(Kingdom != "Chlorophyta")
+  subset_taxa(Phylum != "Chlorophyta")
 psCOI <- psCOI %>% 
-  subset_taxa(Kingdom != "Oomycota")
+  subset_taxa(Phylum != "Oomycota")
 psCOI <- psCOI %>% 
-  subset_taxa(Kingdom != "Pseudomonadota")
+  subset_taxa(Phylum != "Pseudomonadota")
 psCOI <- psCOI %>% 
-  subset_taxa(Kingdom != "Rhodophyta")
+  subset_taxa(Phylum != "Rhodophyta")
 psCOI <- psCOI %>% 
-  subset_taxa(Kingdom != "Rotifera")
+  subset_taxa(Phylum != "Rotifera")
 psCOI <- psCOI %>% 
-  subset_taxa(Kingdom != "Tubulinea")
+  subset_taxa(Phylum != "Tubulinea")
 psCOI <- psCOI %>% 
-  subset_taxa(Kingdom != "Streptophyta")
+  subset_taxa(Phylum != "Streptophyta")
 ```
 
 ```{r clean_columns, echo = FALSE}
@@ -546,6 +548,3 @@ raremax <- max(rowSums(otu_table(psCOI))) # Max SV number is 35078
 raremin <- min(rowSums(otu_table(psCOI))) # Min SV number is 3
 rowSums(otu_table(psCOI))
 ```
-
-
-## Chao Alpha Diversity

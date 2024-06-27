@@ -1,0 +1,201 @@
+---
+title: "AMCJoint_Analysis"
+author: "BYDavis"
+date: "2024-06-26"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+source("AMCJoint_config.R")
+library(phylosmith)
+```
+
+# Goals
+
+Exploratory rarefaction
+```{r rarecurve, echo = FALSE}
+rc <-as.data.frame(otu_table(ps12))
+test <- rarecurve(rc, step = 10, cex=0.5, label = FALSE)
+
+raremax <- max(rowSums(otu_table(ps12))) # Max SV number is 74165
+raremin <- min(rowSums(otu_table(ps12))) # Min SV number is 7
+rowSums(otu_table(ps12))
+
+rc <-as.data.frame(otu_table(psCOI))
+test <- rarecurve(rc, step = 10, cex=0.5, label = FALSE)
+
+raremax <- max(rowSums(otu_table(psCOI))) # Max SV number is 35078
+raremin <- min(rowSums(otu_table(psCOI))) # Min SV number is 3
+rowSums(otu_table(psCOI))
+
+# Since we trimmed non-LWA sites out of the object (in config), get an updated snapshot of the phyloseq dimensions
+ps12
+psCOI
+```
+
+ps12
+phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 136 taxa and 43 samples ]
+sample_data() Sample Data:       [ 43 samples by 15 sample variables ]
+tax_table()   Taxonomy Table:    [ 136 taxa by 6 taxonomic ranks ]
+
+psCOI
+phyloseq-class experiment-level object
+otu_table()   OTU Table:         [ 140 taxa and 28 samples ]
+sample_data() Sample Data:       [ 28 samples by 15 sample variables ]
+tax_table()   Taxonomy Table:    [ 140 taxa by 6 taxonomic ranks ]
+
+
+Exploratory alpha diversity - not actually very interested in it beyond graphs and dummy check
+Plots of taxa at sites - break apart by year and region (east vs west)
+
+## Basic exploratories - SV sums, Gamma diversity between east and west
+33 COI samples survived past removing unwanted taxa
+55 12S samples survived past removing unwanted taxa
+```{r}
+SVsum_COI <- sample_sums(psCOI)
+write.table(SVsum_COI, file.path(path_outputs, "AMCSVsum_COI.txt"))
+
+SVsum_12 <- sample_sums(ps12)
+write.table(SVsum_12, file.path(path_outputs, "AMCSVsum_12.txt"))
+
+# 12S total unique counts
+length(unique(melt12un$Species))
+length(unique(melt12un$Family))
+length(unique(melt12un$OTU))
+# 33 unique species detected, with 136 unique OTUs, across 23 unique families - INCLUDING WEST
+# 27 unique species, 19 unique families, 116 unique OTUs - NOT INCLUDING WEST
+AMCSpec_12 <- unique(melt12un$Species)
+write.table(AMCSpec_12, file.path(path_outputs, "AMCSpec_12Total.txt"))
+
+# COI total unique counts
+length(unique(meltCOIun$Species))
+length(unique(meltCOIun$Family))
+length(unique(meltCOIun$OTU))
+# 78 unique species detected, with 140 unique OTUs, across 47 unique families - INCLUDING WEST
+# 75 unique species, 44 unique families, 131 unique OTUS - NOT INCLUDING WEST
+AMCSpec_COI <- unique(meltCOIun$Species)
+write.table(AMCSpec_COI, file.path(path_outputs, "AMCSpec_COITotal.txt"))
+
+
+# Graph
+ggsave("AMC12S_Gamma.png", path = path_outputs, plot_bar(ps12.fam, fill="Family") + facet_grid(~Year, scales= "free_x", space = "free_x") + theme_bw() + theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) + labs(x = "Site", y = "Number of SVs", title = "12S Overall Diversity")  + scale_colour_brewer(palette = "Set1") + theme(legend.position = "bottom"), width = 8, height = 7, units = "in") 
+
+ggsave("AMCCOI_Gamma.png", path = path_outputs, plot_bar(psCOI.fam, fill="Family") + facet_grid(~Year, scales= "free_x", space = "free_x") + theme_bw() + theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) + labs(x = "Site", y = "Number of SVs", title = "COI Overall Diversity")  + scale_colour_brewer(palette = "Set1") + theme(legend.position = "bottom"), width = 8, height = 10, units = "in") 
+```
+
+Regional look - only regional check (disable the Region filter in the config file if rerun this)
+```{r}
+# Look specifically at east vs west
+# 12S East unique counts
+length(unique(melt12un$Species[melt12un$Region == "East"]))
+length(unique(melt12un$Family[melt12un$Region == "East"]))
+length(unique(melt12un$OTU[melt12un$Region == "East"]))
+# 29 unique species detected, with 121 unique OTUs, across 20 unique families
+AMCSpec_12East <- unique(melt12un$Species[melt12un$Region == "East"])
+write.table(AMCSpec_12East, file.path(path_outputs, "AMCSpec_12East.txt"))
+
+
+# 12S West unique counts
+length(unique(melt12un$Species[melt12un$Region == "West"]))
+length(unique(melt12un$Family[melt12un$Region == "West"]))
+length(unique(melt12un$OTU[melt12un$Region == "West"]))
+# 20 unique species detected, with 34 unique OTUs, across 15 unique families
+AMCSpec_12West <- unique(melt12un$Species[melt12un$Region == "West"])
+write.table(AMCSpec_12West, file.path(path_outputs, "AMCSpec_12West.txt"))
+
+
+AMC12_Regiondif <- setdiff(AMCSpec_12East, AMCSpec_12West)
+write.table(AMC12_Regiondif, file.path(path_outputs, "AMC12_Regiondif.txt"))
+
+# 13 species detected in the east were not detected in the west
+
+# COI East unique counts
+length(unique(meltCOIun$Species[meltCOIun$Region == "East"]))
+length(unique(meltCOIun$Family[meltCOIun$Region == "East"]))
+length(unique(meltCOIun$OTU[meltCOIun$Region == "East"]))
+# 76 unique species detected, with 132 unique OTUs, across 45 unique families
+AMCSpec_COIEast <- unique(meltCOIun$Species[meltCOIun$Region == "East"])
+write.table(AMCSpec_COIEast, file.path(path_outputs, "AMCSpecies_COIEast.txt"))
+
+# COI West unique counts
+length(unique(meltCOIun$Species[meltCOIun$Region == "West"]))
+length(unique(meltCOIun$Family[meltCOIun$Region == "West"]))
+length(unique(meltCOIun$OTU[meltCOIun$Region == "West"]))
+# 5 unique species detected, with 10 unique OTUs, across 5 unique families
+AMCSpec_COIWest <- unique(meltCOIun$Species[meltCOIun$Region == "West"])
+write.table(AMCSpec_COIWest, file.path(path_outputs, "AMCSpecies_COIWest.txt"))
+
+
+AMCCOI_Regiondif <- setdiff(AMCSpec_COIEast, AMCSpec_COIWest)
+write.table(AMCCOI_Regiondif, file.path(path_outputs, "AMCCOI_Regiondif.txt"))
+# 73 species detected in the east were not detected in the west
+```
+
+## Plot Alpha Diversity
+```{r eDNA}
+
+richCOI <-  estimate_richness(psCOI, measures=c("Chao1", "Shannon", "Simpson"))
+write.table(richCOI, file.path(path_outputs, "AMCCOI_AlphaDiversity.txt"))
+
+rich12 <-  estimate_richness(ps12, measures=c("Chao1", "Shannon", "Simpson"))
+write.table(rich12, file.path(path_outputs, "AMC12_AlphaDiversity.txt"))
+
+
+# Plot alpha diversity metrics
+richCOIp <- plot_richness(psCOI, color = "TreatType", measures = c("Chao1", "Shannon", "Simpson")) + geom_point(size=2, alpha=0.7) + scale_colour_brewer(palette = "Set1") + theme_bw() + labs(x = "Sample", title = "COI  Alpha Diversity Measures") + theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) + theme(axis.title.y = element_blank(), axis.title.x = element_blank(), axis.text.x = element_blank())  + theme(legend.position = "bottom")
+
+rich12p <- plot_richness(ps12, color = "TreatType", measures = c("Chao1", "Shannon", "Simpson")) + geom_point(size=2, alpha=0.7) + scale_colour_brewer(palette = "Set1") + theme_bw()  + labs(x = "Sample", title = "12S Alpha Diversity Measures") + theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) + theme(axis.title.x = element_blank(), axis.title.y = element_blank(), axis.text.x = element_blank()) + theme(legend.position = "bottom")
+
+ggsave("AMCCOI_AlphaDiversity.png", path = path_outputs, plot = richCOIp, width = 10, height = 5, units = "in")
+
+ggsave("AMC12S_AlphaDiversity.png", path = path_outputs, plot = rich12p, width = 10, height = 5, units = "in")
+
+rich12p
+```
+
+# Beta Diversity
+
+## Is there a significant difference in stream communities between sites that have undergone LWA restoration and those that have not?
+beta diversity comparisons between eastern region LWA streams (at all positions) and eastern region control streams - do not include western
+
+```{r}
+# PCOA
+JacCOIP <- ordinate(psCOI, method ="PCoA", "jaccard", binary = TRUE)
+JacPC <- plot_ordination(psCOI, JacCOIP, type="samples", color="TreatType") 
+JacPC
+
+Jac12P <- ordinate(ps12,method ="PCoA", "jaccard", binary = TRUE)
+JacP12 <- plot_ordination(ps12, Jac12P, type="samples", color="TreatType")
+JacP12
+
+# NMDS
+JacCOIN <- ordinate(psCOI, method ="NMDS", "jaccard", binary = TRUE)
+JacNC <- plot_ordination(psCOI, JacCOIN, type="samples", color="TreatType") 
+JacNC
+
+Jac12N <- ordinate(ps12,method ="NMDS", "jaccard")
+JacP12N <- plot_ordination(ps12, Jac12N, type="samples", color="TreatType")
+JacP12N
+```
+
+
+Phyloseq tutorial
+```{r}
+test.ord <- ordinate(ps12, "NMDS", "bray")
+tp1 = plot_ordination(ps12, test.ord, type = "taxa", color = "Class", title = "taxa")
+tp1 + facet_wrap(~Class)
+
+tp2 = plot_ordination(ps12, test.ord, type = "samples", color = "TreatType")
+tp2 + geom_polygon(aes(fill = TreatType)) + geom_point(size = 5) + ggtitle("samples")
+```
+
+
+
+
+Is there a significant detectable difference in stream communities before and after LWA restoration?
+Compare the pre and post groups, as well as upstream vs internal for LWA streams, and harken back to ^ control vs LWA streams (basically this is a zoom in for the above question)
