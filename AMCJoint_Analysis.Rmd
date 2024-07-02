@@ -195,7 +195,11 @@ tp2 + geom_polygon(aes(fill = TreatType)) + geom_point(size = 5) + ggtitle("samp
 ```
 
 
+Aim for ANOVAs for significance, but also check on non-independence within reaches by running a mixed effects model
 
+
+Ordination is the visualization of beta diversity
+Adonis is effectively a PERMANOVA to check for significance of beta diversity
 
 Is there a significant detectable difference in stream communities before and after LWA restoration?
 Compare the pre and post groups, as well as upstream vs internal for LWA streams, and harken back to ^ control vs LWA streams (basically this is a zoom in for the above question)
