@@ -513,6 +513,12 @@ psCOI <- psCOI %>%
   subset_taxa(Phylum != "Tubulinea")
 psCOI <- psCOI %>% 
   subset_taxa(Phylum != "Streptophyta")
+
+psCOI <- psCOI %>% 
+  subset_taxa(Class != "Chrysophyceae")
+psCOI <- psCOI %>% 
+  subset_taxa(Class != "Raphidophyceae")
+
 ```
 
 ```{r clean_columns, echo = FALSE}
@@ -530,21 +536,6 @@ ggsave("CleanedClassIDs.png", path = path_outputs, plot_bar(psCOI.stack, fill="C
 saveRDS(psCOI, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/CleanPhyloseq.RDS")
 ```
 phyloseq-class experiment-level object
-otu_table()   OTU Table:         [ 140 taxa and 33 samples ]
-sample_data() Sample Data:       [ 33 samples by 15 sample variables ]
-tax_table()   Taxonomy Table:    [ 140 taxa by 6 taxonomic ranks ]
-
-
-### All prior clean
-
-# Step 4: Alpha Diversity Analysis
-
-## Rarefaction
-```{r rarecurve, echo = FALSE}
-rc <-as.data.frame(otu_table(psCOI))
-test <- rarecurve(rc, step = 10, cex=0.5, label = FALSE)
-
-raremax <- max(rowSums(otu_table(psCOI))) # Max SV number is 35078
-raremin <- min(rowSums(otu_table(psCOI))) # Min SV number is 3
-rowSums(otu_table(psCOI))
-```
+otu_table()   OTU Table:         [ 34 taxa and 31 samples ]
+sample_data() Sample Data:       [ 31 samples by 15 sample variables ]
+tax_table()   Taxonomy Table:    [ 134 taxa by 6 taxonomic ranks ]

@@ -10,52 +10,70 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
-source("AMCJoint_config.R")
 library(phylosmith)
+source("AMCJoint_config.R")
+
+psCOI <- psCOI %>% 
+  subset_taxa(Species != "Homo sapiens")
+psCOI <- prune_taxa(taxa_sums(psCOI) > 0, psCOI) 
+psCOI <- prune_samples(sample_sums(psCOI) > 0, psCOI)
+
+ps12 <- ps12 %>% 
+  subset_taxa(Species != "Homo sapiens")
+
+ps12 <- prune_taxa(taxa_sums(ps12) > 0, ps12) 
+ps12 <- prune_samples(sample_sums(ps12) > 0, ps12)
+
 ```
 
 # Goals
 
 Exploratory rarefaction
 ```{r rarecurve, echo = FALSE}
-rc <-as.data.frame(otu_table(ps12))
-test <- rarecurve(rc, step = 10, cex=0.5, label = FALSE)
+rc12 <-as.data.frame(otu_table(ps12))
+test12 <- rarecurve(rc12, step = 10, cex=0.5, label = FALSE)
 
 raremax <- max(rowSums(otu_table(ps12))) # Max SV number is 74165
 raremin <- min(rowSums(otu_table(ps12))) # Min SV number is 7
 rowSums(otu_table(ps12))
 
-rc <-as.data.frame(otu_table(psCOI))
-test <- rarecurve(rc, step = 10, cex=0.5, label = FALSE)
 
-raremax <- max(rowSums(otu_table(psCOI))) # Max SV number is 35078
-raremin <- min(rowSums(otu_table(psCOI))) # Min SV number is 3
+rcC <-as.data.frame(otu_table(psCOI))
+testC <- rarecurve(rcC, step = 10, cex=0.5, label = FALSE)
+
+raremaxC <- max(rowSums(otu_table(psCOI))) # Max SV number is 5307
+rareminC <- min(rowSums(otu_table(psCOI))) # Min SV number is 0
 rowSums(otu_table(psCOI))
+
 
 # Since we trimmed non-LWA sites out of the object (in config), get an updated snapshot of the phyloseq dimensions
 ps12
 psCOI
+raremax
+raremin
+raremaxC
+rareminC
 ```
 
 ps12
 phyloseq-class experiment-level object
-otu_table()   OTU Table:         [ 136 taxa and 43 samples ]
+otu_table()   OTU Table:         [ 113 taxa and 43 samples ]
 sample_data() Sample Data:       [ 43 samples by 15 sample variables ]
-tax_table()   Taxonomy Table:    [ 136 taxa by 6 taxonomic ranks ]
+tax_table()   Taxonomy Table:    [ 113 taxa by 6 taxonomic ranks ]
 
 psCOI
 phyloseq-class experiment-level object
-otu_table()   OTU Table:         [ 140 taxa and 28 samples ]
+otu_table()   OTU Table:         [ 123 taxa and 25 samples ]
 sample_data() Sample Data:       [ 28 samples by 15 sample variables ]
-tax_table()   Taxonomy Table:    [ 140 taxa by 6 taxonomic ranks ]
+tax_table()   Taxonomy Table:    [ 123 taxa by 6 taxonomic ranks ]
 
 
 Exploratory alpha diversity - not actually very interested in it beyond graphs and dummy check
-Plots of taxa at sites - break apart by year and region (east vs west)
+Plots of taxa at sites - break apart by year 
 
 ## Basic exploratories - SV sums, Gamma diversity between east and west
-33 COI samples survived past removing unwanted taxa
-55 12S samples survived past removing unwanted taxa
+28 COI samples survived past removing unwanted taxa
+43 12S samples survived past removing unwanted taxa
 ```{r}
 SVsum_COI <- sample_sums(psCOI)
 write.table(SVsum_COI, file.path(path_outputs, "AMCSVsum_COI.txt"))
@@ -67,8 +85,7 @@ write.table(SVsum_12, file.path(path_outputs, "AMCSVsum_12.txt"))
 length(unique(melt12un$Species))
 length(unique(melt12un$Family))
 length(unique(melt12un$OTU))
-# 33 unique species detected, with 136 unique OTUs, across 23 unique families - INCLUDING WEST
-# 27 unique species, 19 unique families, 116 unique OTUs - NOT INCLUDING WEST
+# 26 unique species, 19 unique families, 113 unique OTUs
 AMCSpec_12 <- unique(melt12un$Species)
 write.table(AMCSpec_12, file.path(path_outputs, "AMCSpec_12Total.txt"))
 
@@ -76,8 +93,7 @@ write.table(AMCSpec_12, file.path(path_outputs, "AMCSpec_12Total.txt"))
 length(unique(meltCOIun$Species))
 length(unique(meltCOIun$Family))
 length(unique(meltCOIun$OTU))
-# 78 unique species detected, with 140 unique OTUs, across 47 unique families - INCLUDING WEST
-# 75 unique species, 44 unique families, 131 unique OTUS - NOT INCLUDING WEST
+# 72 unique species detected, with 123 unique OTUs, across 41 unique families
 AMCSpec_COI <- unique(meltCOIun$Species)
 write.table(AMCSpec_COI, file.path(path_outputs, "AMCSpec_COITotal.txt"))
 
@@ -88,52 +104,66 @@ ggsave("AMC12S_Gamma.png", path = path_outputs, plot_bar(ps12.fam, fill="Family"
 ggsave("AMCCOI_Gamma.png", path = path_outputs, plot_bar(psCOI.fam, fill="Family") + facet_grid(~Year, scales= "free_x", space = "free_x") + theme_bw() + theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) + labs(x = "Site", y = "Number of SVs", title = "COI Overall Diversity")  + scale_colour_brewer(palette = "Set1") + theme(legend.position = "bottom"), width = 8, height = 10, units = "in") 
 ```
 
-Regional look - only regional check (disable the Region filter in the config file if rerun this)
+Gamma by year
 ```{r}
-# Look specifically at east vs west
-# 12S East unique counts
-length(unique(melt12un$Species[melt12un$Region == "East"]))
-length(unique(melt12un$Family[melt12un$Region == "East"]))
-length(unique(melt12un$OTU[melt12un$Region == "East"]))
-# 29 unique species detected, with 121 unique OTUs, across 20 unique families
-AMCSpec_12East <- unique(melt12un$Species[melt12un$Region == "East"])
-write.table(AMCSpec_12East, file.path(path_outputs, "AMCSpec_12East.txt"))
+# Look specifically at 2022 vs 2023
+# 12S 2022 unique counts
+length(unique(melt12un$Species[melt12un$Year == "2022"]))
+length(unique(melt12un$Family[melt12un$Year == "2022"]))
+length(unique(melt12un$OTU[melt12un$Year == "2022"]))
+# 21 unique species detected, with 56 unique OTUs, across 15 unique families
+AMCSpec_12_2022 <- unique(melt12un$Species[melt12un$Year == "2022"])
+write.table(AMCSpec_12_2022, file.path(path_outputs, "AMCSpec_12_2022.txt"))
 
 
-# 12S West unique counts
-length(unique(melt12un$Species[melt12un$Region == "West"]))
-length(unique(melt12un$Family[melt12un$Region == "West"]))
-length(unique(melt12un$OTU[melt12un$Region == "West"]))
-# 20 unique species detected, with 34 unique OTUs, across 15 unique families
-AMCSpec_12West <- unique(melt12un$Species[melt12un$Region == "West"])
-write.table(AMCSpec_12West, file.path(path_outputs, "AMCSpec_12West.txt"))
+# 12S 2023 unique counts
+length(unique(melt12un$Species[melt12un$Year == "2023"]))
+length(unique(melt12un$Family[melt12un$Year == "2023"]))
+length(unique(melt12un$OTU[melt12un$Year == "2023"]))
+# 22 unique species detected, with 87 unique OTUs, across 15 unique families
+AMCSpec_12_2023 <- unique(melt12un$Species[melt12un$Year == "2023"])
+write.table(AMCSpec_12_2023, file.path(path_outputs, "AMCSpec_12_2023.txt"))
 
 
-AMC12_Regiondif <- setdiff(AMCSpec_12East, AMCSpec_12West)
-write.table(AMC12_Regiondif, file.path(path_outputs, "AMC12_Regiondif.txt"))
-
-# 13 species detected in the east were not detected in the west
-
-# COI East unique counts
-length(unique(meltCOIun$Species[meltCOIun$Region == "East"]))
-length(unique(meltCOIun$Family[meltCOIun$Region == "East"]))
-length(unique(meltCOIun$OTU[meltCOIun$Region == "East"]))
-# 76 unique species detected, with 132 unique OTUs, across 45 unique families
-AMCSpec_COIEast <- unique(meltCOIun$Species[meltCOIun$Region == "East"])
-write.table(AMCSpec_COIEast, file.path(path_outputs, "AMCSpecies_COIEast.txt"))
-
-# COI West unique counts
-length(unique(meltCOIun$Species[meltCOIun$Region == "West"]))
-length(unique(meltCOIun$Family[meltCOIun$Region == "West"]))
-length(unique(meltCOIun$OTU[meltCOIun$Region == "West"]))
-# 5 unique species detected, with 10 unique OTUs, across 5 unique families
-AMCSpec_COIWest <- unique(meltCOIun$Species[meltCOIun$Region == "West"])
-write.table(AMCSpec_COIWest, file.path(path_outputs, "AMCSpecies_COIWest.txt"))
+AMC12_Yeardif <- setdiff(AMCSpec_12_2022, AMCSpec_12_2023)
+write.table(AMC12_Yeardif, file.path(path_outputs, "AMC12_Yeardif.txt"))
+# 5 species detected in 2022 were not detected in 2023
 
 
-AMCCOI_Regiondif <- setdiff(AMCSpec_COIEast, AMCSpec_COIWest)
-write.table(AMCCOI_Regiondif, file.path(path_outputs, "AMCCOI_Regiondif.txt"))
-# 73 species detected in the east were not detected in the west
+AMC12_Yeardifrev <- setdiff(AMCSpec_12_2023,AMCSpec_12_2022)
+write.table(AMC12_Yeardif, file.path(path_outputs, "AMC12_Yeardifrev.txt"))
+AMC12_Yeardifrev
+
+# 6 species detected in 2023 were not detected in 2022
+
+
+
+# COI 2022 unique counts
+length(unique(meltCOIun$Species[meltCOIun$Year == "2022"]))
+length(unique(meltCOIun$Family[meltCOIun$Year == "2022"]))
+length(unique(meltCOIun$OTU[meltCOIun$Year == "2022"]))
+# 33 unique species detected, with 44 unique OTUs, across 22 unique families
+AMCSpec_COI_2022 <- unique(meltCOIun$Species[meltCOIun$Year == "2022"])
+write.table(AMCSpec_COI_2022, file.path(path_outputs, "AMCSpec_COI_2022.txt"))
+
+
+# COI 2023 unique counts
+length(unique(meltCOIun$Species[meltCOIun$Year == "2023"]))
+length(unique(meltCOIun$Family[meltCOIun$Year == "2023"]))
+length(unique(meltCOIun$OTU[meltCOIun$Year == "2023"]))
+# 64 unique species detected, with 105 unique OTUs, across 36 unique families
+AMCSpec_COI_2023 <- unique(meltCOIun$Species[meltCOIun$Year == "2023"])
+write.table(AMCSpec_COI_2023, file.path(path_outputs, "AMCSpec_COI_2023.txt"))
+
+
+AMCCOI_Yeardif <- setdiff(AMCSpec_COI_2022, AMCSpec_COI_2023)
+write.table(AMCCOI_Yeardif, file.path(path_outputs, "AMCCOI_Yeardif.txt"))
+# 9 species detected in 2022 were not detected in 2023
+
+
+AMCCOI_Yeardifrev <- setdiff(AMCSpec_COI_2023,AMCSpec_COI_2022)
+write.table(AMCCOI_Yeardif, file.path(path_outputs, "AMCCOI_Yeardifrev.txt"))
+# 41 species detected in 2023 were not detected in 2022
 ```
 
 ## Plot Alpha Diversity
@@ -155,51 +185,81 @@ ggsave("AMCCOI_AlphaDiversity.png", path = path_outputs, plot = richCOIp, width 
 
 ggsave("AMC12S_AlphaDiversity.png", path = path_outputs, plot = rich12p, width = 10, height = 5, units = "in")
 
-rich12p
 ```
 
 # Beta Diversity
 
+From AJR:
+```{r setup}
+# First normalize data so they represent proportions instead of messy counts
+psCOI_norm <- transform_sample_counts(psCOI, function(x) x / sum(x) )
+ps12_norm <- transform_sample_counts(ps12, function(x) x / sum(x) )
+
+```
+
+```{r PCOA}
+# COI
+
+# set up PCOA
+JacCOIP <- ordinate(psCOI_norm, method ="PCoA", "jaccard", binary = TRUE)
+JacPCType  <- plot_ordination(psCOI_norm, JacCOIP, type="samples", color="TreatType") 
+JacPCPos  <- plot_ordination(psCOI_norm, JacCOIP, type="samples", color="LWAPosition") 
+
+## Plot based on TreatType
+ggsave("AMCCOI_JaccPCOA_Type.png", path = path_outputs, JacPCType + stat_ellipse(geom = "polygon", type = "norm", alpha = 0.4, level = 0.5, aes(fill = TreatType)) + labs(title = "Jaccard PCOA for AMC COI Data - LWA Type"), width = 6, height = 4, units = "in") 
+
+## Plot based on Position
+ggsave("AMCCOI_JaccPCOA_position.png", path = path_outputs, JacPCPos + stat_ellipse(geom = "polygon", type = "norm", alpha = 0.4, level = 0.5, aes(fill = LWAPosition)) + labs(title = "Jaccard PCOA for AMC COI Data - LWA Position"), width = 6, height = 4, units = "in") 
+
+# 12S PCoA prep
+Jac12P <- ordinate(ps12_norm, method ="PCoA", "jaccard", binary = TRUE)
+JacP12Type <- plot_ordination(ps12_norm, Jac12P, type = "samples", color="TreatType")
+JacP12Pos <- plot_ordination(ps12_norm, Jac12P, type = "samples", color="LWAPosition")
+
+# Plot based on TreatType
+ggsave("AMC12_JaccPCOA_Type.png", path = path_outputs, JacP12Type + stat_ellipse(geom = "polygon", type = "norm", alpha = 0.4, level = 0.5, aes(fill = TreatType)) + labs(title = "Jaccard PCOA for AMC 12S Data - LWA Type"), width = 6, height = 4, units = "in") 
+
+## Plot based on Position
+ggsave("AMC12_JaccPCOA_position.png", path = path_outputs, JacP12Pos + stat_ellipse(geom = "polygon", type = "norm", alpha = 0.4, level = 0.5, aes(fill = LWAPosition)) + labs(title = "Jaccard PCOA for AMC 12S Data - LWA Position"), width = 6, height = 4, units = "in") 
+
+```
+Note: we are visualizing the 50% ellipse around the data for each treatment type. 50% is not the significance cuttoff we're using (we're using 5%) but just for visualization purposes we're drawing the central tendency at the 50% mark. the permanova gives a p-value with is much less than 0.05
+
+
+
 ## Is there a significant difference in stream communities between sites that have undergone LWA restoration and those that have not?
-beta diversity comparisons between eastern region LWA streams (at all positions) and eastern region control streams - do not include western
-
-```{r}
-# PCOA
-JacCOIP <- ordinate(psCOI, method ="PCoA", "jaccard", binary = TRUE)
-JacPC <- plot_ordination(psCOI, JacCOIP, type="samples", color="TreatType") 
-JacPC
-
-Jac12P <- ordinate(ps12,method ="PCoA", "jaccard", binary = TRUE)
-JacP12 <- plot_ordination(ps12, Jac12P, type="samples", color="TreatType")
-JacP12
-
-# NMDS
-JacCOIN <- ordinate(psCOI, method ="NMDS", "jaccard", binary = TRUE)
-JacNC <- plot_ordination(psCOI, JacCOIN, type="samples", color="TreatType") 
-JacNC
-
-Jac12N <- ordinate(ps12,method ="NMDS", "jaccard")
-JacP12N <- plot_ordination(ps12, Jac12N, type="samples", color="TreatType")
-JacP12N
-```
-
-
-Phyloseq tutorial
-```{r}
-test.ord <- ordinate(ps12, "NMDS", "bray")
-tp1 = plot_ordination(ps12, test.ord, type = "taxa", color = "Class", title = "taxa")
-tp1 + facet_wrap(~Class)
-
-tp2 = plot_ordination(ps12, test.ord, type = "samples", color = "TreatType")
-tp2 + geom_polygon(aes(fill = TreatType)) + geom_point(size = 5) + ggtitle("samples")
-```
-
-
-Aim for ANOVAs for significance, but also check on non-independence within reaches by running a mixed effects model
-
-
-Ordination is the visualization of beta diversity
-Adonis is effectively a PERMANOVA to check for significance of beta diversity
-
 Is there a significant detectable difference in stream communities before and after LWA restoration?
-Compare the pre and post groups, as well as upstream vs internal for LWA streams, and harken back to ^ control vs LWA streams (basically this is a zoom in for the above question)
+```{r PERMANOVA}
+# Set up information for adonis PERMANOVA
+JacDistCOI <- distance(psCOI_norm, "jaccard", binary = TRUE)
+xCOI <- data.frame(sample_data(psCOI_norm))
+
+
+JacDist12 <- distance(ps12_norm, "jaccard", binary = TRUE)
+x12 <- data.frame(sample_data(ps12_norm))
+
+
+# Significance tests of interest: 
+## Is TreatType significant for both primers? Is Year significant for both primers? Is LWAPosition or Refiltration significant? Does the combination of TreatType and Year or TreatType and Position give more significance than a solo factor?
+
+# COI
+# TreatType alone
+adonis2(JacDistCOI ~ xCOI$TreatType) # p-value = 0.019 **
+adonis2(JacDistCOI ~ xCOI$Year) # p-value = 0.008 *
+adonis2(JacDistCOI ~ xCOI$LWAPosition) # p-value = 0.005 *
+adonis2(JacDistCOI ~ xCOI$Refiltration) # p-vlue = 0.009 * - however the Refiltration and Year info is nearly identical
+adonis2(JacDistCOI ~ TreatType*LWAPosition, data = xCOI) # p-value is 0.623 for the combination, individual factors both significant
+adonis2(JacDistCOI ~ TreatType*Year, data = xCOI) # p-value is 0.013 for the combination. Only treatment type significant of individual factors
+
+# Each test runs 999 permutations, so small variance each time, but TreatType is consistently the most significant factor, followed by year and then loosely by LWAPosition 
+
+
+# 12S
+adonis2(JacDist12 ~ x12$TreatType) # 0.007 **
+adonis2(JacDist12 ~ x12$Year) # 0.005 **
+adonis2(JacDist12 ~ x12$LWAPosition) # 0.003 **
+adonis2(JacDist12 ~ x12$Refiltration) # 0.004 **
+adonis2(JacDist12 ~ TreatType*LWAPosition, data = x12) # 0.736 for the combination, individual factors still ** significant
+adonis2(JacDist12 ~ TreatType*Year, data = x12) # 0.003 for the combination, individual factors both significant
+```
+

@@ -56,5 +56,3 @@ meltCOI <- melt_phyloseq(psCOI)
 melt12 <- melt_phyloseq(ps12)
 meltCOIun <- subset(meltCOI, Abundance > "0")
 melt12un <- subset(melt12, Abundance > "0")
-
-# Separate phyloseq objects for LWA only (excluding the survey region)

@@ -289,10 +289,11 @@ getN <- function(x) sum(getUniques(x))
 track12 <- cbind(sapply(dada12F, getN), sapply(dada12R, getN), sapply(mergers12, getN), rowSums(seqtab12.nochim))
 
 # Set column names
-colnames(track12) <- c( "denoisedF", "denoisedR", "merged", "nonchim")
+colnames(track12) <- c("denoisedF", "denoisedR", "merged", "nonchim")
 
 # Save the results of the workflow verification
 write.csv(track12, file.path(path_outputs, "12S_WorkflowVerification.csv"))
+write.csv(filtout12sync, file.path(path_outputs, "12SFiltresults.csv"))
 ```
 
 
