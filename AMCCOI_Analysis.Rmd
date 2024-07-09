@@ -136,7 +136,7 @@ write.csv(filtoutB, file.path(path_outputs, "FiltOutput.csv"))
 # Look at filtered trends
 ```{r filter_trends, echo = FALSE}
 # Plot read numbers before and after trimming
-filttrendB <- ggplot(as.data.frame(filtoutB)) + geom_point(aes(row.names(filtoutB), reads.in), color = "blue") + geom_point(aes(row.names(filtoutB), reads.out), color = "orange") + ggtitle("Filter Trends for AMC BF2/BR2 Reads")
+filttrendB <- ggplot(as.data.frame(filtoutB)) + geom_point(aes(row.names(filtoutB), reads.in), color = "blue") + geom_point(aes(row.names(filtoutB), reads.out), color = "orange") + ggtitle("Filter Trends for AMC BF2/BR2 Reads") + theme(axis.text.x = element_blank()) + labs(x = "Sample")
 
 # View plot
 filttrendB

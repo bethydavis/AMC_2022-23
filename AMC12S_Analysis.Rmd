@@ -156,8 +156,7 @@ write.csv(filtout12sync, file.path(path_outputs, "FiltoutputTable.csv"))
 ```{r filter_trends, echo = FALSE}
 
 # Make plot
-filttrend12sync <- ggplot(as.data.frame(filtout12sync)) + geom_point(aes(row.names(filtout12sync), reads.in), color = "blue") + geom_point(aes(row.names(filtout12sync), reads.out), color = "orange") + ggtitle("Filter Trends for AMC 12 Synced Forward Reads")
-
+filttrend12sync <- ggplot(as.data.frame(filtout12sync)) + geom_point(aes(row.names(filtout12sync), reads.in), color = "blue") + geom_point(aes(row.names(filtout12sync), reads.out), color = "orange") + ggtitle("Filter Trends for AMC 12 Synced Forward Reads") + theme(axis.text.x = element_blank()) + labs(x = "Sample")
 # View plot
 filttrend12sync
 
