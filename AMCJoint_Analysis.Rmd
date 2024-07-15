@@ -177,14 +177,42 @@ write.table(rich12, file.path(path_outputs, "AMC12_AlphaDiversity.txt"))
 
 
 # Plot alpha diversity metrics
-richCOIp <- plot_richness(psCOI, color = "TreatType", measures = c("Chao1", "Shannon", "Simpson")) + geom_point(size=2, alpha=0.7) + scale_colour_brewer(palette = "Set1") + theme_bw() + labs(x = "Sample", title = "COI  Alpha Diversity Measures") + theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) + theme(axis.title.y = element_blank(), axis.title.x = element_blank(), axis.text.x = element_blank())  + theme(legend.position = "bottom")
+richCOIp <- plot_richness(psCOI, x = "TreatType", color = "TreatType", measures = c("Chao1", "Shannon", "Simpson")) + geom_boxplot()  + theme_bw() + labs(title = "COI Alpha Diversity Measures", x = "LWA Treatment Type") + theme(axis.title.y = element_blank()) + theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) + theme(legend.position = "none")
 
-rich12p <- plot_richness(ps12, color = "TreatType", measures = c("Chao1", "Shannon", "Simpson")) + geom_point(size=2, alpha=0.7) + scale_colour_brewer(palette = "Set1") + theme_bw()  + labs(x = "Sample", title = "12S Alpha Diversity Measures") + theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) + theme(axis.title.x = element_blank(), axis.title.y = element_blank(), axis.text.x = element_blank()) + theme(legend.position = "bottom")
+rich12p <- plot_richness(ps12, x = "TreatType", color = "TreatType", measures = c("Chao1", "Shannon", "Simpson")) + geom_boxplot()  + theme_bw() + labs(title = "12S Alpha Diversity Measures", x = "LWA Treatment Type") + theme(axis.title.y = element_blank()) + theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) + theme(legend.position = "none")
+ 
 
+# Make a COI richness df with metadata columns and add richness
+meltCOImeta <- meltCOIun[ , c('Sample', 'TreatType','LWAPosition','Year')]
+meltCOImeta <- unique.data.frame(meltCOImeta)
+
+AlphaCOImeta <-  estimate_richness(psCOI, measures=c("Chao1", "Shannon", "Simpson")) %>%
+  rownames_to_column(var = "Sample") %>%
+  left_join(meltCOImeta, by = "Sample") 
+
+
+kruskal.test(Chao1 ~ TreatType, data = AlphaCOImeta) # 0.04521
+kruskal.test(Shannon ~ TreatType, data = AlphaCOImeta) # 0.02849
+kruskal.test(Simpson ~ TreatType, data = AlphaCOImeta) # 0.05301
+
+# Make a 12S richness df with metadata columns and add richness
+melt12meta <- melt12un[ , c('Sample', 'TreatType','LWAPosition','Year')]
+melt12meta <- unique.data.frame(melt12meta)
+
+Alpha12meta <-  estimate_richness(ps12, measures=c("Chao1", "Shannon", "Simpson")) %>%
+  rownames_to_column(var = "Sample") %>%
+  left_join(melt12meta, by = "Sample") 
+
+
+kruskal.test(Chao1 ~ TreatType, data = Alpha12meta) # 0.0001413
+kruskal.test(Shannon ~ TreatType, data = Alpha12meta) # 0.002415
+kruskal.test(Simpson ~ TreatType, data = Alpha12meta) # 0.005609
+
+
+
+# Save plots
 ggsave("AMCCOI_AlphaDiversity.png", path = path_outputs, plot = richCOIp, width = 10, height = 5, units = "in")
-
 ggsave("AMC12S_AlphaDiversity.png", path = path_outputs, plot = rich12p, width = 10, height = 5, units = "in")
-
 ```
 
 # Beta Diversity

@@ -1,6 +1,6 @@
 # Identify packages to use
 packages = list(
-  CRAN = c("ggplot2", "vegan", "dplyr", "vegan", "viridis", "ggpubr", "fossil", "paletteer"),
+  CRAN = c("ggplot2", "vegan", "dplyr", "vegan", "viridis", "ggpubr", "fossil", "paletteer", "tidyverse"),
   bioc = c("BiocManager", "phyloseq"),
   github = c()
 )
