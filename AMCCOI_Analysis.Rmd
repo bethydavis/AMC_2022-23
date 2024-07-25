@@ -274,6 +274,30 @@ colnames(trackB) <- c("input", "filtered", "denoisedF", "denoisedR", "merged", "
 write.csv(trackB, file.path(path_outputs, "WorkflowVerification.csv"))
 ```
 
+```{r plot_workver, echo = FALSE}
+# Clean up sample names
+names <- sub("_[^_]+$", "", trackB$X)
+
+row.names(trackB) <- names
+
+# Plot filter trends
+workver <- ggplot(as.data.frame(trackB)) + 
+  geom_point(aes(row.names(trackB), input), color = "gold", size = 2.5) +
+  geom_point(aes(row.names(trackB), filtered), color = "yellowgreen") +
+  geom_point(aes(row.names(trackB), denoisedF), color = "darkgreen") +
+  geom_point(aes(row.names(trackB), denoisedR), color = "blue") +
+  geom_point(aes(row.names(trackB), merged), color = "darkblue") +
+  geom_point(aes(row.names(trackB), nonchim), color = "purple", size = 2.5) +
+  theme_bw() + 
+  theme(axis.text.x = element_blank()) +
+  ggtitle("Workflow Progression for AMC BF2/BR2 Reads") + labs(x = "Sample", y = "Number of Reads")
+
+workver
+
+# Save plot
+ggsave("WorkflowVerificationCOI.png", plot = workver, path = path_outputs, width = 6, height = 4, units = "in")
+```
+
 
 # Assign Taxonomy
 
@@ -526,12 +550,18 @@ psCOI <- prune_taxa(taxa_sums(psCOI) > 0, psCOI)
 psCOI <- prune_samples(sample_sums(psCOI) > 0, psCOI)
 
 psCOI.stack <- transform_sample_counts(psCOI, function(x) x / sum(x) )
+
 # Plot based on Class
-plot_bar(psCOI.stack, fill="Class") + ggtitle("Proportion of Cleaned Reads by Class.png")
+psCOI.class <- plot_bar(psCOI.stack, fill="Class") + 
+  ggtitle("COI Identified Clean Reads") +
+  labs(x = "Sample", y = "ASV Proportion") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
+  theme(axis.title.x = element_blank())
 
-psCOI
+psCOI.class
 
-ggsave("CleanedClassIDs.png", path = path_outputs, plot_bar(psCOI.stack, fill="Class") + ggtitle("Proportion of Cleaned Reads by Class.png") + ggtitle("COI Identified Clean Reads"), width = 8, height = 5, units = "in") 
+
+ggsave("CleanedClassIDs.png", path = path_outputs, psCOI.class, width = 8, height = 5, units = "in") 
 
 saveRDS(psCOI, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/CleanPhyloseq.RDS")
 ```

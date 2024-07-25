@@ -295,6 +295,29 @@ write.csv(track12, file.path(path_outputs, "12S_WorkflowVerification.csv"))
 write.csv(filtout12sync, file.path(path_outputs, "12SFiltresults.csv"))
 ```
 
+```{r plot_workver, echo = FALSE}
+# Clean up sample names
+names <- sub("_[^_]+$", "", track12$X)
+
+row.names(track12) <- names
+
+# Plot filter trends
+workver <- ggplot(as.data.frame(track12)) + 
+  geom_point(aes(row.names(track12), input), color = "gold", size = 2.5) +
+  geom_point(aes(row.names(track12), filtered), color = "yellowgreen") +
+  geom_point(aes(row.names(track12), denoisedF), color = "darkgreen") +
+  geom_point(aes(row.names(track12), denoisedR), color = "blue") +
+  geom_point(aes(row.names(track12), merged), color = "darkblue") +
+  geom_point(aes(row.names(track12), nonchim), color = "purple", size = 2.5) +
+  theme_bw() + 
+  theme(axis.text.x = element_blank()) +
+  ggtitle("Workflow Progression for AMC 12S Reads") + labs(x = "Sample", y = "Number of Reads")
+
+workver
+
+# Save plot
+ggsave("WorkflowVerificationCOI.png", plot = workver, path = path_outputs, width = 6, height = 4, units = "in")
+```
 
 ## Assign Taxonomy
 ```{r assign_taxonomy, echo = FALSE}
@@ -528,12 +551,18 @@ ps12S <- prune_taxa(taxa_sums(ps12S) > 0, ps12S)
 ps12S <- prune_samples(sample_sums(ps12S) > 0, ps12S)
 
 ps12S.stack <- transform_sample_counts(ps12S, function(x) x / sum(x) )
+
 # Plot based on Class
-plot_bar(ps12S.stack, fill="Class") + ggtitle("Proportion of Cleaned Reads by Class.png")
+ps12.class <- plot_bar(ps12S.stack, fill="Class") + 
+  ggtitle("12S Identified Clean Reads") +
+  labs(x = "Sample", y = "ASV Proportion") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
+  theme(axis.title.x = element_blank())
 
-ps12S
+ps12.class
 
-ggsave("CleanedClassIDs.png", path = path_outputs, plot_bar(ps12S.stack, fill="Class") + ggtitle("Proportion of Cleaned Reads by Class.png") + ggtitle("12S Identified Clean Reads"), width = 8, height = 5, units = "in") 
+
+ggsave("CleanedClassIDs.png", path = path_outputs, ps12.class, width = 8, height = 5, units = "in") 
 
 saveRDS(ps12S, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/6-Jun03-2024/CleanPhyloseq.RDS")
 ```

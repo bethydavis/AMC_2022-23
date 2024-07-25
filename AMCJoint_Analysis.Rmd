@@ -99,9 +99,9 @@ write.table(AMCSpec_COI, file.path(path_outputs, "AMCSpec_COITotal.txt"))
 
 
 # Graph
-ggsave("AMC12S_Gamma.png", path = path_outputs, plot_bar(ps12.fam, fill="Family") + facet_grid(~Year, scales= "free_x", space = "free_x") + theme_bw() + theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) + labs(x = "Site", y = "Number of SVs", title = "12S Overall Diversity")  + scale_colour_brewer(palette = "Set1") + theme(legend.position = "bottom"), width = 8, height = 7, units = "in") 
+ggsave("AMC12S_Gamma.png", path = path_outputs, plot_bar(ps12.fam, fill="Family") + facet_grid(~Year, scales= "free_x", space = "free_x") + theme_bw() + theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) + labs(x = "Site", y = "Number of ASVs", title = "12S Overall Diversity")  + scale_colour_brewer(palette = "Set1") + theme(legend.position = "bottom"), width = 8, height = 7, units = "in") 
 
-ggsave("AMCCOI_Gamma.png", path = path_outputs, plot_bar(psCOI.fam, fill="Family") + facet_grid(~Year, scales= "free_x", space = "free_x") + theme_bw() + theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) + labs(x = "Site", y = "Number of SVs", title = "COI Overall Diversity")  + scale_colour_brewer(palette = "Set1") + theme(legend.position = "bottom"), width = 8, height = 10, units = "in") 
+ggsave("AMCCOI_Gamma.png", path = path_outputs, plot_bar(psCOI.fam, fill="Family") + facet_grid(~Year, scales= "free_x", space = "free_x") + theme_bw() + theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) + labs(x = "Site", y = "Number of ASVs", title = "COI Overall Diversity")  + scale_colour_brewer(palette = "Set1") + theme(legend.position = "bottom"), width = 8, height = 10, units = "in") 
 ```
 
 Gamma by year
@@ -177,9 +177,9 @@ write.table(rich12, file.path(path_outputs, "AMC12_AlphaDiversity.txt"))
 
 
 # Plot alpha diversity metrics
-richCOIp <- plot_richness(psCOI, x = "TreatType", color = "TreatType", measures = c("Chao1", "Shannon", "Simpson")) + geom_boxplot()  + theme_bw() + labs(title = "COI Alpha Diversity Measures", x = "LWA Treatment Type") + theme(axis.title.y = element_blank()) + theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) + theme(legend.position = "none")
+richCOIp <- plot_richness(psCOI, x = "TreatType", color = "TreatType", measures = c("Chao1", "Shannon", "Simpson")) + geom_boxplot()  + theme_bw() + labs(title = "COI Alpha Diversity Measures", x = "LWA Treatment Type") + theme(axis.title.y = element_blank()) + theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) + theme(legend.position = "none") + theme(axis.text = element_text(size = 12))
 
-rich12p <- plot_richness(ps12, x = "TreatType", color = "TreatType", measures = c("Chao1", "Shannon", "Simpson")) + geom_boxplot()  + theme_bw() + labs(title = "12S Alpha Diversity Measures", x = "LWA Treatment Type") + theme(axis.title.y = element_blank()) + theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) + theme(legend.position = "none")
+rich12p <- plot_richness(ps12, x = "TreatType", color = "TreatType", measures = c("Chao1", "Shannon", "Simpson")) + geom_boxplot()  + theme_bw() + labs(title = "12S Alpha Diversity Measures", x = "LWA Treatment Type") + theme(axis.title.y = element_blank()) + theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) + theme(legend.position = "none")  + theme(axis.text = element_text(size = 12)) 
  
 
 # Make a COI richness df with metadata columns and add richness
@@ -208,7 +208,7 @@ kruskal.test(Chao1 ~ TreatType, data = Alpha12meta) # 0.0001413
 kruskal.test(Shannon ~ TreatType, data = Alpha12meta) # 0.002415
 kruskal.test(Simpson ~ TreatType, data = Alpha12meta) # 0.005609
 
-
+richCOIp
 
 # Save plots
 ggsave("AMCCOI_AlphaDiversity.png", path = path_outputs, plot = richCOIp, width = 10, height = 5, units = "in")
