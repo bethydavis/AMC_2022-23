@@ -72,7 +72,7 @@ dir.create(path_figB, showWarnings = FALSE, recursive = TRUE)
 
 #### Set raw paths for each set of raw files
 path_rawMF <- "Data/Raw/12S/Read1"
-path_rawMR <- "Date/Raw/12S/Read2"
+path_rawMR <- "Data/Raw/12S/Read2"
 
 path_rawBF <- "Data/Raw/COIB/Read1"
 path_rawBR <- "Data/Raw/COIB/Read2"
