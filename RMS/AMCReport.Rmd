@@ -1,0 +1,2302 @@
+---
+title: "Large Wood Addition and Gulf Hagas eDNA Sampling Report"
+author: "Beth Yima Davis"
+subtitle: "Methodology and Results for eDNA Samples Collected in Partnership Between
+  Maine-eDNA and the Appalachian Mountain Club"
+output: pdf_document
+fig-cap-location: bottom
+tbl-cap-location: top
+editor: visual
+format:
+  pdf:
+    toc: true
+    toc-depth: 3
+    toc-title: Contents
+    number-sections: yes
+    colorlinks: yes
+    papersize: a4
+    fontsize: 11pt
+    mainfont: Times New Roman
+    sansfont: Times New Roman
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+# Data Access, Accreditation, and Use
+
+Raw fastq files and metadata are available through the Maine-eDNA data portal, and have also been sent directly to Sarah Nelson. If issues arise in accessing data, scripts, or other associated materials, contact Beth Y. Davis at [bethy.davis4\@gmail.com](mailto:bethy.davis4@gmail.com){.email}. Use and re-analysis of the data and metadata is up to the discretion of AMC, though it is strongly recommended that the following people are credited in any future outputs due to their contributions:
+
+Karina Ricker - Sampling, field logistics
+
+Carolyn Ziegra - Sampling, field logistics
+
+Miriam Ritchie - Sampling, field logistics, GIS support
+
+Cathy Poppenwimer - GIS support
+
+Sarah Nelson - Project coordination, logistics, editing
+
+Steve Tatko - Project coordination, logistics
+
+Kylie Holt - Sample processing, laboratory management
+
+Andrew Rominger - Project coordination, field logistics, data analysis support
+
+Beth Y. Davis - Project coordination, sampling, field logistics, sample processing, data analysis
+
+If re-analysis of the raw data is performed, use of a versioning tool such as GitHub is strongly recommended.
+
+# Sample Procedures
+
+eDNA samples were collected with two primary goals in mind:
+
+1)  Understand the community impacts of large wood addition restoration (LWA) on stream reaches in the eastern regions of the 100 Mile Wilderness
+
+2)  Conduct baseline fish and macroinvertebrate community surveys at streams and lakes in the Gulf Hagas (GH) and western 100 Mile Wilderness regions
+
+For these goals, eDNA samples were sequenced using two primers - [**MiFish-U**](https://royalsocietypublishing.org/doi/10.1098/rsos.150088), targeting the 12S mitochondrial ribosomal subunit gene region (12S), and the pair [**BF2 + BR2**](https://peerj.com/articles/7745), targeting the cytochrome c oxidase subunit gene region (COI). For the purposes of this report, the target taxa for the MiFish-U primer are bony fish, particularly salmon, trout, and arctic char species, and the target taxa for BF2 + BR2 are benthic macroinvertebrates, particularly damselflies, dragonflies, and other biomonitoring taxa.
+
+## Sampling
+
+eDNA samples were collected by AMC field teams from August to September in 2022 and in July of 2023. LWA sites were roughly classified based on temporal and spatial categories of Pre and Post LWA installation, or if a site was Upstream, Downstream, Internal, or Parallel to the LWA installation area. Control sites for both temporal and spatial categories were also chosen along nearby reaches that had not previously undergone restoration work, with some sites repeated in both 2022 and 2023. GH sites were chosen to collect lake and stream survey data across a large area, and were only sampled in 2022.
+
+At each sampling site, eDNA samples consisted of three subsamples of one liter each for a total of three liters of stream water used to sample eDNA at each site. Subsamples were collected midstream just underneath the stream surface, midstream 7-10 cm above the stream substrate, and on the side of the stream near a bank just underneath the surface. This placement of samples was chosen to capture any microhabitat variation in eDNA caused by either species' stream use or differing flow rates.
+
+Each subsample was either filtered in the field using a hand pump or placed on ice and transported to the lab for vacuum filtration within 24 hours of collection, with site subsamples aggregated by filtering onto the same filter paper(s). For each day of sample collection, one liter of DI or other sterile water was filtered first on the filtering equipment to serve as a negative control for that day, and was carried along with the field team until all other samples for the day were collected.
+
+## Filtering
+
+Filtration of eDNA samples utilized [**single-use 47 mm 0.45 µm cellulose nitrate filter papers**](https://www.thermofisher.com/order/catalog/product/145-0020). All lab surfaces and reusable tools were sterilized by either soaking in 10% bleach solution for at least 10 minutes and drying fully before use, or applying bleach wipes and allowing the bleach to stand for 10 minutes before applying a DI water rinse. Before and after each use of the lab for filtration, a germicidal UV light was run for 30 minutes to an hour. In 2022, filter papers were frozen in absolute ethanol at -20^oC^ before extraction. These samples required additional filtration to remove ethanol, which was followed by letting samples evaporate in the cleaned lab in sterilized petri dishes to remove any remaining ethanol. Afterwards samples were frozen at -20^oC^ until extraction. In 2023, samples were simply frozen in DNA LoBind tubes at -20^oC^ before extraction, and did not require ethanol removal. When a site required use of multiple filter papers due to high sedimentation in the subsamples, all filters for the site were kept within the same tube and physically aggregated during extraction. For each round of filtration, at least one negative control sample was filtered alongside site samples for use as a laboratory blank.
+
+## DNA Extraction
+
+See the included ExtractionProtocol document for the full extraction protocol, based on the Qiagen PowerSoil Pro protocol developed by Geneva York for Maine-eDNA use, and adapted by Kylie Holt.
+
+All surfaces were wiped down with bleach wipes followed by DI water before use, and pipette tips and other sensitive equipment cleaned with DNA-Off. Other reusable materials such as forceps and tube racks were cleaned by soaking in 10% bleach for 10 minutes, rinsing five times, then allowed to dry fully before use. An hour of germicidal UV exposure was performed in the lab before and after each round of extraction, and extraction times were chosen to minimize overlap with other projects' lab usage. At least one negative control sample was extracted in each round of extraction to continue serving as a laboratory blank as well as field blank. Extracts were eluted to a 100 µL volume, then frozen at -20^oC^ before PCR and sequencing.
+
+## PCR & Sequencing
+
+The PCR protocol for both primers used a 25 µL reaction with 9 µL of nuclease-free MB grade H2O, 1.25 µL of each forward and reverse primer, 12.5 µL of Quantabio HiFi ToughMix 2X, and 1 µL of extracted DNA. At least one field blank was PCRd with eDNA samples for continued use as a negative control.
+
+The 12S primer pair includes:
+
+-   A 21 basepair forward primer: GTCGGTAAAACTCGTGCCAGC
+-   A 27 basepair reverse primer: GTTTGACCCTAATCTATGGGGTGATAC
+
+And amplifies a region approximately 170 basepairs in length
+
+The COI primer pair includes:
+
+-   A 20 basepair forward primer: GCHCCHGAYATRGCHTTYCC
+-   A 20 basepair reverse primer: TCDGGRTGNCCRAARAAYCA
+
+And amplifies a region approximately 420 basepairs in length
+
+PCR for the 12S samples underwent a protocol of 98^oC^ for 10 seconds, 61^oC^ for 5 seconds, and 68^oC^ for 1 second, repeated for 38 cycles. Samples were refrigerated at 20^oC^ until sequencing.
+
+PCR for the COI samples underwent a protocol of 95oC for 10 minutes and a 35-cycle repeat of 95^oC^ for 30 seconds, 50^oC^ for 30 seconds, and 72^oC^ for 30 seconds, with a final 72^oC^ for five minute stage. Samples were refrigerated at 20^oC^ until sequencing.
+
+[**Nextera adapters**](https://support-docs.illumina.com/SHARE/AdapterSequences/Content/SHARE/AdapterSeq/Nextera/SequencesNextera_Illumina.htm) were added to each primer set for Illumina MiSeq sequencing, performed at the University of Maine CORE DNA Sequencing Center. The 12S and COI samples were sequenced on separate runs due to the expected differences in region length, and run for 300 cycles each.
+
+The Nextera adapters were removed during cleanup, leaving just the original primers and the sample sequences. Sample sequences were divided into forward and reverse reads for each sample, available as individual FASTQ files.
+
+# Sample Processing
+
+All samples were cleaned and prepared for analysis using the [**DADA2 workflow**](https://benjjneb.github.io/dada2/tutorial.html). For a full list of packages used, see the FullConfig_AMC.R file.
+
+Once cleaned, sample sequenced underwent decontamination based on removing identified sequences present in the negative control samples from the rest of the dataset. Samples which were reduced to 0 reads at any step of the DADA2 or decontam process were removed from further analysis consideration.
+
+The included .RMD file includes the code and text for this report, as well as instructions on how to run each section of code if re-analysis is desired. For re-analysis, use of a version-control system such as GitHub is highly recommended.
+
+For additional analyses pertaining specifically to LWA diversity and impacts on stream communities, see Chapter 2 of the included thesis manuscript (Applications of Environmental DNA Metabarcoding in Stream Biomonitoring) and the [**associated GitHub repo**](https://github.com/bethydavis/UM_FSM_AMC22-23).
+
+```{r configuration, include = FALSE}
+# This will run the configuration file to load packages, set versioning folders, and load objects like the metadata file and reference libraries. To load intermediary outputs, remove the # in front of the line you want to 'activate' in the config file. Likewise, to 'deactivate' any lines, add a # in front of the command (be sure to check if the object or output of the command is called elsewhere, and update or deactivate those lines as well)
+
+# For re-analysis with different parameters, make sure the paths in the config file are up-to-date, including versioning information for output folders
+source("FullConfig_AMC.R")
+```
+
+```{r file_selection, include = FALSE}
+# This chunk specifies the files to be run based on extension and fixes file names. Because the sample sequences are divided by both primer and read direction, this must be done for each folder containing sequence files.
+
+# Specify file name formats - we only want to use .gz files
+fns12F <- list.files(path_raw12F)
+fastqs12F <- fns12F[grepl('.gz$', fns12F)]
+
+fns12R <- list.files(path_raw12R)
+fastqs12R <- fns12R[grepl('.gz$', fns12R)]
+
+fnsBF <- list.files(path_rawBF)
+fastqsBF <- fnsBF[grepl('.gz$', fnsBF)]
+
+fnsBR <- list.files(path_rawBR)
+fastqsBR <- fnsBR[grepl('.gz$', fnsBR)]
+
+# The file paths still include the desktop.ini file, so let's specify a file path to lead future code only to the fastq files in the folder
+fns12Fisolate <- file.path(path_raw12F, fastqs12F)
+fns12Risolate <- file.path(path_raw12R, fastqs12R)
+
+fnsBFisolate <- file.path(path_rawBF, fastqsBF)
+fnsBRisolate <- file.path(path_rawBR, fastqsBR)
+
+# Set sample names to a vector, remove path and the .gz extension
+names12Ffast <- tools::file_path_sans_ext(basename(fastqs12F))
+
+# Repeat file_path_sans_ext to also remove the .fastq
+names12F <- tools::file_path_sans_ext(names12Ffast)
+
+# Repeat for other folders
+names12Rfast <- tools::file_path_sans_ext(basename(fastqs12R))
+names12R <- tools::file_path_sans_ext(names12Rfast)
+
+namesBFfast <- tools::file_path_sans_ext(basename(fastqsBF))
+namesBF <- tools::file_path_sans_ext(namesBFfast)
+
+namesBRfast <- tools::file_path_sans_ext(basename(fastqsBR))
+namesBR <- tools::file_path_sans_ext(namesBRfast)
+```
+
+```{r quality_check, include = FALSE}
+# Optional but recommended - this will create quality profile plots for reads in each fastq file. These plots can indicate where to trim reads
+
+# To simply run and make a plot, run the below line and simply change the number in brackets (it corresponds to the order of sample names in the object):
+plotQualityProfile(fns12Fisolate[4])
+
+# To run a plot and save it as a .png (make sure the correct path_outputs is selected, either path12_outputs for 12S samples or pathC_outputs for COI samples):
+ggsave("QualityProfile12S_4.png", path = path12_outputs, plot = plotQualityProfile(fns12Fisolate[4]), width = 6, height = 4, units = "in")
+# You don't have to set dimensions, but it helps to standardize them if you're making a lot
+
+ggsave("QualityProfileC_4.png", path = pathC_outputs, plot = plotQualityProfile(fnsBFisolate[4]), width = 6, height = 4, units = "in")
+```
+
+```{r trim_reads, include = FALSE}
+# This actually trims the sequencing files. See the DADA2 workflow page for more information on how to adjust, if desired.
+# Currently, it's set to trim the forward and reverse of each sample in sync, to enable merging the reads later on. 
+
+# Trimming parameters
+filtout12sync <- filterAndTrim(file.path(path_raw12F, fastqs12F), file.path(path_filt12F, paste0(names12F, "filt.fastq.gz")), file.path(path_raw12R, fastqs12R), file.path(path_filt12R, paste0(names12R, "filt.fastq.gz")), trimLeft = c(21,27), trimRight=c(80), maxN=0, maxEE=c(2,2), verbose=TRUE) 
+## With these parameters, all reads are removed for AMC23_C721, and the file is removed from further processing. Parameters were set to trim off the primer from the front (left) of each read and extra run space from the end (right)
+
+filtoutB <- filterAndTrim(file.path(path_rawBF, fastqsBF), file.path(path_filtBF, paste0(namesBF, "filt.fastq.gz")), file.path(path_rawBR, fastqsBR), file.path(path_filtBR, paste0(namesBR, "filt.fastq.gz")), trimLeft = c(20,20), trimRight=c(20,50), maxN=0, maxEE=c(2,2), verbose=TRUE) 
+## With these parameters, all reads are removed for AMC22_AB01, AMC23_AB04, AMC23_MB09, and the files are removed from further processing. Parameters were set to remove the primer from the front (left) of each read and poor quality from the end (right)
+
+# Notify when done
+beep(sound = "fanfare")
+```
+
+```{r error_derep_12, include = FALSE}
+# First need to set a seed (this can be any number, but remember to record it. 9450 is what I used for my last processing of the 12S files, and 0743 for COI files (next chunk))
+set.seed(9450)
+
+# Set the names for the filtered files we'll be using
+
+# create a list of files in the path
+filtnames12Finter <- list.files(path_filt12F, full.names = TRUE)
+
+# Specify we only want the files with the .gz extension
+filtnames12F <- filtnames12Finter[grepl('.gz$', filtnames12Finter)]
+
+# Extract just the file name, not the path, and remove the .gz extension. This leaves on the .fastq extension
+fastqfilt12F <- tools::file_path_sans_ext(basename(filtnames12F))
+
+# Remove the .fastq extension
+names12Ffilt <- tools::file_path_sans_ext(basename(fastqfilt12F))
+
+# 12Reverse
+filtnames12Rinter <- list.files(path_filt12R, full.names = TRUE)
+filtnames12R <- filtnames12Rinter[grepl('.gz$', filtnames12Rinter)]
+fastqfilt12R <- tools::file_path_sans_ext(basename(filtnames12R))
+names12Rfilt <- tools::file_path_sans_ext(basename(fastqfilt12R))
+
+# Depreplicate each
+derep12F <- derepFastq(filtnames12F, verbose=TRUE)
+derep12R <- derepFastq(filtnames12R, verbose=TRUE)
+
+# Forward error rates
+err12F <- learnErrors(derep12F, multithread = FALSE, randomize = TRUE)
+
+# Save object for future reference
+saveRDS(err12F, "outputs/12S-Aug28-2024//12Forward_Error.rds")
+
+# Generate and save error plot
+ggsave("12Forward_ErrorPlot.png", path = path12_outputs, plotErrors(err12F, nominalQ = TRUE), width = 6, height = 4, units = "in") 
+
+# Reverse error rates
+err12R <- learnErrors(derep12R, multithread = FALSE, randomize = TRUE)
+
+# Save object for future reference 
+saveRDS(err12R, "outputs/12S-Aug28-2024/12Reverse_Error.rds")
+
+# Generate and save error plot
+ggsave("12Reverse_ErrorPlot.png", path = path12_outputs, plotErrors(err12R, nominalQ = TRUE), width = 6, height = 4, units = "in") 
+
+# This can take a long time. If you have to do it again, include this:
+beep(sound = "fanfare")
+```
+
+```{r error_derep_C, include = FALSE}
+# Set seed
+set.seed(0743)
+
+# BForward
+# create a list of files in the path
+filtnamesBFinter <- list.files(path_filtBF, full.names = TRUE)
+
+# Specify I only want the files with the .gz extension
+filtnamesBF <- filtnamesBFinter[grepl('.gz$', filtnamesBFinter)]
+
+# Extract just the file name, not the path, and remove the .gz extension. This leaves on the .fastq extension
+fastqfiltBF <- tools::file_path_sans_ext(basename(filtnamesBF))
+
+# Remove the .fastq extension
+namesBFfilt <- tools::file_path_sans_ext(basename(fastqfiltBF))
+
+# Repeat for reverse
+filtnamesBRinter <- list.files(path_filtBR, full.names = TRUE)
+filtnamesBR <- filtnamesBRinter[grepl('.gz$', filtnamesBRinter)]
+fastqfiltBR <- tools::file_path_sans_ext(basename(filtnamesBR))
+namesBRfilt <- tools::file_path_sans_ext(basename(fastqfiltBR))
+
+derepBF <- derepFastq(filtnamesBF, verbose = TRUE)
+derepBR <- derepFastq(filtnamesBR, verbose = TRUE)
+
+# Forward error rates
+errBF <- learnErrors(derepBF, multithread = FALSE, randomize = TRUE)
+
+# Save error rates
+saveRDS(errBF, "outputs/COI-Aug28-2024/ForwardError.rds")
+
+# Generate and save forward error plot
+ggsave("Forward_ErrorPlot.png", path = pathC_outputs, plotErrors(errBF, nominalQ = TRUE), width = 6, height = 4, units = "in") 
+
+# Reverse error rates
+errBR <- learnErrors(derepBR, multithread = FALSE, randomize = TRUE)
+
+# Save error rates
+saveRDS(errBR, "outputs/COI-Aug28-2024/ReverseError.rds")
+
+# Generate and save reverse error plot
+ggsave("Reverse_ErrorPlot.png", path = pathC_outputs, plotErrors(errBR, nominalQ = TRUE), width = 6, height = 4, units = "in") 
+
+# This can take a long time. If you have to do it again, include this:
+beep(sound = "fanfare")
+```
+
+```{r sample_composition, include = FALSE}
+# Run sample composition for each set of 12S - this is usually done in under 5 minutes
+dada12F <- dada(derep12F, err = err12F, multithread = FALSE)
+dada12R <- dada(derep12R, err = err12R, multithread = FALSE)
+
+# Running sample composition for the COI samples usually takes around 2 hours
+dadaBF <- dada(derepBF, err = errBF, multithread = FALSE)
+dadaBR <- dada(derepBR, err = errBR, multithread = FALSE)
+
+# Save in case you need to reload the objects
+saveRDS(dada12F, "outputs/12S-Aug28-2024/12Forward_SampleComp.rds")
+saveRDS(dada12R, "outputs/12S-Aug28-2024/12Reverse_SampleComp.rds")
+
+saveRDS(dadaBF, "outputs/COI-Aug28-2024/BForward_SampleComp.rds")
+saveRDS(dadaBR, "outputs/COI-Aug28-2024/BReverse_SampleComp.rds")
+```
+
+```{r merge_reads, include = FALSE}
+# Merge forward and reverse reads
+mergers12 <- mergePairs(dada12F, path_filt12F, dada12R, path_filt12R, verbose=TRUE)
+
+# Turn into a sequence table
+seqtab12 <- makeSequenceTable(mergers12)
+
+# Save output
+saveRDS(seqtab12, "outputs/12S-Aug28-2024/12MergedSampleComp.rds")
+
+# Repeat for COI
+mergersB <- mergePairs(dadaBF, derepBF, dadaBR, derepBR, verbose = TRUE)
+seqtabB <- makeSequenceTable(mergersB)
+saveRDS(seqtabB, "outputs/COI-Aug28-2024/BMerged Sequence Table.rds")
+```
+
+```{r no_chim, include = FALSE}
+# Remove chimeras
+seqtab12.nochim <- removeBimeraDenovo(seqtab12, method = "consensus", multithread = FALSE, verbose = TRUE)
+
+# Save output
+saveRDS(seqtab12.nochim, "outputs/12S-Aug28-2024/12Merged Sequence No Chimera Table.rds")
+
+# Notification
+beep(sound = "coin")
+
+# Repeat for COI
+seqtabB.nochim <- removeBimeraDenovo(seqtabB, method = "consensus", multithread = FALSE, verbose = TRUE)
+saveRDS(seqtabB.nochim, "outputs/COI-Aug28-2024/BMerged Sequence No Chimera Table.rds")
+beep(sound = "coin")
+```
+
+```{r assign_taxonomy12, include = FALSE}
+# This step is very slow and intensive - it matches the identified sequences in the reference file to the sequences in the sample. 
+all.taxa12 <- assignTaxonomy(seqtab12.nochim, 'components/12S_REFDB.fasta', tryRC = TRUE, verbose = TRUE)
+
+# Notify when done
+beep(sound = "fanfare")
+
+# Save the output of the fully taxonomy-identified sample sequence results as a .csv
+write.csv(all.taxa12, file.path(path12_outputs, "12SAMC_AssignedTaxa.csv"))
+```
+
+```{r assign_taxonomyC, include = FALSE}
+# Repeat the same chunk from above but now for the COI sequences and reference database - this tends to take multiple hours
+all.taxaC <- assignTaxonomy(seqtabB.nochim, 'components/COI_REFDB.fasta', tryRC = TRUE, verbose = TRUE)
+beep(sound = "fanfare")
+
+colnames(all.taxaC) <- c("Phylum", "Class", "Order", "Family", "Genus", "Species")
+
+write.csv(all.taxaC, file.path(pathC_outputs, "COIAMC_AssignedTaxa.csv"))
+```
+
+```{r name_check12, include = FALSE}
+# First we need to update the row names for the seqtab12.nochim, all.taxa, and meta objects before attempting to make the phyloseq object. Since at least one sample was dropped during processing, we have to read meta in without row.names, remove the row(s) associated with the dropped sample(s), then reset the sampleID column to row.names
+
+# all.taxa12 is currently a matrix array, and converting it directly to a dataframe frequently causes errors. A hopefully more consistent workaround is to load the .csv result back in to preserve the column of sequence information
+all.taxa12 <- read.csv(file.path(path12_outputs, "12SAMC_AssignedTaxa.csv"), header = TRUE)
+
+# Sometimes the column names for the output come out staggered - call the first 10 rows of the output to check if you need to reassign column names
+head(all.taxa12)
+
+# Set column names properly
+colnames(all.taxa12) <- c("X", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+
+# To combine the taxonomic IDs to the phyloseq object, the sequences must be the row names:
+all.taxa12 <- data.frame(all.taxa12, row.names = 1)
+
+# Order seqtab12.nochim by row names
+seqtab12.nochim <- seqtab12.nochim[order(row.names(seqtab12.nochim)), ]
+
+# Remove the row(s) associated with dropped sample(s) from the meta spreadsheet
+meta12 <- subset(meta, sample != "AMC23_C721") 
+# Set the sample column as row.names
+meta12 <- data.frame(meta12, row.names = 1)
+# Order the meta file by row.names
+meta12 <- meta12[order(row.names(meta12)), ]
+```
+
+```{r renaming12, include = FALSE}
+# Make sure all samples in seqtab.nochim match and are in the same order as in meta, because the next step is a flat replacement of row.names - if the sample order of seqtab.nochim and meta are different, this will overwrite seqtab12.nochim with whatever the sample order of meta12 is, regardless of if it is correct, so make sure the order is the same.
+row.names(seqtab12.nochim) <- row.names(meta12)
+```
+
+```{r name_checkC, include = FALSE}
+# Now we do the same for the COI data
+all.taxaC <- read.csv(file.path(pathC_outputs, "COIAMC_AssignedTaxa.csv"), header = TRUE)
+
+head(all.taxaC)
+colnames(all.taxaC) <- c("X", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+all.taxaC <- data.frame(all.taxaC, row.names = 1)
+
+# Order seqtab.nochim by row names
+seqtabB.nochim <- seqtabB.nochim[order(row.names(seqtabB.nochim)), ]
+
+# Order the meta file by sample name
+metaC <- meta[order(meta$sample), ]
+# Remove the row(s) associated with dropped sample(s) from the meta spreadsheet - the only way I can do this is one row at a time
+metaC <- subset(metaC, sample != "AMC22_AB01")
+metaC <- subset(metaC, sample != "AMC23_AB04") 
+metaC <- subset(metaC, sample != "AMC23_MB09") 
+
+# Set the sample column as row.names
+metaC <- data.frame(metaC, row.names = 1)
+# Order the meta file by row.names
+metaC <- metaC[order(row.names(metaC)), ]
+
+# Make sure all samples in seqtab.nochim match and are in the same order as in meta, because the next step is a flat replacement of row.names
+row.names(seqtabB.nochim) <- row.names(metaC)
+```
+
+```{r ps_objects, include = FALSE}
+# Create phyloseq object with all samples
+# This can be very error-laden - see https://joey711.github.io/phyloseq/import-data.html & https://bioconductor.org/packages/release/bioc/vignettes/phyloseq/inst/doc/phyloseq-basics.html for phyloseq help (particularly on formatting requirements)
+EX_ps12 <- phyloseq(otu_table(seqtab12.nochim, taxa_are_rows=FALSE), sample_data(meta12), tax_table(as.matrix(all.taxa12)))
+
+# SAVE 
+saveRDS(EX_ps12, "outputs/12S-Aug28-2024/InitialPhyloseq.rds")
+
+# Create phyloseq object with all samples
+EX_psC <- phyloseq(otu_table(seqtabB.nochim, taxa_are_rows=FALSE), sample_data(metaC), tax_table(as.matrix(all.taxaC)))
+
+# SAVE 
+saveRDS(EX_psC, "outputs/12S-Aug28-2024/InitialPhyloseqUD.rds")
+```
+
+```{r decontam_isolate12, include = FALSE}
+# This decontam process works on the basis of removing sequences found in the negative controls from the other samples in their processing batches
+# subset each DNA extraction batch (each extraction batch had at least 1 control, the batches are based on which negative controls and eDNA samples were extracted together)
+batch1 = subset_samples(EX_ps12, Ebatch == "1")  
+batch2 = subset_samples(EX_ps12, Ebatch == "2")
+batch3 = subset_samples(EX_ps12, Ebatch == "3")  
+batch4 = subset_samples(EX_ps12, Ebatch == "4")  
+batch5 = subset_samples(EX_ps12, Ebatch == "5")  
+batch6 = subset_samples(EX_ps12, Ebatch == "6")  
+batch7 = subset_samples(EX_ps12, Ebatch == "7")  
+batch8 = subset_samples(EX_ps12, Ebatch == "8")  
+batch9 = subset_samples(EX_ps12, Ebatch == "9")  
+batch10 = subset_samples(EX_ps12, Ebatch == "10")  
+
+# subset controls and prune to only those taxa
+batch1_sub = subset_samples(batch1, Type == "NegCon")
+batch2_sub = subset_samples(batch2, Type == "NegCon")
+batch3_sub = subset_samples(batch3, Type == "NegCon")
+batch4_sub = subset_samples(batch4, Type == "NegCon")
+batch5_sub = subset_samples(batch5, Type == "NegCon")
+batch6_sub = subset_samples(batch6, Type == "NegCon")
+batch7_sub = subset_samples(batch7, Type == "NegCon")
+batch8_sub = subset_samples(batch8, Type == "NegCon")
+batch9_sub = subset_samples(batch9, Type == "NegCon")
+batch10_sub = subset_samples(batch10, Type == "NegCon")
+
+batch1_sub <- prune_taxa(taxa_sums(batch1_sub) > 0, batch1_sub)
+batch2_sub <- prune_taxa(taxa_sums(batch2_sub) > 0, batch2_sub)
+batch3_sub <- prune_taxa(taxa_sums(batch3_sub) > 0, batch3_sub)
+batch4_sub <- prune_taxa(taxa_sums(batch4_sub) > 0, batch4_sub)
+batch5_sub <- prune_taxa(taxa_sums(batch5_sub) > 0, batch5_sub)
+batch6_sub <- prune_taxa(taxa_sums(batch6_sub) > 0, batch6_sub)
+batch7_sub <- prune_taxa(taxa_sums(batch7_sub) > 0, batch7_sub)
+batch8_sub <- prune_taxa(taxa_sums(batch8_sub) > 0, batch8_sub)
+batch9_sub <- prune_taxa(taxa_sums(batch9_sub) > 0, batch9_sub)
+batch10_sub <- prune_taxa(taxa_sums(batch10_sub) > 0, batch10_sub)
+
+# Make the taxa names into a vector so you can remove them, then use the keep vector for the prune taxa argument, because it wants the argument to be true (matching), and repeat for both batches
+batch1_ctrl <- as.vector(taxa_names(batch1_sub)) 
+batch1_vec <- as.vector(taxa_names(batch1)) 
+batch1_kp <- setdiff(batch1_vec, batch1_ctrl)
+batch1_clean <- prune_taxa(batch1_kp, batch1)
+
+batch2_ctrl <- as.vector(taxa_names(batch2_sub)) 
+batch2_vec <- as.vector(taxa_names(batch2)) 
+batch2_kp <- setdiff(batch2_vec, batch2_ctrl)
+batch2_clean <- prune_taxa(batch2_kp, batch2)
+
+batch3_ctrl <- as.vector(taxa_names(batch3_sub)) 
+batch3_vec <- as.vector(taxa_names(batch3)) 
+batch3_kp <- setdiff(batch3_vec, batch3_ctrl)
+batch3_clean <- prune_taxa(batch3_kp, batch3)
+
+batch4_ctrl <- as.vector(taxa_names(batch4_sub)) 
+batch4_vec <- as.vector(taxa_names(batch4)) 
+batch4_kp <- setdiff(batch4_vec, batch4_ctrl)
+batch4_clean <- prune_taxa(batch4_kp, batch4)
+
+batch5_ctrl <- as.vector(taxa_names(batch5_sub)) 
+batch5_vec <- as.vector(taxa_names(batch5)) 
+batch5_kp <- setdiff(batch5_vec, batch5_ctrl)
+batch5_clean <- prune_taxa(batch5_kp, batch5)
+
+batch6_ctrl <- as.vector(taxa_names(batch6_sub)) 
+batch6_vec <- as.vector(taxa_names(batch6)) 
+batch6_kp <- setdiff(batch6_vec, batch6_ctrl)
+batch6_clean <- prune_taxa(batch6_kp, batch6)
+
+batch7_ctrl <- as.vector(taxa_names(batch7_sub)) 
+batch7_vec <- as.vector(taxa_names(batch7)) 
+batch7_kp <- setdiff(batch7_vec, batch7_ctrl)
+batch7_clean <- prune_taxa(batch7_kp, batch7)
+
+batch8_ctrl <- as.vector(taxa_names(batch8_sub)) 
+batch8_vec <- as.vector(taxa_names(batch8)) 
+batch8_kp <- setdiff(batch8_vec, batch8_ctrl)
+batch8_clean <- prune_taxa(batch8_kp, batch8)
+
+batch9_ctrl <- as.vector(taxa_names(batch9_sub)) 
+batch9_vec <- as.vector(taxa_names(batch9)) 
+batch9_kp <- setdiff(batch9_vec, batch9_ctrl)
+batch9_clean <- prune_taxa(batch9_kp, batch9)
+
+batch10_ctrl <- as.vector(taxa_names(batch10_sub)) 
+batch10_vec <- as.vector(taxa_names(batch10)) 
+batch10_kp <- setdiff(batch10_vec, batch10_ctrl)
+batch10_clean <- prune_taxa(batch10_kp, batch10)
+
+# Save the phyloseq object of identified contaminants
+pstrimmed12 <- merge_phyloseq(batch1_sub, batch2_sub, batch3_sub, batch4_sub, batch5_sub, batch6_sub, batch7_sub, batch8_sub, batch9_sub, batch10_sub) 
+saveRDS(pstrimmed12, "outputs/12S-Aug28-2024/Contaminants.rds")
+
+# Merge the phyloseq objects back together, then remove any blank taxa or samples
+ps_clean12 <- merge_phyloseq(batch1_clean, batch2_clean, batch3_clean, batch4_clean, batch5_clean, batch6_clean, batch7_clean, batch8_clean, batch9_clean, batch10_clean) 
+
+# Clean out taxa/SV columns that are no longer present
+ps_clean12 <- prune_taxa(taxa_sums(ps_clean12) > 0, ps_clean12) 
+ps_clean12 <- prune_samples(sample_sums(ps_clean12) > 0, ps_clean12)
+
+# Save this phyloseq object - this may be of interest to examine decontaminated data with both the target and non-target identifications
+saveRDS(ps_clean12, "outputs/12S-Aug28-2024/DecontamRemoved12.rds")
+```
+
+```{r remove_taxa12, include = FALSE}
+# Phylum is the broadest taxonomic category and the most likely to have matched IDs - we can call the cleaned phyloseq object to view unique phyla IDs and remove the non-target taxa. Run the following two lines to pull unique phyla IDs:
+
+#Phyla <- tax_table(ps_clean12)[, "Phylum"]
+#unique(as(Phyla, "vector"))
+
+# Remove plant and others
+ps12S <- ps_clean12 %>% 
+  subset_taxa(Phylum != "Bacillota") 
+ps12S <- ps12S %>% 
+  subset_taxa(Phylum != "Chlorophyta")
+ps12S <- ps12S %>% 
+  subset_taxa(Phylum != "Cyanobacteriota")
+ps12S <- ps12S %>% 
+  subset_taxa(Phylum != "Pseudomonadota")
+ps12S <- ps12S %>% 
+  subset_taxa(Phylum != "Foraminifera")
+ps12S <- ps12S %>% 
+  subset_taxa(Phylum != "Streptophyta")
+
+# Also remove any instances of human DNA
+ps12S <- ps12S %>% 
+  subset_taxa(Species != "Homo sapiens")
+
+# Remove the empty rows and save the target phyloseq
+ps12S <- prune_taxa(taxa_sums(ps12S) > 0, ps12S) 
+ps12S <- prune_samples(sample_sums(ps12S) > 0, ps12S)
+
+saveRDS(ps12S, "outputs/12S-Aug28-2024/TargetPhyloseq.RDS")
+```
+
+```{r decontam_isolateC, include = FALSE}
+# Now do it all over again for COI
+# subset each DNA extraction batch
+batch1 = subset_samples(EX_psC, Ebatch == "1")  
+batch2 = subset_samples(EX_psC, Ebatch == "2")
+batch3 = subset_samples(EX_psC, Ebatch == "3")  
+batch4 = subset_samples(EX_psC, Ebatch == "4")  
+batch5 = subset_samples(EX_psC, Ebatch == "5")  
+batch6 = subset_samples(EX_psC, Ebatch == "6")  
+batch7 = subset_samples(EX_psC, Ebatch == "7")  
+batch8 = subset_samples(EX_psC, Ebatch == "8")  
+batch9 = subset_samples(EX_psC, Ebatch == "9")  
+batch10 = subset_samples(EX_psC, Ebatch == "10")  
+
+
+# subset controls and prune to only those taxa
+batch1_sub = subset_samples(batch1, Type == "NegCon")
+batch2_sub = subset_samples(batch2, Type == "NegCon")
+batch3_sub = subset_samples(batch3, Type == "NegCon")
+batch4_sub = subset_samples(batch4, Type == "NegCon")
+batch5_sub = subset_samples(batch5, Type == "NegCon")
+batch6_sub = subset_samples(batch6, Type == "NegCon")
+batch7_sub = subset_samples(batch7, Type == "NegCon")
+batch8_sub = subset_samples(batch8, Type == "NegCon")
+batch9_sub = subset_samples(batch9, Type == "NegCon")
+batch10_sub = subset_samples(batch10, Type == "NegCon")
+
+
+batch1_sub <- prune_taxa(taxa_sums(batch1_sub) > 0, batch1_sub)
+batch2_sub <- prune_taxa(taxa_sums(batch2_sub) > 0, batch2_sub)
+batch3_sub <- prune_taxa(taxa_sums(batch3_sub) > 0, batch3_sub)
+batch4_sub <- prune_taxa(taxa_sums(batch4_sub) > 0, batch4_sub)
+batch5_sub <- prune_taxa(taxa_sums(batch5_sub) > 0, batch5_sub)
+batch6_sub <- prune_taxa(taxa_sums(batch6_sub) > 0, batch6_sub)
+batch7_sub <- prune_taxa(taxa_sums(batch7_sub) > 0, batch7_sub)
+batch8_sub <- prune_taxa(taxa_sums(batch8_sub) > 0, batch8_sub)
+batch9_sub <- prune_taxa(taxa_sums(batch9_sub) > 0, batch9_sub)
+
+# Batch 10's control has no reads, can keep all of batch10 (leaving an example line just in case)
+#batch10_sub <- prune_taxa(taxa_sums(batch10_sub) > 0, batch10_sub)
+
+
+# Make the taxa names into a vector so you can remove them, then use the keep vector for the prune taxa argument, because it wants the argument to be true (matching), and repeat for both batches
+batch1_ctrl <- as.vector(taxa_names(batch1_sub)) 
+batch1_vec <- as.vector(taxa_names(batch1)) 
+batch1_kp <- setdiff(batch1_vec, batch1_ctrl)
+batch1_clean <- prune_taxa(batch1_kp, batch1)
+
+batch2_ctrl <- as.vector(taxa_names(batch2_sub)) 
+batch2_vec <- as.vector(taxa_names(batch2)) 
+batch2_kp <- setdiff(batch2_vec, batch2_ctrl)
+batch2_clean <- prune_taxa(batch2_kp, batch2)
+
+batch3_ctrl <- as.vector(taxa_names(batch3_sub)) 
+batch3_vec <- as.vector(taxa_names(batch3)) 
+batch3_kp <- setdiff(batch3_vec, batch3_ctrl)
+batch3_clean <- prune_taxa(batch3_kp, batch3)
+
+batch4_ctrl <- as.vector(taxa_names(batch4_sub)) 
+batch4_vec <- as.vector(taxa_names(batch4)) 
+batch4_kp <- setdiff(batch4_vec, batch4_ctrl)
+batch4_clean <- prune_taxa(batch4_kp, batch4)
+
+batch5_ctrl <- as.vector(taxa_names(batch5_sub)) 
+batch5_vec <- as.vector(taxa_names(batch5)) 
+batch5_kp <- setdiff(batch5_vec, batch5_ctrl)
+batch5_clean <- prune_taxa(batch5_kp, batch5)
+
+batch6_ctrl <- as.vector(taxa_names(batch6_sub)) 
+batch6_vec <- as.vector(taxa_names(batch6)) 
+batch6_kp <- setdiff(batch6_vec, batch6_ctrl)
+batch6_clean <- prune_taxa(batch6_kp, batch6)
+
+batch7_ctrl <- as.vector(taxa_names(batch7_sub)) 
+batch7_vec <- as.vector(taxa_names(batch7)) 
+batch7_kp <- setdiff(batch7_vec, batch7_ctrl)
+batch7_clean <- prune_taxa(batch7_kp, batch7)
+
+batch8_ctrl <- as.vector(taxa_names(batch8_sub)) 
+batch8_vec <- as.vector(taxa_names(batch8)) 
+batch8_kp <- setdiff(batch8_vec, batch8_ctrl)
+batch8_clean <- prune_taxa(batch8_kp, batch8)
+
+batch9_ctrl <- as.vector(taxa_names(batch9_sub)) 
+batch9_vec <- as.vector(taxa_names(batch9)) 
+batch9_kp <- setdiff(batch9_vec, batch9_ctrl)
+batch9_clean <- prune_taxa(batch9_kp, batch9)
+
+# Save the phyloseq object of identified contaminants
+pstrimmedC <- merge_phyloseq(batch1_sub, batch2_sub, batch3_sub, batch4_sub, batch5_sub, batch6_sub, batch7_sub, batch8_sub, batch9_sub) 
+saveRDS(pstrimmedC, "outputs/COI-Aug28-2024/Contaminants.rds")
+
+# Merge the phyloseq objects back together, then remove any blank taxa or samples
+ps_cleanC <- merge_phyloseq(batch1_clean, batch2_clean, batch3_clean, batch4_clean, batch5_clean, batch6_clean, batch7_clean, batch8_clean, batch9_clean, batch10) 
+
+# Clean out taxa/SV columns that are no longer present
+ps_cleanC <- prune_taxa(taxa_sums(ps_cleanC) > 0, ps_cleanC) 
+ps_cleanC <- prune_samples(sample_sums(ps_cleanC) > 0, ps_cleanC)
+
+# Save 
+saveRDS(ps_cleanC, "outputs/COI-Aug28-2024/DecontamRemovedC.rds")
+```
+
+```{r remove_taxaC, include = FALSE}
+# Lines to check unique Phyla IDs
+#Phyla <- tax_table(ps_cleanC)[, "Phylum"]
+#unique(as(Phyla, "vector"))
+
+# Remove plant and other non-targets
+psCOI <- ps_cleanC %>% 
+  subset_taxa(Phylum != "Ascomycota") 
+psCOI <- psCOI %>% 
+  subset_taxa(Phylum != "Bacillariophyta")
+psCOI <- psCOI %>% 
+  subset_taxa(Phylum != "Basidiomycota")
+psCOI <- psCOI %>% 
+  subset_taxa(Phylum != "Chlorophyta")
+psCOI <- psCOI %>% 
+  subset_taxa(Phylum != "Oomycota")
+psCOI <- psCOI %>% 
+  subset_taxa(Phylum != "Pseudomonadota")
+psCOI <- psCOI %>% 
+  subset_taxa(Phylum != "Rhodophyta")
+psCOI <- psCOI %>% 
+  subset_taxa(Phylum != "Rotifera")
+psCOI <- psCOI %>% 
+  subset_taxa(Phylum != "Tubulinea")
+psCOI <- psCOI %>% 
+  subset_taxa(Phylum != "Streptophyta")
+
+psCOI <- psCOI %>% 
+  subset_taxa(Class != "Chrysophyceae")
+psCOI <- psCOI %>% 
+  subset_taxa(Class != "Raphidophyceae")
+
+psCOI <- psCOI %>% 
+  subset_taxa(Species != "Homo sapiens")
+
+# Remove empty rows
+psCOI <- prune_taxa(taxa_sums(psCOI) > 0, psCOI) 
+psCOI <- prune_samples(sample_sums(psCOI) > 0, psCOI)
+
+# Save
+saveRDS(psCOI, "outputs/COI-Aug28-2024/CleanPhyloseq.RDS")
+```
+
+```{r phyloseq_tidying, include = FALSE}
+# Use the following for cleaner plots - pay attention to taxonomic rank, these will conglomerate based on matching taxonomic rank
+psCOI.class = tax_glom(psCOI, taxrank="Class", NArm=FALSE)
+ps12.class = tax_glom(ps12S, taxrank="Class", NArm=FALSE)
+
+psCOI.fam = tax_glom(psCOI, taxrank="Family", NArm=FALSE)
+ps12.fam = tax_glom(ps12S, taxrank="Family", NArm=FALSE)
+
+psCOI.sp = tax_glom(psCOI, taxrank="Species", NArm=FALSE)
+ps12.sp = tax_glom(ps12S, taxrank="Species", NArm=FALSE)
+
+# This will turn the phyloseq objects into dataframes - melt_phyloseq is based on the phyloschuyler_phylosmith package, see https://schuyler-smith.github.io/phylosmith/index.html for any issues
+meltCOI <- melt_phyloseq(psCOI)
+melt12 <- melt_phyloseq(ps12S)
+
+# Subset only the non-empty rows
+meltCOI <- subset(meltCOI, Abundance > "0")
+melt12 <- subset(melt12, Abundance > "0")
+```
+
+# Gamma Diversity - Overall Species Results
+
+```{r notes, include = FALSE}
+# To recap, currently the following objects are available and may be of interest for further examination:
+
+# ps12S - for all clean (decontaminated and non-target taxa removed) 12S results, as a phyloseq object
+# ps_clean12 - for all decontaminated (but non-target taxa still present) 12S results, as a phyloseq object
+# melt12 - a data frame of all clean (decontaminated and non-target taxa removed) 12S results
+
+# psCOI - for all clean (decontaminated and non-target taxa removed) COI results, as a phyloseq object
+# ps_cleanC - for all decontaminated (but non-target taxa still present) COI results, as a phyloseq object
+# meltCOI - a data frame of all clean (decontaminated and non-target taxa removed) COI results
+```
+
+```{r gamma_length, include = FALSE}
+# Number of unique families detected by 12S in 2022
+length(unique(melt12$Family[melt12$Year == "2022"])) # All sites
+length(unique(melt12$Family[melt12$Year == "2022"& melt12$Treatment == "SUR"])) # Survey (GH) sites only
+length(unique(melt12$Family[melt12$Year == "2022"& melt12$Treatment == "LWA"])) # LWA sites only
+
+# Number of unique species detected by 12S in 2022
+length(unique(melt12$Species[melt12$Year == "2022" & melt12$Treatment == "SUR"])) # Survey (GH sites only)
+length(unique(melt12$Species[melt12$Year == "2022" & melt12$Treatment == "LWA"])) # LWA sites only
+
+# Number of unique families and species detected by 12S in 2023 (LWA sites only)
+length(unique(melt12$Family[melt12$Year == "2023"]))
+length(unique(melt12$Species[melt12$Year == "2023"]))
+
+# Number of unique families detected by COI in 2022
+length(unique(meltCOI$Family[meltCOI$Year == "2022"& meltCOI$Treatment == "SUR"])) # Survey (GH) sites only
+length(unique(meltCOI$Family[meltCOI$Year == "2022"& meltCOI$Treatment == "LWA"])) # LWA sites only
+
+# Number of unique species detected by COI in 2022
+length(unique(meltCOI$Species[meltCOI$Year == "2022" & meltCOI$Treatment == "SUR"])) # Survey (GH sites only)
+length(unique(meltCOI$Species[meltCOI$Year == "2022" & meltCOI$Treatment == "LWA"])) # LWA sites only
+
+# Number of unique families and species detected by COI in 2023 (LWA sites only)
+length(unique(meltCOI$Family[meltCOI$Year == "2023"]))
+length(unique(meltCOI$Species[meltCOI$Year == "2023"]))
+```
+
+In 2022, a total of 19 unique taxonomic families were detected through the 12S primer across all sites. Of those, the following 15 families were detected in Gulf Hagas sites:
+
+```{r gamma_GHfam12, echo = FALSE}
+sort(unique(melt12$Family[melt12$Year == "2022" & melt12$Treatment == "SUR"]))
+```
+
+These families included the following 20 species:
+
+```{r gamma_GHsp12, echo = FALSE}
+sort(unique(melt12$Species[melt12$Year == "2022" & melt12$Treatment == "SUR"]))
+```
+
+Only three species were detected in GH sites using the COI primer, each belonging to a different taxonomic family. Of the three, only *Daphnia catawba* and *Leptodiaptomus minutus* are invertebrates, a water flea and copepod respectively.
+
+```{r gamma_GHspC, echo = FALSE}
+sort(unique(meltCOI$Species[meltCOI$Year == "2022" & meltCOI$Treatment == "SUR"]))
+```
+
+LWA sites in 2022 also found 15 unique families and 20 unique species using 12S in 2022, with the following families and species:
+
+```{r gamma_LWAfam22, echo = FALSE}
+sort(unique(melt12$Family[melt12$Year == "2022" & melt12$Treatment == "LWA"]))
+sort(unique(melt12$Species[melt12$Year == "2022" & melt12$Treatment == "LWA"]))
+```
+
+In 2023, LWA sites found another 15 unique families and 21 unique species (totaling 19 unique families and 26 unique species detected in LWA sites for both years), detecting the following:
+
+```{r gamma_LWAfam23, echo = FALSE}
+sort(unique(melt12$Family[melt12$Year == "2023"]))
+sort(unique(melt12$Species[melt12$Year == "2023"]))
+```
+
+COI data for LWA sites overlaps moderately with 12S results, but exhibits a greater diversity of results. 33 unique species across 22 families were detected for 2022 LWA sites, and 63 species across 35 families were detected in 2023.
+
+**LWA 2022 COI Family detections:**
+
+```{r gamma_LWAfam22_2, echo = FALSE}
+sort(unique(meltCOI$Family[meltCOI$Year == "2022" & meltCOI$Treatment == "LWA"]))
+```
+
+**LWA 2022 COI Species detections:**
+
+```{r gamma_LWAsp_2, echo = FALSE}
+sort(unique(meltCOI$Species[meltCOI$Year == "2022" & meltCOI$Treatment == "LWA"]))
+```
+
+**LWA 2023 COI Family detections:**
+
+```{r gamma_LWAfamC, echo = FALSE}
+sort(unique(meltCOI$Family[meltCOI$Year == "2023" & meltCOI$Treatment == "LWA"]))
+```
+
+**LWA 2023 COI Species detections:**
+
+```{r gamma_LWAfam12, echo = FALSE}
+sort(unique(meltCOI$Species[meltCOI$Year == "2023" & meltCOI$Treatment == "LWA"]))
+```
+
+## Regional Differences
+
+In 2022, GH and LWA sites showed different eDNA results for both primers, with a small number of families and species that were only found in one region.
+
+**12S**
+
+| 2022 GH Only (Family) | 2022 GH Only (Species) | 2022 LWA Only (Family) | 2022 LWA Only (Species) |
+|----|----|----|----|
+| Centrarchidae | *Lepomis auritus* (Redbreast sunfish) | Castoridae | *Castor canadensis* (North American beaver) |
+| Clupeidae | *Alosa pseudoharengus* (Alewife) | Centrarchidae | *Micropterus salmoides* (Largemouth bass) |
+| Cottidae | *Myoxocephalus scorpius* (Shorthorn sculpin^h^) | Clupeidae | *Clupea harengus* (Atlantic herring) |
+| Fundulidae | *Fundulus diaphanus* (Banded killifish) | Cottidae | *Cottus cognatus* (Slimy sculpin) |
+| Gasterosteidae | *Pungitius pungitius* (Ninespine stickleback) | Gadidae | *Melanogrammus aeglefinus* (Haddock) |
+| Leuciscidae | *Notemigonus crysoleucas* (Golden shiner)^a^ | Gadidae | *Gadus ogac* (Greenland cod) |
+| Petromyzontidae | *Petromyzon marinus* (Sea lamprey) | Scombridae | *Scomber scombrus* (Atlantic mackerel) |
+| Pholidae | *Pholis ornata* (Saddleback gunnel^h^) | Sebastidae | *Sebastes norvegicus* (Golden redfish^h^) |
+
+^a^ *Notemigonus crysoleucas* (Golden shiner) was not found in LWA sites in 2022, but was detected in LWA sites in 2023.
+
+**COI**
+
+| 2022 GH Only (Family) | 2022 GH Only (Species)                |
+|-----------------------|---------------------------------------|
+| Daphniidae            | *Daphnia catawba* (Water flea)        |
+| Fringillidae          | *Haemorhous purpureus* (Purple finch) |
+| Diaptomidae           | *Leptodiaptomus minutus* (Copepod)    |
+
+| 2022 LWA Only (Family) | 2022 LWA Only (Species) |
+|----|----|
+| Saturniidae | *Anisota virginiensis* (Pink-striped oakworm moth) |
+| Heptageniidae | *Epeorus fragilis* (Flatheaded mayfly) |
+| Perlodidae | *Isoperla bilineata* (Two-lined stripetail) |
+| Simuliidae | *Prosimulium mixtum* (Mixed-up black fly) |
+| Chydoridae | *Chydorus brevilabris* (Chydorid) |
+| Ephemerellidae | *Ephemerella dorothea* (Spiny crawler mayfly) |
+| Heptageniidae | *Maccaffertium vicarium* (Flatheaded mayfly) |
+| Leuciscidae | *Rhinichthys atratulus* (Eastern blacknose dace) |
+| Cottidae | *Cottus cognatus* (Slimy sculpin) |
+| Plethodontidae | *Eurycea bislineata* (Northern two-lined salamander) |
+| Chironomidae | *Microtendipes pedellus* (Non-biting midge) |
+| Chloroperlidae | *Sweltsa onkos* (Ontario sallfly) |
+| Picidae | *Dryobates pubescens* (Downy woodpecker) |
+| Leptophlebiidae | *Habrophlebiodes americana* (Prong-gilled mayfly) |
+| Chironomidae | *Polypedilum aviceps* (Midge) |
+| Chironomidae | *Tvetenia paucunca* (Bean-sprout gill non-biting midge) |
+
+## Year Differences
+
+The following tables display families and/or species that were only found in one set of LWA data (either 2022 only or 2023 only)
+
+**12S**
+
+| 2022 Only (Family) | 2022 Only (Species) | 2023 Only (Family) | 2023 Only (Species) |
+|----|----|----|----|
+| Suidae | *Sus scrofa* (Wild boar) | Esocidae | *Esox niger* (Chain pickerel) |
+| Gadidae | *Gadus ogac* (Greenland cod) | Soricidae | *Sorex cinereus* (Cinereus shrew) |
+| Gadidae | *Melanogrammus aeglefinus* (Haddock) | Leuciscidae | *Notemigonus crysoleucas* (Golden shiner) |
+| Sebastidae | *Sebastes norvegicus* (Golden redfish^h^) | Merlucciidae | *Merluccius bilinearis* (Silver hake) |
+| Scombridae | *Scomber scombrus* (Atlantic mackerel) | Cervidae | *Odocoileus virginianus* (White-tailed deer) |
+| \- | \- | Salmonidae | *Salmo trutta* (Brown trout) |
+
+**COI**
+
+| 2022 Only (Family) | 2022 Only (Species)                                  |
+|--------------------|------------------------------------------------------|
+| Saturniidae        | *Anisota virginiensis* (Pink-striped oakworm moth)   |
+| Chydoridae         | *Chydorus brevilabris* (Chydorid)                    |
+| Picidae            | *Dryobates pubescens* (Downy woodpecker)             |
+| Plethodontidae     | *Eurycea bislineata* (Northern two-lined salamander) |
+| Leuctridae         | *Leuctra ferruginea* (Eastern needlefly)             |
+| Chironomidae       | *Microtendipes pedellus* (Non-biting midge)          |
+| Siphlonuridae      | *Siphlonurus typicus* (Minnow mayfly)                |
+| Chloroperlidae     | *Sweltsa onkos* (Ontario sallfly)                    |
+| Cicadellidae       | *Typhlocyba gillettei* (Leaf hopper)                 |
+
+| 2023 Only (Family) | 2023 Only (Species) |
+|----|----|
+| Baetidae | *Acerpenna macdunnoughi* (Minnow mayfly) |
+| Glossosomatidae | *Agapetus pinatus* (Saddle case-maker caddisfly) |
+| Nemouridae | *Amphinemura wui* (Spring stonefly) |
+| Lumbricidae | *Aporrectodea caliginosa* (Earthworm^h^) |
+| Baetidae | *Baetis intercalaris* (Minnow mayfly) |
+| Baetidae | *Baetis pluto* (Minnow mayfly) |
+| Catostomidae | *Catostomus commersonii* (White sucker) |
+| Naididae | *Chaetogaster diastrophus* (Annelid worm) |
+| Chironomidae | *Chironomus melanescens* (Non-biting midge) |
+| Sciaridae | *Cratyna vagabunda* (Black fungus gnat) |
+| Chironomidae | *Cricotopus bicinctus* (Non-biting midge) |
+| Plethodontidae | *Desmognathus fuscus* (Dusky salamander) |
+| Ephemerellidae | *Drunella cornutella* (Spiny crawler mayfly) |
+| Heptageniidae | *Epeorus pleuralis* (Quill gordon) |
+| Heptageniidae | *Epeorus vitreus* (Flatheaded mayfly) |
+| Ephemeridae | *Ephemera varia* (Yellow drake) |
+| Chironomidae | *Eukiefferiella claripennis* (Fly) |
+| Leptophlebiidae | *Habrophlebia vibrans* (Pronggilled mayfly) |
+| Gomphidae | *Lanthus parvulus* (Northern pygmy clubtail) |
+| Lepidostomatidae | *Lepidostoma costale* (Caddisfly) |
+| Ephemeridae | *Litobrancha recurvata* (Burrower mayfly) |
+| Leuciscidae | *Margariscus margarita* (Allegheny pearl dace) |
+| Brachycentridae | *Micrasema sprulesi* (Humpless casemaker caddisfly) |
+| Capniidae | *Paracapnia angulata* (Angulate snowfly) |
+| Pediciidae | *Pedicia albivitta* (Giant eastern crane fly) |
+| Dipseudopsidae | *Phylocentropus placidus* (Caddisfly) |
+| Baetidae | *Plauditus dubius* (Small minnow mayfly) |
+| Naididae | *Pristina aequiseta* (Aquatic oligochaete) |
+| Elateridae | *Pseudanostirus triundulatus* (Three-spotted click beetle) |
+| Pteronarcyidae | *Pteronarcys proteus* (Appalachian salmonfly) |
+| Limnephilidae | *Pycnopsyche scabripennis* (Giant red sedge) |
+| Leuciscidae | *Semotilus atromaculatus* (Common creek chub) |
+| Simuliidae | *Simulium tuberosum* (Twinn's black fly) |
+| Simuliidae | *Simulium verecundum* (Black fly) |
+| Siphlonuridae | *Siphlonurus barbaroides* (Mayfly) |
+| Spongillidae | *Spongilla lacustris* (Freshwater sponge) |
+| Libellulidae | *Sympetrum vicinum* (Yellow-legged meadowhawk) |
+| Peltoperlidae | *Tallaperla maria* (Roach-like stonefly) |
+| Philopotamidae | *Wormaldia moesta* (Fingernet caddisfly) |
+
+^h^These species are unexpected detections due to differences in known habitat or region - detection may be due to contamination, tissue presence from bait or fecal matter, or valid presence.
+
+```{r phyloseq_tidying2, include = FALSE}
+# Repeat the melt steps for the cleaned, non-target taxa included phyloseq object
+meltCOIgen <- melt_phyloseq(ps_cleanC)
+melt12gen <- melt_phyloseq(ps_clean12)
+
+# Subset only the non-empty rows
+meltCOIgen <- subset(meltCOIgen, Abundance > "0")
+melt12gen <- subset(melt12gen, Abundance > "0")
+
+# Combine the 12S and COI results for the later site-specific breakdowns
+inclusivedf <- rbind(melt12gen, meltCOIgen)
+tarinclusivedf <- rbind(melt12, meltCOI)
+```
+
+# Alpha Diversity
+
+The following plots visualize the differences between detected species richness (number of species) and evenness for each primer (how much a single or few species dominates population counts), comparing sampling region and treatment type. Two measures are currently used:
+
+-   Shannon estimates species richness, with higher values indicating higher diversity and richness
+
+-   Simpson estimates both richness and evenness, ranging from 0 to 1, with higher values indicating greater richness/evenness
+
+(Reminder that SUR = Gulf Hagas sites)
+
+```{r All_rich12year, echo = FALSE, warnings = FALSE}
+# Run these below if you want exact values
+#rich12 <-  estimate_richness(ps12, measures=c("Shannon", "Simpson"))
+#write.table(rich12, file.path(path_outputs, "AMC12_AlphaDiversity.txt"))
+
+#richCOI <-  estimate_richness(psCOI, measures=c("Shannon", "Simpson"))
+#write.table(richCOI, file.path(path_outputs, "AMCCOI_AlphaDiversity.txt"))
+
+ps12S_22 <- subset_samples(ps12S, Year=="2022")
+psCOI_22 <- subset_samples(psCOI, Year=="2022")
+
+
+# Plot alpha diversity metrics
+plot_richness(ps12S_22, x = "Treatment", color = "Treatment", measures = c("Shannon", "Simpson")) + geom_boxplot()  + theme_bw() + labs(title = "12S Alpha Diversity Measures - 2022 Only", x = "Sampling Region") + theme(axis.title.y = element_blank()) + theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) + theme(legend.position = "none")  + theme(axis.text = element_text(size = 12) ) 
+
+plot_richness(psCOI_22, x = "Treatment", color = "Treatment", measures = c("Shannon", "Simpson")) + geom_boxplot()  + theme_bw() + labs(title = "COI Alpha Diversity Measures - 2022 Only", x = "Sampling Region") + theme(axis.title.y = element_blank()) + theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) + theme(legend.position = "none") + theme(axis.text = element_text(size = 12))
+```
+
+```{r All_rich12type, echo = FALSE, warnings = FALSE}
+
+# Plot alpha diversity metrics
+plot_richness(ps12S, x = "TreatType", color = "TreatType", measures = c("Shannon", "Simpson")) + geom_boxplot()  + theme_bw() + labs(title = "12S Alpha Diversity Measures - All AMC Sites", x = "Treatment Type") + theme(axis.title.y = element_blank()) + theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) + theme(legend.position = "none")  + theme(axis.text = element_text(size = 12) ) 
+
+plot_richness(psCOI, x = "TreatType", color = "TreatType", measures = c("Shannon", "Simpson")) + geom_boxplot()  + theme_bw() + labs(title = "COI Alpha Diversity Measures - All AMC Sites", x = "Treatment Type") + theme(axis.title.y = element_blank()) + theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) + theme(legend.position = "none") + theme(axis.text = element_text(size = 12))
+```
+
+```{r anova_metrics, include = FALSE, warnings = FALSE}
+# Make richness dataframes with metadata columns
+melt12meta <- melt12[ , c('Sample', 'Treatment', 'TreatType','LWAPosition','Year', 'StreamLake')]
+melt12meta <- unique.data.frame(melt12meta)
+
+meltCOImeta <- meltCOI[ , c('Sample', 'Treatment', 'TreatType','LWAPosition','Year', 'StreamLake')]
+meltCOImeta <- unique.data.frame(meltCOImeta)
+
+# Calculate richness values and add to the dataframes
+Alpha12meta <-  estimate_richness(ps12S, measures=c("Shannon", "Simpson")) %>%
+  rownames_to_column(var = "Sample") %>%
+  left_join(melt12meta, by = "Sample") 
+
+AlphaCOImeta <-  estimate_richness(psCOI, measures=c("Shannon", "Simpson")) %>%
+  rownames_to_column(var = "Sample") %>%
+  left_join(meltCOImeta, by = "Sample") 
+
+# All sites by Treatment Type
+
+Sh12_TypeA <- kruskal.test(Shannon ~ TreatType, data = Alpha12meta)
+Si12_TypeA <- kruskal.test(Simpson ~ TreatType, data = Alpha12meta)
+
+ShC_TypeA <- kruskal.test(Shannon ~ TreatType, data = AlphaCOImeta)
+SiC_TypeA <- kruskal.test(Simpson ~ TreatType, data = AlphaCOImeta)
+
+# All sites by Year
+Sh12_YeaA <- kruskal.test(Shannon ~ Year, data = Alpha12meta)
+Si12_YeaA <- kruskal.test(Simpson ~ Year, data = Alpha12meta)
+
+ShC_YeaA <- kruskal.test(Shannon ~ Year, data = AlphaCOImeta)
+SiC_YeaA <-kruskal.test(Simpson ~ Year, data = AlphaCOImeta)
+
+# LWA Only - Year, Type, Position
+# Subset the alpha diversity dataframe to just LWA sites
+Alpha12LWA <- subset(Alpha12meta, Treatment == "LWA")
+AlphaCLWA <- subset(AlphaCOImeta, Treatment == "LWA")
+
+# Year
+Sh12_YeaL <- kruskal.test(Shannon ~ Year, data = Alpha12LWA)
+Si12_YeaL <- kruskal.test(Simpson ~ Year, data = Alpha12LWA)
+
+ShC_YeaL <- kruskal.test(Shannon ~ Year, data = AlphaCLWA)
+SiC_YeaL <-kruskal.test(Simpson ~ Year, data = AlphaCLWA)
+
+# TreatType
+Sh12_TypeL <- kruskal.test(Shannon ~ TreatType, data = Alpha12LWA)
+Si12_TypeL <- kruskal.test(Simpson ~ TreatType, data = Alpha12LWA)
+
+ShC_TypeL <- kruskal.test(Shannon ~ TreatType, data = AlphaCLWA)
+SiC_TypeL <-kruskal.test(Simpson ~ TreatType, data = AlphaCLWA)
+
+# Position
+Sh12_PosL <- kruskal.test(Shannon ~ LWAPosition, data = Alpha12LWA)
+Si12_PosL <- kruskal.test(Simpson ~ LWAPosition, data = Alpha12LWA)
+
+ShC_PosL <- kruskal.test(Shannon ~ LWAPosition, data = AlphaCLWA)
+SiC_PosL <-kruskal.test(Simpson ~ LWAPosition, data = AlphaCLWA)
+
+# 2022 - Stream vs Lake, GH vs LWA
+# Subset the alpha diversity dataframe to just 2022 sites
+Alpha12_22 <- subset(Alpha12meta, Year == "2022")
+AlphaC_22 <- subset(AlphaCOImeta, Year == "2022")
+
+# GH vs LWA treatment
+Sh12_Treat22 <- kruskal.test(Shannon ~ Treatment, data = Alpha12_22)
+Si12_Treat22 <- kruskal.test(Simpson ~ Treatment, data = Alpha12_22)
+
+ShC_Treat22 <- kruskal.test(Shannon ~ Treatment, data = AlphaC_22)
+SiC_Treat22 <-kruskal.test(Simpson ~ Treatment, data = AlphaC_22)
+
+# Streams vs Lakes
+Sh12_Body <- kruskal.test(Shannon ~ StreamLake, data = Alpha12_22)
+Si12_Body <- kruskal.test(Simpson ~ StreamLake, data = Alpha12_22)
+
+ShC_Body <- kruskal.test(Shannon ~ StreamLake, data = AlphaC_22)
+SiC_Body <-kruskal.test(Simpson ~ StreamLake, data = AlphaC_22)
+```
+
+Kruskal-Wallis test results on the significance of differences between all LWA and SUR sites, including LWA treatment differences, (TreatType) and all 2022 and 2023 sites (Year), divided by primer and diversity measure. Values less than 0.05 indicate significant difference based on the comparison parameter and diversity measure:
+
+```{r kw_assembleall, echo = FALSE, warnings = FALSE}
+kwgen <- matrix(c(Sh12_TypeA$p.value, Si12_TypeA$p.value, ShC_TypeA$p.value, SiC_TypeA$p.value, Sh12_YeaA$p.value, Si12_YeaA$p.value, ShC_YeaA$p.value, SiC_YeaA$p.value), ncol = 4, nrow = 2)
+
+colnames(kwgen) <- c('12S TreatType, All', ' COI TreatType, All', '12S Year, All', 'COI Year, All')
+rownames(kwgen) <- c('Shannon', 'Simpson')
+
+kwgen
+```
+
+Kruskal-Wallis test results on the significance of differences between LWA treatments, position of the sampling site in relation to the nearest LWA installment (Position), and sampling year (Year), divided by primer and diversity measure. Values less than 0.05 indicate significant difference based on the comparison parameter and diversity measure:
+
+```{r kw_assembleLWA, echo = FALSE, warnings = FALSE}
+kwlwa <- matrix(c(Sh12_TypeL$p.value, Si12_TypeL$p.value, ShC_TypeL$p.value, SiC_TypeL$p.value, Sh12_PosL$p.value, Si12_PosL$p.value, ShC_PosL$p.value, SiC_PosL$p.value, Sh12_YeaL$p.value, Si12_YeaL$p.value,ShC_YeaL$p.value, SiC_YeaL$p.value), ncol = 6, nrow = 2)
+
+
+colnames(kwlwa) <- c('12S TreatType, LWA', ' COI TreatType, LWA', '12S Position', 'COI Position', '12S Year, LWA', 'COI Year, LWA')
+rownames(kwlwa) <- c('Shannon', 'Simpson')
+
+kwlwa
+```
+
+Kruskal-Wallis test results on the significance of differences between sampling region (LWA or GH, Region) and if the site was a stream or lake (Stream/Lake), divided by primer and diversity measure. Values less than 0.05 indicate significant difference based on the comparison parameter and diversity measure:
+
+```{r kw_assemble2022, echo = FALSE, warnings = FALSE}
+kw2022 <- matrix(c(Sh12_Treat22$p.value, Si12_Treat22$p.value, ShC_Treat22$p.value, SiC_Treat22$p.value, Sh12_Body$p.value, Si12_Body$p.value, ShC_Body$p.value, SiC_Body$p.value), ncol = 4, nrow = 2)
+
+colnames(kw2022) <- c('12S Region', ' COI Region', '12S Stream/Lake', 'COI Stream/Lake')
+rownames(kw2022) <- c('Shannon', 'Simpson')
+
+
+kw2022
+```
+
+The next section gives site-specific detection results. Each site-specific report includes positional information, a figure of the total (12S and COI) identified reads in each site sample (including non-target taxa such as fungi, bacteria, or algae), the number of unique species in each detected taxonomic class for the sample(s), and the species names of target taxa that were identified in each site sample.
+
+\newpage
+
+# Regional Site Results - Large Wood Addition Sites
+
+```{r, echo = FALSE, out.width="80%", fig.cap = "LWA eDNA sampling sites - lines correspond to the years of LWA installment (purple = 2020, green = 2021, blue = 2022 after eDNA sampling, pink = 2023 after eDNA sampling)", fig.align = "center"}
+knitr::include_graphics("AMCMaps/LWA.png")
+```
+
+\newpage
+
+### Homes Brook - HB01, HB02, HB03, HB05, & MB01
+
+```{r, echo = FALSE, out.width="75%", fig.cap = "Homes Brook Site Locations", fig.align = "center"}
+knitr::include_graphics("AMCMaps/Homes.jpg")
+```
+
+\newpage
+
+#### **HB03**
+
+HB03 was the furthest upstream site on Homes Brook, and sampled at the same coordinates in 2022 and 2023. It is considered Upstream and Pre-LWA of the LWA reach installed in 2022, and Post-LWA for 2023.
+
+```{r HB03plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+HB03 <- subset(inclusivedf, Sample == "AMC22_HB03" | Sample == "AMC23_HB03")
+
+# Plot the class identifications, including non-targets detected
+ggplot(HB03, aes(x = factor(Sample, levels = c("AMC23_HB03", "AMC22_HB03")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for HB03") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r HB03sum, echo = FALSE, warnings = FALSE}
+HB03summary <- aggregate(Species ~ Class + Sample, HB03, function(x) length(unique(x)))
+HB03summary[order(HB03summary$Sample), ]
+```
+
+```{r HB03sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_HB03 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_HB03"]))
+AMC23_HB03 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_HB03"]))
+
+print("Target species detected in 2022:")
+AMC22_HB03
+
+print("Target species detected in 2023:")
+AMC23_HB03
+```
+
+#### **HB02**
+
+HB02 is located just downstream of HB03 and was sampled at the same coordinates in 2022 and 2023. It is considered Upstream and Pre-LWA for 2022, and Post-LWA for 2023.
+
+```{r HB02plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+HB02 <- subset(inclusivedf, Sample == "AMC22_HB02" | Sample == "AMC23_HB02")
+
+# Plot the class identifications, including non-targets detected
+ggplot(HB02, aes(x = factor(Sample, levels = c("AMC23_HB02", "AMC22_HB02")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for HB02") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r HB02sum, echo = FALSE, warnings = FALSE}
+HB02summary <- aggregate(Species ~ Class + Sample, HB02, function(x) length(unique(x)))
+HB02summary[order(HB02summary$Sample), ]
+```
+
+```{r HB02sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_HB02 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_HB02"]))
+AMC23_HB02 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_HB02"]))
+
+print("Target species detected in 2022:")
+AMC22_HB02
+
+print("Target species detected in 2023:")
+AMC23_HB02
+```
+
+#### **HB01**
+
+HB01 was only sampled in 2022, and is considered Upstream and Pre-LWA.
+
+```{r HB01plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+HB01 <- subset(inclusivedf, Sample == "AMC22_HB01")
+
+# Plot the class identifications, including non-targets detected
+ggplot(HB01, aes(x = Sample, y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for HB01") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r HB01sum, echo = FALSE, warnings = FALSE}
+HB01summary <- aggregate(Species ~ Class + Sample, HB01, function(x) length(unique(x)))
+HB01summary[order(HB01summary$Sample), ]
+```
+
+```{r HB01sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_HB01 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_HB01"]))
+
+print("Target species detected in 2022:")
+AMC22_HB01
+```
+
+#### **HB05**
+
+HB05 was only sampled in 2023, and is considered Internal and Post-LWA to the LWA reach installed on Homes Brook.
+
+```{r HB05plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+HB05 <- subset(inclusivedf, Sample == "AMC23_HB05")
+
+# Plot the class identifications, including non-targets detected
+ggplot(HB05, aes(x = Sample, y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for HB05") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r HB05sum, echo = FALSE, warnings = FALSE}
+HB05summary <- aggregate(Species ~ Class + Sample, HB05, function(x) length(unique(x)))
+HB05summary[order(HB05summary$Sample), ]
+```
+
+```{r HB05sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC23_HB05 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_HB05"]))
+
+print("Target species detected in 2023:")
+AMC23_HB05
+```
+
+#### **MB01**
+
+MB01 was sampled at the same coordinates in 2022 and 2023, and is considered Downstream and Pre-LWA for 2022, and Post-LWA for 2023.
+
+```{r MB01plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+MB01 <- subset(inclusivedf, Sample == "AMC22_MB01" | Sample == "AMC23_MB01")
+
+# Plot the class identifications, including non-targets detected
+ggplot(MB01, aes(x = factor(Sample, levels = c("AMC23_MB01", "AMC22_MB01")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for MB01") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r MB01sum, echo = FALSE, warnings = FALSE}
+MB01summary <- aggregate(Species ~ Class + Sample, MB01, function(x) length(unique(x)))
+MB01summary[order(MB01summary$Sample), ]
+```
+
+```{r MB01sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_MB01 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_MB01"]))
+AMC23_MB01 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_MB01"]))
+
+print("Target species detected in 2022:")
+AMC22_MB01
+
+print("Target species detected in 2023:")
+AMC23_MB01
+```
+
+\newpage
+
+### Ashworth Brook - AB04, AB03, AB02, AB01
+
+```{r, echo = FALSE, out.width="75%", fig.align = "center"}
+knitr::include_graphics("AMCMaps/Ashworth.png")
+```
+
+\newpage
+
+#### **AB04**
+
+AB04 samples were collected in both 2022 and 2023, though the site for 2023 shifted slightly downstream compared to that of 2022 due to field conditions. In both years, these samples are considered Upstream of all prior or planned LWA work, though due to the relative time difference between collection and installation plans, the 2022 sample was considered Post-LWA and the 2023 sample considered Pre-LWA.
+
+```{r AB04plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+AB04 <- subset(inclusivedf, Sample == "AMC22_AB04" | Sample == "AMC23_AB04")
+
+# Plot the class identifications, including non-targets detected
+ggplot(AB04, aes(x = factor(Sample, levels = c("AMC23_AB04", "AMC22_AB04")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for AB04") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r AB04sum, echo = FALSE, warnings = FALSE}
+AB04summary <- aggregate(Species ~ Class + Sample, AB04, function(x) length(unique(x)))
+AB04summary[order(AB04summary$Sample), ]
+```
+
+```{r AB04sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_AB04 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_AB04"]))
+AMC23_AB04 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_AB04"]))
+
+print("Target species detected in 2022:")
+AMC22_AB04
+
+print("Target species detected in 2023:")
+AMC23_AB04
+```
+
+#### **AB03**
+
+AB03 was sampled in 2022 and 2023, with no significant sampling location changes. The sampling site is upstream of the Ashworth LWA reach installed in 2021, and is considered Upstream for both 2022 and 2023 as the 2023 LWA installation occurred after sampling.
+
+```{r AB03plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+AB03 <- subset(inclusivedf, Sample == "AMC22_AB03" | Sample == "AMC23_AB03")
+
+# Plot the class identifications, including non-targets detected
+ggplot(AB03, aes(x = factor(Sample, levels = c("AMC23_AB03", "AMC22_AB03")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for AB03") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r AB03sum, echo = FALSE, warnings = FALSE}
+AB03summary <- aggregate(Species ~ Class + Sample, AB03, function(x) length(unique(x)))
+AB03summary[order(AB03summary$Sample), ]
+```
+
+```{r AB03sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_AB03 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_AB03"]))
+AMC23_AB03 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_AB03"]))
+
+print("Target species detected in 2022:")
+AMC22_AB03
+
+print("Target species detected in 2023:")
+AMC23_AB03
+```
+
+#### **AB02**
+
+AB02 was sampled only in 2023, and is placed upstream of both the 2020 and 2021 LWA installment reaches. It is internal to the planned 2023 LWA installation, but can be considered Pre or Post-LWA. In current analyses, it is considered Upstream and Pre-LWA
+
+```{r AB02plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+AB02 <- subset(inclusivedf, Sample == "AMC23_AB02")
+
+# Plot the class identifications, including non-targets detected
+ggplot(AB02, aes(x = Sample, y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for AB02") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r AB02sum, echo = FALSE, warnings = FALSE}
+AB02summary <- aggregate(Species ~ Class + Sample, AB02, function(x) length(unique(x)))
+AB02summary[order(AB02summary$Sample), ]
+```
+
+```{r AB02sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_AB02 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_AB02"]))
+
+print("Target species detected in 2023:")
+AMC22_AB02
+```
+
+#### **AB01**
+
+Samples labeled AB01 were collected in both 2022 and 2023 as the furthest downstream sample on Ashworth Brook, but field conditions required moving the 2022 collection site upstream for 2023 sampling. In both years, these samples were collected within the 2020 LWA installment area, and are thus considered Internal and Post-LWA for both years despite the change in location.
+
+The BLK01 sample was located downstream of AB01, after the confluence of Ashworth and Nelson Brook.
+
+```{r AB01plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+AB01 <- subset(inclusivedf, Sample == "AMC22_AB01" | Sample == "AMC23_AB01")
+
+# Plot the class identifications, including non-targets detected
+ggplot(AB01, aes(x = factor(Sample, levels = c("AMC23_AB01", "AMC22_AB01")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for AB01") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r AB01sum, echo = FALSE, warnings = FALSE}
+AB01summary <- aggregate(Species ~ Class + Sample, AB01, function(x) length(unique(x)))
+AB01summary[order(AB01summary$Sample), ]
+```
+
+```{r AB01sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_AB01 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_AB01"]))
+AMC23_AB01 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_AB01"]))
+
+print("Target species detected in 2022:")
+AMC22_AB01
+
+print("Target species detected in 2023:")
+AMC23_AB01
+```
+
+\newpage
+
+### Nelson Brook - BLK08, BLK07/NE07, BLK06, BLK05, BLK04/NE04, BLK01
+
+```{r, echo = FALSE, out.width="75%", fig.align = "center"}
+knitr::include_graphics("AMCMaps/Nelson.png")
+```
+
+\newpage
+
+#### **BLK08**
+
+BLK08 was sampled only in 2022, and is considered a Parallel Control to Ashworth Brook sites due to relative proximity and confluence of the streams. It is the farthest upstream site on Nelson Brook (previously misidentified as Black Brook)
+
+```{r BLK08plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+BLK08 <- subset(inclusivedf, Sample == "AMC22_BLK08")
+
+# Plot the class identifications, including non-targets detected
+ggplot(BLK08, aes(x = factor(Sample, levels = c("AMC22_BLK08")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for BLK08") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r BLK08sum, echo = FALSE, warnings = FALSE}
+BLK08summary <- aggregate(Species ~ Class + Sample, BLK08, function(x) length(unique(x)))
+BLK08summary[order(BLK08summary$Sample), ]
+```
+
+```{r BLK08sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_BLK08 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_BLK08"]))
+
+print("Target species detected in 2022:")
+AMC22_BLK08
+```
+
+#### **BLK07/NE07**
+
+BLK07/NE07 was sampled in both 2022 and 2023 at the same coordinates for each year, and is considered a Parallel Control site. It is placed just downstream of BLK08.
+
+```{r NE07plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+NE07 <- subset(inclusivedf, Sample == "AMC22_BLK07" | Sample == "AMC23_NE07")
+
+# Plot the class identifications, including non-targets detected
+ggplot(NE07, aes(x = factor(Sample, levels = c("AMC23_NE07", "AMC22_BLK07")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for BLK07/NE07") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r NE07sum, echo = FALSE, warnings = FALSE}
+NE07summary <- aggregate(Species ~ Class + Sample, NE07, function(x) length(unique(x)))
+NE07summary[order(NE07summary$Sample), ]
+```
+
+```{r NE07sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_BLK07 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_BLK07"]))
+AMC23_NE07 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_NE07"]))
+
+print("Target species detected in 2022:")
+AMC22_BLK07
+
+print("Target species detected in 2023:")
+AMC23_NE07
+```
+
+#### **BLK06**
+
+BLK06 was only sampled in 2022, and is downstream of BLK08 and BLK07/NE07. It is also considered a Parallel Control to Ashworth Brook sites.
+
+```{r BLK06plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+BLK06 <- subset(inclusivedf, Sample == "AMC22_BLK06")
+
+# Plot the class identifications, including non-targets detected
+ggplot(BLK06, aes(x = factor(Sample, levels = c("AMC22_BLK06")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for BLK06") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r BLK06sum, echo = FALSE, warnings = FALSE}
+BLK06summary <- aggregate(Species ~ Class + Sample, BLK06, function(x) length(unique(x)))
+BLK06summary[order(BLK06summary$Sample), ]
+```
+
+```{r BLK06sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_BLK06 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_BLK06"]))
+
+print("Target species detected in 2022:")
+AMC22_BLK06
+```
+
+#### **BLK05**
+
+BLK05 was sampled in 2022 and is roughly parallel (and slightly downstream of) BLK06. It is considered a Parallel Control to the Ashworth sites.
+
+```{r BLK05plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+BLK05 <- subset(inclusivedf, Sample == "AMC22_BLK05")
+
+# Plot the class identifications, including non-targets detected
+ggplot(BLK05, aes(x = factor(Sample, levels = c("AMC22_BLK05")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for BLK05") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r BLK05sum, echo = FALSE, warnings = FALSE}
+BLK05summary <- aggregate(Species ~ Class + Sample, BLK05, function(x) length(unique(x)))
+BLK05summary[order(BLK05summary$Sample), ]
+```
+
+```{r BLK05sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_BLK05 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_BLK05"]))
+
+print("Target species detected in 2022:")
+AMC22_BLK05
+```
+
+#### **BLK04/NE04**
+
+BLK04/NE04 was sampled in both 2022 and 2023 at the same coordinates each year, and is considered a Parallel Control. It is located downstream of BLK05 and roughly latitudinally parallel with site AB02
+
+```{r NE04plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+NE04 <- subset(inclusivedf, Sample == "AMC22_BLK04" | Sample == "AMC23_NE04")
+
+# Plot the class identifications, including non-targets detected
+ggplot(NE04, aes(x = factor(Sample, levels = c("AMC23_NE04", "AMC22_BLK04")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for BLK04/NE04") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r NE04sum, echo = FALSE, warnings = FALSE}
+NE04summary <- aggregate(Species ~ Class + Sample, NE04, function(x) length(unique(x)))
+NE04summary[order(NE04summary$Sample), ]
+```
+
+```{r NE04sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_BLK04 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_BLK04"]))
+AMC23_NE04 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_NE04"]))
+
+print("Target species detected in 2022:")
+AMC22_BLK04
+
+print("Target species detected in 2023:")
+AMC23_NE04
+```
+
+#### **BLK03**
+
+BLK03 was sampled in 2022, closely Parallel to the lower Ashworth Brook sites. It is downstream of BLK04/NE04, and parallel to BLK02.
+
+```{r BLK03plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+BLK03 <- subset(inclusivedf, Sample == "AMC22_BLK03")
+
+# Plot the class identifications, including non-targets detected
+ggplot(BLK03, aes(x = factor(Sample, levels = c("AMC22_BLK03")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for BLK03") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r BLK03sum, echo = FALSE, warnings = FALSE}
+BLK03summary <- aggregate(Species ~ Class + Sample, BLK03, function(x) length(unique(x)))
+BLK03summary[order(BLK03summary$Sample), ]
+```
+
+```{r BLK03sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_BLK03 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_BLK03"]))
+
+print("Target species detected in 2022:")
+AMC22_BLK03
+```
+
+#### **BLK02**
+
+BLK02 was sampled only in 2022, downstream of BLK06 and upstream of BLK01. It is classed as a Parallel Control.
+
+```{r BLK02plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+BLK02 <- subset(inclusivedf, Sample == "AMC22_BLK02")
+
+# Plot the class identifications, including non-targets detected
+ggplot(BLK02, aes(x = factor(Sample, levels = c("AMC22_BLK02")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for BLK02") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r BLK02sum, echo = FALSE, warnings = FALSE}
+BLK02summary <- aggregate(Species ~ Class + Sample, BLK02, function(x) length(unique(x)))
+BLK02summary[order(BLK02summary$Sample), ]
+```
+
+```{r BLK02sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_BLK02 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_BLK02"]))
+
+print("Target species detected in 2022:")
+AMC22_BLK02
+```
+
+#### **BLK01**
+
+BLK01 was sampled only in 2022, downstream of BLK02 as well as all AB sites. Placement of this site aimed to capture fish movement up into the Nelson and Ashworth streams, and it is classed as a Control sample.
+
+```{r BLK01plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+BLK01 <- subset(inclusivedf, Sample == "AMC22_BLK01")
+
+# Plot the class identifications, including non-targets detected
+ggplot(BLK01, aes(x = factor(Sample, levels = c("AMC22_BLK01")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for BLK01") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r BLK01sum, echo = FALSE, warnings = FALSE}
+BLK01summary <- aggregate(Species ~ Class + Sample, BLK01, function(x) length(unique(x)))
+BLK01summary[order(BLK01summary$Sample), ]
+```
+
+```{r BLK01sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_BLK01 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_BLK01"]))
+
+print("Target species detected in 2022:")
+AMC22_BLK01
+```
+
+\newpage
+
+### Middle Branch - MB13, MB12, MB11, MB10, MB09, MB08, MB07, MB06
+
+```{r, echo = FALSE, out.width="75%", fig.align = "center"}
+knitr::include_graphics("AMCMaps/Middle.png")
+```
+
+\newpage
+
+#### **MB13**
+
+Placed above the confluence, MB13 is a Parallel Control to the LWA installation on the Middle Branch, and was only sampled in 2023.
+
+```{r MB13plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+MB13 <- subset(inclusivedf, Sample == "AMC23_MB13")
+
+# Plot the class identifications, including non-targets detected
+ggplot(MB13, aes(x = factor(Sample, levels = c("AMC23_MB13")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for MB13") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r MB13sum, echo = FALSE, warnings = FALSE}
+MB13summary <- aggregate(Species ~ Class + Sample, MB13, function(x) length(unique(x)))
+MB13summary[order(MB13summary$Sample), ]
+```
+
+```{r MB13sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC23_MB13 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_MB13"]))
+
+print("Target species detected in 2023:")
+AMC23_MB13
+```
+
+#### **MB12**
+
+MB12 is downstream of MB13 and another Parallel Control, and was only sampled in 2023.
+
+```{r MB12plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+MB12 <- subset(inclusivedf, Sample == "AMC23_MB12")
+
+# Plot the class identifications, including non-targets detected
+ggplot(MB12, aes(x = factor(Sample, levels = c("AMC23_MB12")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for MB12") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r MB12sum, echo = FALSE, warnings = FALSE}
+MB12summary <- aggregate(Species ~ Class + Sample, MB12, function(x) length(unique(x)))
+MB12summary[order(MB12summary$Sample), ]
+```
+
+```{r MB12sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC23_MB12 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_MB12"]))
+
+print("Target species detected in 2023:")
+AMC23_MB12
+```
+
+#### **MB11**
+
+MB11 is upstream of the 2022 LWA installation on the Middle Branch, and was only sampled in 2023. It is considered Upstream and Post-LWA.
+
+```{r MB11plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+MB11 <- subset(inclusivedf, Sample == "AMC23_MB11")
+
+# Plot the class identifications, including non-targets detected
+ggplot(MB11, aes(x = factor(Sample, levels = c("AMC23_MB11")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for MB11") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r MB11sum, echo = FALSE, warnings = FALSE}
+MB11summary <- aggregate(Species ~ Class + Sample, MB11, function(x) length(unique(x)))
+MB11summary[order(MB11summary$Sample), ]
+```
+
+```{r MB11sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC23_MB11 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_MB11"]))
+
+print("Target species detected in 2023:")
+AMC23_MB11
+```
+
+#### **MB10**
+
+MB10 was sampled in both 2022 and 2023 at the same coordinates, and is the farthest upstream site within the 2022 LWA installation reach on the Middle Branch. It is considered Internal and Pre-LWA for 2022, and Internal and Post-LWA for 2023.
+
+```{r MB10plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+MB10 <- subset(inclusivedf, Sample == "AMC22_MB10" | Sample == "AMC23_MB10")
+
+# Plot the class identifications, including non-targets detected
+ggplot(MB10, aes(x = factor(Sample, levels = c("AMC23_MB10", "AMC22_MB10")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for MB10") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r MB10sum, echo = FALSE, warnings = FALSE}
+MB10summary <- aggregate(Species ~ Class + Sample, MB10, function(x) length(unique(x)))
+MB10summary[order(MB10summary$Sample), ]
+```
+
+```{r MB10sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_MB10 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_MB10"]))
+AMC23_MB10 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_MB10"]))
+
+print("Target species detected in 2022:")
+AMC22_MB10
+
+print("Target species detected in 2023:")
+AMC23_MB10
+```
+
+#### **MB09**
+
+MB09 was sampled in both 2022 and 2023 at the same coordinates, and is considered Internal and Pre-LWA for 2022, and Internal and Post-LWA for 2023.
+
+```{r MB09plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+MB09 <- subset(inclusivedf, Sample == "AMC22_MB09" | Sample == "AMC23_MB09")
+
+# Plot the class identifications, including non-targets detected
+ggplot(MB09, aes(x = factor(Sample, levels = c("AMC23_MB09", "AMC22_MB09")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for MB09") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r MB09sum, echo = FALSE, warnings = FALSE}
+MB09summary <- aggregate(Species ~ Class + Sample, MB09, function(x) length(unique(x)))
+MB09summary[order(MB09summary$Sample), ]
+```
+
+```{r MB09sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_MB09 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_MB09"]))
+AMC23_MB09 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_MB09"]))
+
+print("Target species detected in 2022:")
+AMC22_MB09
+
+print("Target species detected in 2023:")
+AMC23_MB09
+```
+
+#### **MB08**
+
+MB08 was sampled in 2022 and 2023 at the same coordinates, and is just upstream of the confluence. It is considered Internal and Pre-LWA for 2022, and Internal and Post-LWA for 2023.
+
+```{r MB08plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+MB08 <- subset(inclusivedf, Sample == "AMC22_MB08" | Sample == "AMC23_MB08")
+
+# Plot the class identifications, including non-targets detected
+ggplot(MB08, aes(x = factor(Sample, levels = c("AMC23_MB08", "AMC22_MB08")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for MB08") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r MB08sum, echo = FALSE, warnings = FALSE}
+MB08summary <- aggregate(Species ~ Class + Sample, MB08, function(x) length(unique(x)))
+MB08summary[order(MB08summary$Sample), ]
+```
+
+```{r MB08sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_MB08 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_MB08"]))
+AMC23_MB08 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_MB08"]))
+
+print("Target species detected in 2022:")
+AMC22_MB08
+
+print("Target species detected in 2023:")
+AMC23_MB08
+```
+
+#### **MB07**
+
+MB07 was sampled in 2022 and 2023 at the same coordinates. It is considered Internal and Pre-LWA for 2022, and Internal and Post-LWA for 2023, and is the second-most downstream site on the Middle Branch reach.
+
+```{r MB07plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+MB07 <- subset(inclusivedf, Sample == "AMC22_MB07" | Sample == "AMC23_MB07")
+
+# Plot the class identifications, including non-targets detected
+ggplot(MB07, aes(x = factor(Sample, levels = c("AMC23_MB07", "AMC22_MB07")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for MB07") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r MB07sum, echo = FALSE, warnings = FALSE}
+MB07summary <- aggregate(Species ~ Class + Sample, MB07, function(x) length(unique(x)))
+MB07summary[order(MB07summary$Sample), ]
+```
+
+```{r MB07sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_MB07 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_MB07"]))
+AMC23_MB07 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_MB07"]))
+
+print("Target species detected in 2022:")
+AMC22_MB07
+
+print("Target species detected in 2023:")
+AMC23_MB07
+```
+
+#### **MB06**
+
+MB06 is the farthest downstream sample for the Middle Branch reach, and was sampled in both 2022 and 2023 at the same coordinates. It is considered Internal and Pre-LWA for 2022, and Internal and Post-LWA for 2023.
+
+```{r MB06plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+MB06 <- subset(inclusivedf, Sample == "AMC22_MB06" | Sample == "AMC23_MB06")
+
+# Plot the class identifications, including non-targets detected
+ggplot(MB06, aes(x = factor(Sample, levels = c("AMC23_MB06", "AMC22_MB06")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for MB06") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r MB06sum, echo = FALSE, warnings = FALSE}
+MB06summary <- aggregate(Species ~ Class + Sample, MB06, function(x) length(unique(x)))
+MB06summary[order(MB06summary$Sample), ]
+```
+
+```{r MB06sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_MB06 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_MB06"]))
+AMC23_MB06 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_MB06"]))
+
+print("Target species detected in 2022:")
+AMC22_MB06
+
+print("Target species detected in 2023:")
+AMC23_MB06
+```
+
+\newpage
+
+### Black Brook - BB02, BB03, BB04
+
+```{r, echo = FALSE, out.width="75%", fig.align = "center"}
+knitr::include_graphics("AMCMaps/Black.png")
+```
+
+\newpage
+
+#### **BB02**
+
+```{r BB02plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+BB02 <- subset(inclusivedf, Sample == "AMC23_BB02")
+
+# Plot the class identifications, including non-targets detected
+ggplot(BB02, aes(x = factor(Sample, levels = c("AMC23_BB02")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for BB02") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r BB02sum, echo = FALSE, warnings = FALSE}
+BB02summary <- aggregate(Species ~ Class + Sample, BB02, function(x) length(unique(x)))
+BB02summary[order(BB02summary$Sample), ]
+```
+
+```{r BB02sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC23_BB02 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_BB02"]))
+
+print("Target species detected in 2023:")
+AMC23_BB02
+```
+
+#### **BB03**
+
+```{r BB03plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+BB03 <- subset(inclusivedf, Sample == "AMC23_BB03")
+
+# Plot the class identifications, including non-targets detected
+ggplot(BB03, aes(x = factor(Sample, levels = c("AMC23_BB03")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for BB03") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r BB03sum, echo = FALSE, warnings = FALSE}
+BB03summary <- aggregate(Species ~ Class + Sample, BB03, function(x) length(unique(x)))
+BB03summary[order(BB03summary$Sample), ]
+```
+
+```{r BB03sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC23_BB03 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_BB03"]))
+
+print("Target species detected in 2023:")
+AMC23_BB03
+```
+
+#### **BB04**
+
+```{r BB04plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+BB04 <- subset(inclusivedf, Sample == "AMC23_BB04")
+
+# Plot the class identifications, including non-targets detected
+ggplot(BB04, aes(x = factor(Sample, levels = c("AMC23_BB04")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for BB04") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r BB04sum, echo = FALSE, warnings = FALSE}
+BB04summary <- aggregate(Species ~ Class + Sample, BB04, function(x) length(unique(x)))
+BB04summary[order(BB04summary$Sample), ]
+```
+
+```{r BB04sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC23_BB04 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_BB04"]))
+
+print("Target species detected in 2023:")
+AMC23_BB04
+```
+
+\newpage
+
+### Sucker Brook - SU03, SU02, SU04
+
+```{r, echo = FALSE, out.width="75%", fig.align = "center"}
+knitr::include_graphics("AMCMaps/Sucker.jpg")
+```
+
+\newpage
+
+#### **SU04**
+
+```{r SU04plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+SU04 <- subset(inclusivedf, Sample == "AMC23_SU04")
+
+# Plot the class identifications, including non-targets detected
+ggplot(SU04, aes(x = factor(Sample, levels = c("AMC23_SU04")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for SU04") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r SU04sum, echo = FALSE, warnings = FALSE}
+SU04summary <- aggregate(Species ~ Class + Sample, SU04, function(x) length(unique(x)))
+SU04summary[order(SU04summary$Sample), ]
+```
+
+```{r SU04sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC23_SU04 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_SU04"]))
+
+print("Target species detected in 2023:")
+AMC23_SU04
+```
+
+#### **SU02**
+
+```{r SU02plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+SU02 <- subset(inclusivedf, Sample == "AMC23_SU02")
+
+# Plot the class identifications, including non-targets detected
+ggplot(SU02, aes(x = factor(Sample, levels = c("AMC23_SU02")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for SU02") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r SU02sum, echo = FALSE, warnings = FALSE}
+SU02summary <- aggregate(Species ~ Class + Sample, SU02, function(x) length(unique(x)))
+SU02summary[order(SU02summary$Sample), ]
+```
+
+```{r SU02sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC23_SU02 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_SU02"]))
+
+print("Target species detected in 2023:")
+AMC23_SU02
+```
+
+#### **SU03**
+
+```{r SU03plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+SU03 <- subset(inclusivedf, Sample == "AMC23_SU03")
+
+# Plot the class identifications, including non-targets detected
+ggplot(SU03, aes(x = factor(Sample, levels = c("AMC23_SU03")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for SU03") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r SU03sum, echo = FALSE, warnings = FALSE}
+SU03summary <- aggregate(Species ~ Class + Sample, SU03, function(x) length(unique(x)))
+SU03summary[order(SU03summary$Sample), ]
+```
+
+```{r SU03sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC23_SU03 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC23_SU03"]))
+
+print("Target species detected in 2023:")
+AMC23_SU03
+```
+
+\newpage
+
+# Regional Site Results - Gulf Hagas Sites
+
+```{r, echo = FALSE, out.width="75%", fig.align = "center"}
+knitr::include_graphics("AMCMaps/GHRegion.jpg")
+```
+
+\newpage
+
+### WBP01 & WBP02
+
+```{r, echo = FALSE, out.width="85%", fig.align = "center"}
+knitr::include_graphics("AMCMaps/WBPs.jpg")
+```
+
+#### **WBP01**
+
+WBP01 is the northernmost site in both the Gulf Hagas and LWA sampling regions, and is located in the Second West Branch Pond, connected to the First West Branch Pond (WBP02). WBP01 samples were kept separate to examine differences in detection at 0, 0.5, and 1 meter depths.
+
+```{r WBP01plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+WBP01 <- subset(inclusivedf, Sample == "AMC22_WBP01_1M" | Sample == "AMC22_WBP01_0.5M" | Sample == "AMC22_WBP01_0M")
+
+# Plot the class identifications, including non-targets detected
+ggplot(WBP01, aes(x = factor(Sample, levels = c("AMC22_WBP01_1M", "AMC22_WBP01_0.5M", "AMC22_WBP01_0M")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for WBP01") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r WBP01sum, echo = FALSE, warnings = FALSE}
+WBP01summary <- aggregate(Species ~ Class + Sample, WBP01, function(x) length(unique(x)))
+WBP01summary[order(WBP01summary$Sample), ]
+```
+
+```{r WBP01sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_WBP01_0M <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_WBP01_0M"]))
+AMC22_WBP01_0.5M <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_WBP01_0.5M"]))
+AMC22_WBP01_1M <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_WBP01_1M"]))
+
+print("Target species detected at 0M:")
+AMC22_WBP01_0M
+print("Target species detected at 0.5M:")
+AMC22_WBP01_0.5M
+print("Target species detected at 1M:")
+AMC22_WBP01_1M
+```
+
+#### **WBP02**
+
+WBP02 is located in the First West Branch pond, and is the second northern-most site in the Gulf Hagas region.
+
+```{r WBP02plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+WBP02 <- subset(inclusivedf, Sample == "AMC22_WBP02")
+
+# Plot the class identifications, including non-targets detected
+ggplot(WBP02, aes(x = factor(Sample, levels = c("AMC22_WBP02")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for WBP02") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r WBP02sum, echo = FALSE, warnings = FALSE}
+WBP02summary <- aggregate(Species ~ Class + Sample, WBP02, function(x) length(unique(x)))
+WBP02summary[order(WBP02summary$Sample), ]
+```
+
+```{r WBP02sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_WBP02 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_WBP02"]))
+
+print("Target species detected:")
+AMC22_WBP02
+```
+
+\newpage
+
+### MOB01, LP01, WB02
+
+```{r, echo = FALSE, out.width="85%", fig.align = "center"}
+knitr::include_graphics("AMCMaps/Midwest.jpg")
+```
+
+#### **MOB01**
+
+MOB01 is placed just above Little Lyford Pond, and is the western-most site in the GH region. Is is distantly connected to WB02 in the West Branch Pleasant River.
+
+```{r MOB01plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+MOB01 <- subset(inclusivedf, Sample == "AMC22_MOB01")
+
+# Plot the class identifications, including non-targets detected
+ggplot(MOB01, aes(x = factor(Sample, levels = c("AMC22_MOB01")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for MOB01") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r MOB01sum, echo = FALSE, warnings = FALSE}
+MOB01summary <- aggregate(Species ~ Class + Sample, MOB01, function(x) length(unique(x)))
+MOB01summary[order(MOB01summary$Sample), ]
+```
+
+```{r MOB01sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_MOB01 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_MOB01"]))
+
+print("Target species detected:")
+AMC22_MOB01
+```
+
+#### **LP01**
+
+LP01 is placed in Long Pond, southeast of MOB01.
+
+```{r LP01plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+LP01 <- subset(inclusivedf, Sample == "AMC22_LP01")
+
+# Plot the class identifications, including non-targets detected
+ggplot(LP01, aes(x = factor(Sample, levels = c("AMC22_LP01")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for LP01") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r LP01sum, echo = FALSE, warnings = FALSE}
+LP01summary <- aggregate(Species ~ Class + Sample, LP01, function(x) length(unique(x)))
+LP01summary[order(LP01summary$Sample), ]
+```
+
+```{r LP01sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_LP01 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_LP01"]))
+
+print("Target species detected:")
+AMC22_LP01
+```
+
+#### **WB02**
+
+WB02 is placed in the West Branch Pleasant River between MOB01 and SL01 in Silver Lake.
+
+```{r WB02plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at 
+WB02 <- subset(inclusivedf, Sample == "AMC22_WB02")  
+
+# Plot the class identifications, including non-targets detected 
+ggplot(WB02, aes(x = factor(Sample, levels = c("AMC22_WB02")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for WB02") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r WB02sum, echo = FALSE, warnings = FALSE}
+WB02summary <- aggregate(Species ~ Class + Sample, WB02, function(x) length(unique(x))) 
+MOB01summary[order(WB02summary$Sample), ]
+```
+
+```{r WB02 sp, echo = FALSE, warnings = FALSE}
+# Target species 
+AMC22_WB02 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_WB02"]))  
+
+print("Target species detected:") 
+AMC22_WB02
+```
+
+\newpage
+
+### IS02, IS04, IS05, IP01 & BH01
+
+```{r, echo = FALSE, out.width="85%", fig.align = "center"}
+knitr::include_graphics("AMCMaps/IndianLakeSystem.jpg")
+```
+
+#### **IS05**
+
+```{r IS05plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at 
+IS05 <- subset(inclusivedf, Sample == "AMC22_IS05")  
+# Plot the class identifications, including non-targets detected 
+ggplot(IS05, aes(x = factor(Sample, levels = c("AMC22_IS05")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for IS05") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r IS05sum, echo = FALSE, warnings = FALSE}
+IS05summary <- aggregate(Species ~ Class + Sample, IS05, function(x) length(unique(x))) 
+IS05summary[order(IS05summary$Sample), ]
+```
+
+```{r IS05sp, echo = FALSE, warnings = FALSE}
+# Target species 
+AMC22_IS05 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_IS05"]))  
+print("Target species detected:") 
+AMC22_IS05
+```
+
+#### **IS02**
+
+```{r IS02plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+IS02 <- subset(inclusivedf, Sample == "AMC22_IS02")
+
+# Plot the class identifications, including non-targets detected
+ggplot(IS02, aes(x = factor(Sample, levels = c("AMC22_IS02")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for IS02") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r IS02sum, echo = FALSE, warnings = FALSE}
+IS02summary <- aggregate(Species ~ Class + Sample, IS02, function(x) length(unique(x)))
+IS02summary[order(IS02summary$Sample), ]
+```
+
+```{r IS02sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_IS02 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_IS02"]))
+
+print("Target species detected:")
+AMC22_IS02
+```
+
+#### **IS04**
+
+```{r IS04plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+IS04 <- subset(inclusivedf, Sample == "AMC22_IS04")
+
+# Plot the class identifications, including non-targets detected
+ggplot(IS04, aes(x = factor(Sample, levels = c("AMC22_IS04")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for IS04") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r IS04sum, echo = FALSE, warnings = FALSE}
+IS04summary <- aggregate(Species ~ Class + Sample, IS04, function(x) length(unique(x)))
+IS04summary[order(IS04summary$Sample), ]
+```
+
+```{r IS04sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_IS04 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_IS04"]))
+
+print("Target species detected:")
+AMC22_IS04
+```
+
+#### **IP01**
+
+```{r IP01plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+IP01 <- subset(inclusivedf, Sample == "AMC22_IP01")
+
+# Plot the class identifications, including non-targets detected
+ggplot(IP01, aes(x = factor(Sample, levels = c("AMC22_IP01")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for IP01") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r IP01sum, echo = FALSE, warnings = FALSE}
+IP01summary <- aggregate(Species ~ Class + Sample, IP01, function(x) length(unique(x)))
+IP01summary[order(IP01summary$Sample), ]
+```
+
+```{r IP01sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_IP01 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_IP01"]))
+
+print("Target species detected:")
+AMC22_IP01
+```
+
+#### **BH01**
+
+```{r BH01plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+BH01 <- subset(inclusivedf, Sample == "AMC22_BH01.2")
+
+# Plot the class identifications, including non-targets detected
+ggplot(BH01, aes(x = factor(Sample, levels = c("AMC22_BH01.2")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for BH01") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r BH01sum, echo = FALSE, warnings = FALSE}
+BH01summary <- aggregate(Species ~ Class + Sample, BH01, function(x) length(unique(x)))
+BH01summary[order(BH01summary$Sample), ]
+```
+
+```{r BH01sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_BH01 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_BH01.2"]))
+
+print("Target species detected:")
+AMC22_BH01
+```
+
+\newpage
+
+### **SL01**
+
+```{r, echo = FALSE, out.width="75%", fig.align = "center"}
+knitr::include_graphics("AMCMaps/SL01.jpg")
+```
+
+```{r SL01plot, echo = FALSE, warnings = FALSE, out.width="75%", fig.align="center"}
+# Pull out just the sample(s) we want to look at
+SL01 <- subset(inclusivedf, Sample == "AMC22_SL01")
+
+# Plot the class identifications, including non-targets detected
+ggplot(SL01, aes(x = factor(Sample, levels = c("AMC22_SL01")), y = Abundance, fill = Class)) + geom_bar(stat = "identity") + coord_flip() + labs(x = "Sample", y = "Total Detected Read Abundance", title = "Detection Results for SL01") + scale_fill_viridis(discrete = TRUE)
+```
+
+```{r SL01sum, echo = FALSE, warnings = FALSE}
+SL01summary <- aggregate(Species ~ Class + Sample, SL01, function(x) length(unique(x)))
+SL01summary[order(SL01summary$Sample), ]
+```
+
+```{r SL01sp, echo = FALSE, warnings = FALSE}
+# Target species
+AMC22_SL01 <- sort(unique(tarinclusivedf$Species[tarinclusivedf$Sample == "AMC22_SL01"]))
+
+print("Target species detected:")
+AMC22_SL01
+```

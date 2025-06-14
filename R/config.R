@@ -2,8 +2,6 @@
 ## The following lines set package, path, and versioning information for analyzing the raw fastq files
 
 
-
-
 ## Identify, Install, and Load Packages 
 packages = list(
   CRAN = c("ggplot2", "vegan", "dplyr", "viridis", "ggpubr", "fossil", "paletteer", "tidyverse", "imager", "rmarkdown", "beepr", "stringr"),
@@ -31,7 +29,6 @@ suppressPackageStartupMessages({
   for (p in packages$bioc) library(p, character.only = TRUE)
   for (p in names(packages$github)) library(p, character.only = TRUE)
 })
-
 
 
 ## Set Output Destination
@@ -64,7 +61,6 @@ dir.create(path_outM, showWarnings = FALSE, recursive = TRUE)
 dir.create(path_figM, showWarnings = FALSE, recursive = TRUE)
 dir.create(path_outB, showWarnings = FALSE, recursive = TRUE)
 dir.create(path_figB, showWarnings = FALSE, recursive = TRUE)
-
 
 
 ## Set Raw, Filtered, and Metadata Locations
