@@ -101,20 +101,7 @@ beep(sound = "fanfare")
 ```
 
 
-The indexes and adapters have been removed from the sequence files, but the original primers are still attached. Need to account for their presence in the trim amounts and remove them.
 
-12S MiFish region: ~170 (average length of 170, as measured by source paper)
-
-12S Forward primer: 21 - GTCGGTAAAACTCGTGCCAGC
-
-12S Reverse primer: 27 - CATAGTGGGGTATCTAATCCCAGTTTG
-
-
-Quality notes:
-
-12 Forward: cut after 220
-
-12 Reverse: cut after 220
 
 
 ## Begin filtering process

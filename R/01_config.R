@@ -1,11 +1,10 @@
 # Configuration File
 ## The following lines set package, path, and versioning information for analyzing the raw fastq files
 
-
 ## Identify, Install, and Load Packages 
 packages = list(
-  CRAN = c("ggplot2", "vegan", "dplyr", "viridis", "ggpubr", "fossil", "paletteer", "tidyverse", "imager", "rmarkdown", "beepr", "stringr"),
-  bioc = c("BiocManager", "dada2", "phyloseq", "decontam"),
+  CRAN = c("ggplot2","dplyr", "tidyverse","rmarkdown", "beepr", "stringr"),
+  bioc = c("BiocManager", "dada2"),
   github = c()
 )
 
@@ -37,8 +36,8 @@ suppressPackageStartupMessages({
 ### Set the base location:
 base <- "Data/Outputs"
 
-### Set the date in MM-DD-YY format:
-date <- "06-10-25"
+### Set the date in YYYY-MM-DD format:
+date <- "2025-06-17"
 
 ### Set the primer identification:
 primerM <- "12S"
@@ -74,8 +73,8 @@ path_rawBF <- "Data/Raw/COIB/Read1"
 path_rawBR <- "Data/Raw/COIB/Read2"
 
 #### Set folder locations for the filtered sequence files (this once again involves combining strings)
-forward <- "Forward"
-reverse <- "Reverse"
+forward <- "FiltForward"
+reverse <- "FiltReverse"
 
 #### Combine the strings
 path_filtMF <- paste(path_outM, forward, sep = "/")

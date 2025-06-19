@@ -9,10 +9,47 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
+I still want to remove bacterial and plant/algae identifications, so don't save the object yet
+
+```{r remove_taxa, echo = FALSE}
+# Remove plant and others
+ps12S <- ps_clean %>% 
+  subset_taxa(Phylum != "Bacillota") 
+ps12S <- ps12S %>% 
+  subset_taxa(Phylum != "Chlorophyta")
+ps12S <- ps12S %>% 
+  subset_taxa(Phylum != "Cyanobacteriota")
+ps12S <- ps12S %>% 
+  subset_taxa(Phylum != "Pseudomonadota")
+ps12S <- ps12S %>% 
+  subset_taxa(Phylum != "Foraminifera")
+ps12S <- ps12S %>% 
+  subset_taxa(Phylum != "Streptophyta")
+```
+
+```{r clean_columns, echo = FALSE}
+ps12S <- prune_taxa(taxa_sums(ps12S) > 0, ps12S) 
+ps12S <- prune_samples(sample_sums(ps12S) > 0, ps12S)
+
+ps12S.stack <- transform_sample_counts(ps12S, function(x) x / sum(x) )
+
+# Plot based on Class
+ps12.class <- plot_bar(ps12S.stack, fill="Class") + 
+  ggtitle("12S Identified Clean Reads") +
+  labs(x = "Sample", y = "ASV Proportion") + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=1)) +
+  theme(axis.title.x = element_blank())
+
+ps12.class
+
+
+ggsave("CleanedClassIDs.png", path = path_outputs, ps12.class, width = 8, height = 5, units = "in") 
+
+saveRDS(ps12S, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/6-Jun03-2024/CleanPhyloseq.RDS")
+```
+
 ```{r}
-
-
-
 # Cleaned Phyloseq Object
 psCOI <- readRDS("G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/COIB/5-May03-2024/CleanPhyloseq.RDS")
 psCOI <- subset_samples(psCOI, Treatment%in%c("LWA"))
