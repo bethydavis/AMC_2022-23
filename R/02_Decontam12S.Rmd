@@ -10,9 +10,14 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = normalizePath("../"))
 ```
 
-
+We can mostly use the same config file, if we also load the seqtabNC outputs from the 01_DADA2.R file
 ```{r}
-source("R/02_config.R")
+source("R/01_config.R")
+
+# Load the seqtabNC files - make sure the output versions match
+seqtabM_NC <- readRDS("Data/Outputs/2025-06-17/12S/InterimObjects/MergedSeqTab_NoChim.rds")
+##
+seqtabB_NC <- readRDS("Data/Outputs/2025-06-17/COIB/InterimObjects/MergedSeqTab_NoChim.rds")
 ```
 
 The next steps of the workflow tend to throw more errors or formatting changes and so are placed in a .rmd for ease of troubleshooting and documenting notes

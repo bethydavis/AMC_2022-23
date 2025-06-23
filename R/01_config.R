@@ -3,8 +3,8 @@
 
 ## Identify, Install, and Load Packages 
 packages = list(
-  CRAN = c("ggplot2","dplyr", "tidyverse","rmarkdown", "beepr", "stringr"),
-  bioc = c("BiocManager", "dada2"),
+  CRAN = c("ggplot2", "vegan", "dplyr", "viridis", "ggpubr", "fossil", "paletteer", "tidyverse", "imager", "rmarkdown", "beepr", "stringr"),
+  bioc = c("BiocManager", "dada2", "phyloseq", "decontam"),
   github = c()
 )
 
