@@ -1,7 +1,5 @@
 ---
-title: "02_Decontam12S"
-author: "Beth Davis"
-date: "`r Sys.Date()`"
+title: "02_DecontamCOIB"
 output: html_document
 ---
 
@@ -10,10 +8,9 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = normalizePath("../"))
 ```
 
-
 The next steps of the workflow tend to throw more errors, rely on packages that may be unstable, and/or just require a bit more attention. Therefore these steps are placed in a .rmd for ease of troubleshooting and documenting notes. To run a chunk of code, just press the green play button at the top right side of each chunk.
 
-This .rmd will only finish processing for the 12S primer dataset. See 02_DecontamCOIB.Rmd to finish sample processing for the COIB primer dataset.
+This .rmd will only finish processing for the COIB primer dataset. See 02_Decontam12S.Rmd to finish sample processing for the 12S primer dataset.
 
 
 ```{r load, echo = FALSE}
@@ -21,14 +18,14 @@ This .rmd will only finish processing for the 12S primer dataset. See 02_Deconta
 source("R/01_config.R")
 
 # Load the seqtabNC file - make sure the output versions match
-seqtabM_NC <- readRDS("Data/Outputs/2025-06-17/12S/InterimObjects/MergedSeqTab_NoChim.rds")
+seqtabB_NC <- readRDS("Data/Outputs/2025-06-17/COIB/InterimObjects/MergedSeqTab_NoChim.rds")
 ```
 
 
 # Step 1: Assign Taxonomy to the DADA2 Output
 This step may take some time
 ```{r assign_taxonomy, echo = FALSE}
-all.taxa <- assignTaxonomy(seqtabM_NC, 'Data/Input/12S_REFDB.fasta', tryRC = TRUE, verbose = TRUE)
+all.taxa <- assignTaxonomy(seqtabB_NC, 'Data/Input/COI_REFDB.fasta', tryRC = TRUE, verbose = TRUE)
 
 beep(sound = "fanfare")
 ```
@@ -45,7 +42,7 @@ head(all.taxa)
 colnames(all.taxa) <- c("Phylum", "Class", "Order", "Family", "Genus", "Species")
 
 # Save all.taxa as a .csv once itʻs in order
-write.csv(all.taxa, file.path(path_outM, "12SAssignedTaxa.csv"))
+write.csv(all.taxa, file.path(path_outB, "COIBAssignedTaxa.csv"))
 
 # If the row.names in all.taxa are not the sequences, remove the # and run the following line:
 # all.taxa <- data.frame(all.taxa, row.names = 1)
@@ -53,10 +50,10 @@ write.csv(all.taxa, file.path(path_outM, "12SAssignedTaxa.csv"))
 
 Now check seqtabNC (primarily by organizing it) - seqtabNC should have the samples as rownames and sequences as colnames
 ```{r seqtabcheck, echo = FALSE}
-head(seqtabM_NC) 
-seqtabM_NC <- seqtabM_NC[order(row.names(seqtabM_NC)), ]
+head(seqtabB_NC) 
+seqtabB_NC <- seqtabB_NC[order(row.names(seqtabB_NC)), ]
 
-row.names(seqtabM_NC) <- gsub("_MF1.fastq.gz", "", row.names(seqtabM_NC)) # remove ending to names
+row.names(seqtabB_NC) <- gsub("_BF1.fastq.gz", "", row.names(seqtabB_NC)) # remove ending to names
 ```
 
 And check the metadata file by removing the rows of samples that did not make it to seqtabNC, then set the sample names as rownames
@@ -64,13 +61,15 @@ And check the metadata file by removing the rows of samples that did not make it
 head(meta) # take a look at how meta read in
 
 # Check which samples are in meta but not in seqtabM_NC - record this output
-setdiff(meta$sample, row.names(seqtabM_NC))
+setdiff(meta$sample, row.names(seqtabB_NC))
 ```
 
 
 ```{r setdiff_and_clean, echo = FALSE}
 # Remove the samples that were listed from setdiff() above
-meta <- subset(meta, sample != "AMC23_C721") 
+meta <- subset(meta, sample != "AMC22_AB01") 
+meta <- subset(meta, sample != "AMC23_AB04") 
+meta <- subset(meta, sample != "AMC23_MB09") 
 
 # Set the sample column as row.names
 meta <- data.frame(meta, row.names = 1)
@@ -82,10 +81,10 @@ meta <- meta[order(row.names(meta)), ]
 With the rownames matching, we can now make the phyloseq object
 ```{r ps_object, echo = FALSE}
 # Create phyloseq object with all samples
-phy_ini <- phyloseq(otu_table(seqtabM_NC, taxa_are_rows=FALSE), sample_data(meta), tax_table(as.matrix(all.taxa)))
+phy_ini <- phyloseq(otu_table(seqtabB_NC, taxa_are_rows=FALSE), sample_data(meta), tax_table(as.matrix(all.taxa)))
 
 # SAVE 
-saveRDS(phy_ini, "Data/Outputs/2025-06-17/12S/InterimObjects/InitialPhyloseq.rds")
+saveRDS(phy_ini, "Data/Outputs/2025-06-17/COIB/InterimObjects/InitialPhyloseq.rds")
 ```
 
 ### Optional: Explore patterns of read abundance before proceeding to decontamination and taxa-filtering
@@ -96,10 +95,10 @@ saveRDS(phy_ini, "Data/Outputs/2025-06-17/12S/InterimObjects/InitialPhyloseq.rds
 phy_ini.func <- transform_sample_counts(phy_ini, function(x) x / sum(x) )
 
 # Plot based on Phylum
-plot_bar(phy_ini.func, fill="Phylum") + ggtitle("Proportion by Phylum of Identified Reads - 12S")
+plot_bar(phy_ini.func, fill="Phylum") + ggtitle("Proportion by Phylum of Identified Reads - COIB")
 
 # Save plot
-ggsave("PreDecontam_IDProportions.png", path = path_figM, plot_bar(phy_ini.func, fill="Phylum") + ggtitle("Proportion by Phylum of Identified Reads"), width = 7, height = 4, units = "in") 
+ggsave("PreDecontam_IDProportions.png", path = path_figB, plot_bar(phy_ini.func, fill="Phylum") + ggtitle("Proportion by Phylum of Identified Reads"), width = 7, height = 4, units = "in") 
 ```
 
 ```{r library_size, echo = FALSE}
@@ -121,7 +120,7 @@ df_ini$Index <- seq(nrow(df_ini))
 ggplot(data=df_ini, aes(x=Index, y=LibrarySize, color=Type)) + geom_point()
 
 # Save the plot
-ggsave("DecontamLibrarySize_Type.png", path = path_figM, ggplot(data=df_ini, aes(x=Index, y=LibrarySize, color=Type)) + geom_point() + ggtitle("12S Identified Read Numbers per Sample, by Sample Type"), width = 6, height = 4, units = "in") 
+ggsave("DecontamLibrarySize_Type.png", path = path_figB, ggplot(data=df_ini, aes(x=Index, y=LibrarySize, color=Type)) + geom_point() + ggtitle("COIB Identified Read Numbers per Sample, by Sample Type"), width = 6, height = 4, units = "in") 
 ```
 
 # Step 3: Decontam
@@ -221,7 +220,7 @@ batch10_clean <- prune_taxa(batch10_kp, batch10)
 phy_trim <- merge_phyloseq(batch1_sub, batch2_sub, batch3_sub, batch4_sub, batch5_sub, batch6_sub, batch7_sub, batch8_sub, batch9_sub, batch10_sub) 
 
 # Save the phyloseq object of identified contaminants in case further examination is desired
-saveRDS(phy_trim, "Data/Outputs/2025-06-17/12S/InterimObjects/DecontamRemoved.rds")
+saveRDS(phy_trim, "Data/Outputs/2025-06-17/COIB/InterimObjects/DecontamRemoved.rds")
 ```
 
 ```{r}
@@ -234,27 +233,39 @@ get_taxa_unique(clean_phy, taxonomic.rank = "Phylum")
 
 ```{r}
 # Remove non-target phyla (any bacteria, fungi, or algae) that were ID'd in the chunk above
+clean_phy <- ps_clean %>% 
+  subset_taxa(Phylum != "Ascomycota") 
 clean_phy <- clean_phy %>% 
-  subset_taxa(Phylum != "Bacillota") 
+  subset_taxa(Phylum != "Bacillariophyta")
+clean_phy <- clean_phy %>% 
+  subset_taxa(Phylum != "Basidiomycota")
 clean_phy <- clean_phy %>% 
   subset_taxa(Phylum != "Chlorophyta")
 clean_phy <- clean_phy %>% 
-  subset_taxa(Phylum != "Cyanobacteriota")
+  subset_taxa(Phylum != "Oomycota")
 clean_phy <- clean_phy %>% 
   subset_taxa(Phylum != "Pseudomonadota")
 clean_phy <- clean_phy %>% 
-  subset_taxa(Phylum != "Foraminifera")
+  subset_taxa(Phylum != "Rhodophyta")
+clean_phy <- clean_phy %>% 
+  subset_taxa(Phylum != "Rotifera")
+clean_phy <- clean_phy %>% 
+  subset_taxa(Phylum != "Tubulinea")
 clean_phy <- clean_phy %>% 
   subset_taxa(Phylum != "Streptophyta")
+clean_phy <- clean_phy %>% 
+  subset_taxa(Class != "Chrysophyceae")
+clean_phy <- clean_phy %>% 
+  subset_taxa(Class != "Raphidophyceae")
+
 clean_phy <- clean_phy %>%
   subset_taxa(Genus != "Homo") # Remove human DNA
-
 
 # Clean out taxa/SV columns that are no longer present
 clean_phy <- prune_taxa(taxa_sums(clean_phy) > 0, clean_phy) 
 clean_phy <- prune_samples(sample_sums(clean_phy) > 0, clean_phy)
 
 # Save the cleaned phyloseq object
-saveRDS(clean_phy, "Data/Outputs/2025-06-17/12S/InterimObjects/CleanPhyloseq.RDS")
+saveRDS(clean_phy, "Data/Outputs/2025-06-17/COIB/InterimObjects/CleanPhyloseq.RDS")
 ```
 
