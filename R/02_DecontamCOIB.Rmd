@@ -223,15 +223,34 @@ phy_trim <- merge_phyloseq(batch1_sub, batch2_sub, batch3_sub, batch4_sub, batch
 saveRDS(phy_trim, "Data/Outputs/2025-06-17/COIB/InterimObjects/DecontamRemoved.rds")
 ```
 
-```{r}
+```{r trim_explore, echo = FALSE}
+# Convert phyloseq of trimmed taxa to a dataframe
+trimdf <- psmelt(phy_trim)
+
+# Create a stacked bar plot of trimmed taxa by phylum by sample type per sample
+trim_phyla <- ggplot(trimdf, aes(fill =Phylum, y = Abundance, x = Type)) +
+  geom_bar(position = "stack", stat = "identity")
+
+# Create a stacked bar plot of trimmed taxa by class by sample type per sample
+trim_class <- ggplot(trimdf, aes(fill = Class, y = Abundance, x = Type)) +
+  geom_bar(position = "stack", stat = "identity") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust = 1))
+
+# Save plots
+ggsave("TrimmedPhyla.png", plot = trim_phyla, path = path_figB, width = 6, height = 4, units = "in")
+ggsave("TrimmedClass.png", plot = trim_class, path = path_figB, width = 6, height = 4, units = "in")
+```
+
+```{r phy_prep, echo = FALSE}
 # Merge the phyloseq objects of non-contaminants back together
+# 
 clean_phy <- merge_phyloseq(batch1_clean, batch2_clean, batch3_clean, batch4_clean, batch5_clean, batch6_clean, batch7_clean, batch8_clean, batch9_clean, batch10_clean) 
 
 # List the phyla identified in the phyloseq object - we want to remove non-target taxa
 get_taxa_unique(clean_phy, taxonomic.rank = "Phylum")
 ```
 
-```{r}
+```{r remove_nontarget, echo = FALSE}
 # Remove non-target phyla (any bacteria, fungi, or algae) that were ID'd in the chunk above
 clean_phy <- ps_clean %>% 
   subset_taxa(Phylum != "Ascomycota") 
