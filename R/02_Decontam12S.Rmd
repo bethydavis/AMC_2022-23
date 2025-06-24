@@ -10,31 +10,35 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = normalizePath("../"))
 ```
 
-We can mostly use the same config file, if we also load the seqtabNC outputs from the 01_DADA2.R file
-```{r}
+
+The next steps of the workflow tend to throw more errors, rely on packages that may be unstable, and/or just require a bit more attention. Therefore these steps are placed in a .rmd for ease of troubleshooting and documenting notes. To run a chunk of code, just press the green play button at the top right side of each chunk.
+
+This .rmd will only finish processing for the 12S primer dataset. See 02_DecontamCOIB.Rmd to finish sample processing for the COIB primer dataset.
+
+
+```{r load, echo = FALSE}
+# Load config file
 source("R/01_config.R")
 
-# Load the seqtabNC files - make sure the output versions match
+# Load the seqtabNC file - make sure the output versions match
 seqtabM_NC <- readRDS("Data/Outputs/2025-06-17/12S/InterimObjects/MergedSeqTab_NoChim.rds")
-##
-seqtabB_NC <- readRDS("Data/Outputs/2025-06-17/COIB/InterimObjects/MergedSeqTab_NoChim.rds")
 ```
 
-The next steps of the workflow tend to throw more errors or formatting changes and so are placed in a .rmd for ease of troubleshooting and documenting notes
 
 # Step 1: Assign Taxonomy to the DADA2 Output
-
-```{r assign_taxonomy}
+This step may take some time
+```{r assign_taxonomy, echo = FALSE}
 all.taxa <- assignTaxonomy(seqtabM_NC, 'Data/Input/12S_REFDB.fasta', tryRC = TRUE, verbose = TRUE)
-beep(sound = "fanfare") # notify when done
+
+beep(sound = "fanfare")
 ```
 
 # Step 2: Transfer to Phyloseq
 
 To build a phyloseq object, key checks must be met. In the all.taxa object, the row names should be the sequences, and the meta and seqtabNC objects should match sample names by both character strings and order of samples. For whatever reason, assignTaxonomy has a habit of returning objects that are slightly different in layout each time I run it, but as long as those two key checks are met, it should work.
 
-First we check all.taxa - assignTaxonomy also tends to be a bit weird in the column name assignments
-```{r}
+First we check all.taxa and the column name assignments to ensure the correct taxonomic ranks are labelled.
+```{r taxacheck, echo = FALSE}
 head(all.taxa)
 
 # To correct the column names:
@@ -43,12 +47,12 @@ colnames(all.taxa) <- c("Phylum", "Class", "Order", "Family", "Genus", "Species"
 # Save all.taxa as a .csv once itʻs in order
 write.csv(all.taxa, file.path(path_outM, "12SAssignedTaxa.csv"))
 
-# If the row.names in all.taxa are not the sequences:
+# If the row.names in all.taxa are not the sequences, remove the # and run the following line:
 # all.taxa <- data.frame(all.taxa, row.names = 1)
 ```
 
 Now check seqtabNC (primarily by organizing it) - seqtabNC should have the samples as rownames and sequences as colnames
-```{r}
+```{r seqtabcheck, echo = FALSE}
 head(seqtabM_NC) 
 seqtabM_NC <- seqtabM_NC[order(row.names(seqtabM_NC)), ]
 
@@ -56,13 +60,16 @@ row.names(seqtabM_NC) <- gsub("_MF1.fastq.gz", "", row.names(seqtabM_NC)) # remo
 ```
 
 And check the metadata file by removing the rows of samples that did not make it to seqtabNC, then set the sample names as rownames
-```{r}
+```{r metacheck, echo = FALSE}
 head(meta) # take a look at how meta read in
 
-# Check which samples are in meta but not in seqtabM_NC
+# Check which samples are in meta but not in seqtabM_NC - record this output
 setdiff(meta$sample, row.names(seqtabM_NC))
+```
 
-# Remove these samples
+
+```{r setdiff_and_clean, echo = FALSE}
+# Remove the samples that were listed from setdiff() above
 meta <- subset(meta, sample != "AMC23_C721") 
 
 # Set the sample column as row.names
@@ -81,71 +88,61 @@ phy_ini <- phyloseq(otu_table(seqtabM_NC, taxa_are_rows=FALSE), sample_data(meta
 saveRDS(phy_ini, "Data/Outputs/2025-06-17/12S/InterimObjects/InitialPhyloseq.rds")
 ```
 
-#######################################################
+### Optional: Explore patterns of read abundance before proceeding to decontamination and taxa-filtering
+```{r initial_exploratory, echo = FALSE}
+# This chunk will make a stacked bar plot of detected reads per sample by Phylum assignment
 
-
-## Exploratory richness plots
-```{r initial_exploratory}
-# I'd like to make a stacked bar plot, before any taxa-filtering, of the read abundances
 # Set function to make a proportional graph
-EX_ps.func <- transform_sample_counts(EX_ps, function(x) x / sum(x) )
+phy_ini.func <- transform_sample_counts(phy_ini, function(x) x / sum(x) )
+
 # Plot based on Phylum
-plot_bar(EX_ps.func, fill="Phylum") + ggtitle("Proportion by Phylum of Identified Reads - 12S")
-# Warning: Removed 1076 rows containing missing values or values outside the scale range (`geom_bar()`). 
+plot_bar(phy_ini.func, fill="Phylum") + ggtitle("Proportion by Phylum of Identified Reads - 12S")
 
 # Save plot
-ggsave("PreDecontam_IDProportions.png", path = path_outputs, plot_bar(EX_ps.func, fill="Phylum") + ggtitle("Proportion by Phylum of Identified Reads"), width = 7, height = 4, units = "in") 
+ggsave("PreDecontam_IDProportions.png", path = path_figM, plot_bar(phy_ini.func, fill="Phylum") + ggtitle("Proportion by Phylum of Identified Reads"), width = 7, height = 4, units = "in") 
 ```
 
-
-# Step 3: Decontam - From PNW
-
-## Inspect Library Sizes
 ```{r library_size, echo = FALSE}
-df <- as.data.frame(sample_data(EX_ps)) # Put sample_data into a ggplot-friendly data.frame
-df$LibrarySize <- sample_sums(EX_ps)
-df <- df[order(df$LibrarySize),]
-df$Index <- seq(nrow(df))
-ggplot(data=df, aes(x=Index, y=LibrarySize, color=Type)) + geom_point()
+# This chunk will make a scatterplot of the number of reads by sample
 
-ggsave("DecontamLibrarySize_Type.png", path = path_outputs, ggplot(data=df, aes(x=Index, y=LibrarySize, color=Type)) + geom_point() + ggtitle("12S Identified Read Numbers per Sample, by Sample Type"), width = 6, height = 4, units = "in") 
+# Put sample data into a ggplot-friendly data frame
+df_ini <- as.data.frame(sample_data(phy_ini))
 
+# Attach the read totals by sample to the data frame
+df_ini$LibrarySize <- sample_sums(df_ini)
+
+# Order the data frame by library size
+df_ini <- expdf[order(df_ini$LibrarySize),]
+
+# Create an index to number each row
+df_ini$Index <- seq(nrow(df_ini))
+
+# Make the plot
+ggplot(data=df_ini, aes(x=Index, y=LibrarySize, color=Type)) + geom_point()
+
+# Save the plot
+ggsave("DecontamLibrarySize_Type.png", path = path_figM, ggplot(data=df_ini, aes(x=Index, y=LibrarySize, color=Type)) + geom_point() + ggtitle("12S Identified Read Numbers per Sample, by Sample Type"), width = 6, height = 4, units = "in") 
 ```
-Controls are generally higher than eDNA, with some 0s
 
-Check order by year too
-```{r library_size, echo = FALSE}
-df <- as.data.frame(sample_data(EX_ps)) # Put sample_data into a ggplot-friendly data.frame
-df$LibrarySize <- sample_sums(EX_ps)
-df <- df[order(df$LibrarySize),]
-df$Index <- seq(nrow(df))
-ggplot(data=df, aes(x=Index, y=LibrarySize, color=Year)) + geom_point()
-
-ggsave("DecontamLibrarySize_Year.png", path = path_outputs, ggplot(data=df, aes(x=Index, y=LibrarySize, color=Year)) + geom_point() + ggtitle("12S Identified Read Numbers per Sample, by Collection Year"), width = 6, height = 4, units = "in") 
-```
-Unsure why it's making a gradient - figure out later, but 2022 surprisingly seems to have more reads than 2023 - will see if that persists after decontam
-
-
-## Remove Contaminants
+# Step 3: Decontam
 
 The standard decontam package uses either frequency or prevalence to identify and remove contaminants, but relies on blanks being true negative controls to use presence/absence of reads between true and negative samples to identify contaminants. Since these blank samples do have a significant number of reads, I use the Ishaq decontam method instead - isolating reads that were identified in the controls and removing them from all samples, based on which samples were extracted with which blank.
 
-
 ```{r decontam_isolate, echo = FALSE}
-# subset each DNA extraction batch
-batch1 = subset_samples(EX_ps, Ebatch == "1")  
-batch2 = subset_samples(EX_ps, Ebatch == "2")
-batch3 = subset_samples(EX_ps, Ebatch == "3")  
-batch4 = subset_samples(EX_ps, Ebatch == "4")  
-batch5 = subset_samples(EX_ps, Ebatch == "5")  
-batch6 = subset_samples(EX_ps, Ebatch == "6")  
-batch7 = subset_samples(EX_ps, Ebatch == "7")  
-batch8 = subset_samples(EX_ps, Ebatch == "8")  
-batch9 = subset_samples(EX_ps, Ebatch == "9")  
-batch10 = subset_samples(EX_ps, Ebatch == "10")  
+# subset samples by their DNA extraction batch
+batch1 = subset_samples(phy_ini, Ebatch == "1")  
+batch2 = subset_samples(phy_ini, Ebatch == "2")
+batch3 = subset_samples(phy_ini, Ebatch == "3")  
+batch4 = subset_samples(phy_ini, Ebatch == "4")  
+batch5 = subset_samples(phy_ini, Ebatch == "5")  
+batch6 = subset_samples(phy_ini, Ebatch == "6")  
+batch7 = subset_samples(phy_ini, Ebatch == "7")  
+batch8 = subset_samples(phy_ini, Ebatch == "8")  
+batch9 = subset_samples(phy_ini, Ebatch == "9")  
+batch10 = subset_samples(phy_ini, Ebatch == "10")  
 
 
-# subset controls and prune to only those taxa
+# subset controls in each batch and prune to only those taxa
 batch1_sub = subset_samples(batch1, Type == "NegCon")
 batch2_sub = subset_samples(batch2, Type == "NegCon")
 batch3_sub = subset_samples(batch3, Type == "NegCon")
@@ -156,7 +153,6 @@ batch7_sub = subset_samples(batch7, Type == "NegCon")
 batch8_sub = subset_samples(batch8, Type == "NegCon")
 batch9_sub = subset_samples(batch9, Type == "NegCon")
 batch10_sub = subset_samples(batch10, Type == "NegCon")
-
 
 batch1_sub <- prune_taxa(taxa_sums(batch1_sub) > 0, batch1_sub)
 batch2_sub <- prune_taxa(taxa_sums(batch2_sub) > 0, batch2_sub)
@@ -170,7 +166,7 @@ batch9_sub <- prune_taxa(taxa_sums(batch9_sub) > 0, batch9_sub)
 batch10_sub <- prune_taxa(taxa_sums(batch10_sub) > 0, batch10_sub)
 
 
-# Make the taxa names into a vector so you can remove them, then use the keep vector for the prune taxa argument, because it wants the argument to be true (matching), and repeat for both batches
+# Make the taxa names into a vector so you can remove them, then use the keep vector for the prune taxa argument, because it wants the argument to be true (matching), and repeat for all batches
 batch1_ctrl <- as.vector(taxa_names(batch1_sub)) 
 batch1_vec <- as.vector(taxa_names(batch1)) 
 batch1_kp <- setdiff(batch1_vec, batch1_ctrl)
@@ -221,21 +217,44 @@ batch10_vec <- as.vector(taxa_names(batch10))
 batch10_kp <- setdiff(batch10_vec, batch10_ctrl)
 batch10_clean <- prune_taxa(batch10_kp, batch10)
 
-# Save the phyloseq object of identified contaminants
-pstrimmed <- merge_phyloseq(batch1_sub, batch2_sub, batch3_sub, batch4_sub, batch5_sub, batch6_sub, batch7_sub, batch8_sub, batch9_sub, batch10_sub) 
-saveRDS(pstrimmed, "G:/My Drive/2_UMaine FSM - Field Projects/AMC/Data/dataoutputs/12S/6-Jun03-2024/DecontamRemoved.rds")
+# Combine the phyloseq objects of ID'd contaminants into one file
+phy_trim <- merge_phyloseq(batch1_sub, batch2_sub, batch3_sub, batch4_sub, batch5_sub, batch6_sub, batch7_sub, batch8_sub, batch9_sub, batch10_sub) 
 
+# Save the phyloseq object of identified contaminants in case further examination is desired
+saveRDS(phy_trim, "Data/Outputs/2025-06-17/12S/InterimObjects/DecontamRemoved.rds")
 ```
 
 ```{r}
-# Merge the phyloseq objects back together, then remove any blank taxa or samples
-ps_clean <- merge_phyloseq(batch1_clean, batch2_clean, batch3_clean, batch4_clean, batch5_clean, batch6_clean, batch7_clean, batch8_clean, batch9_clean, batch10_clean) 
+# Merge the phyloseq objects of non-contaminants back together
+clean_phy <- merge_phyloseq(batch1_clean, batch2_clean, batch3_clean, batch4_clean, batch5_clean, batch6_clean, batch7_clean, batch8_clean, batch9_clean, batch10_clean) 
+
+# List the phyla identified in the phyloseq object - we want to remove non-target taxa
+get_taxa_unique(clean_phy, taxonomic.rank = "Phylum")
+```
+
+```{r}
+# Remove non-target phyla (any bacteria, fungi, or algae) that were ID'd in the chunk above
+clean_phy <- clean_phy %>% 
+  subset_taxa(Phylum != "Bacillota") 
+clean_phy <- clean_phy %>% 
+  subset_taxa(Phylum != "Chlorophyta")
+clean_phy <- clean_phy %>% 
+  subset_taxa(Phylum != "Cyanobacteriota")
+clean_phy <- clean_phy %>% 
+  subset_taxa(Phylum != "Pseudomonadota")
+clean_phy <- clean_phy %>% 
+  subset_taxa(Phylum != "Foraminifera")
+clean_phy <- clean_phy %>% 
+  subset_taxa(Phylum != "Streptophyta")
+clean_phy <- clean_phy %>%
+  subset_taxa(Genus != "Homo") # Remove human DNA
+
 
 # Clean out taxa/SV columns that are no longer present
-ps_clean <- prune_taxa(taxa_sums(ps_clean) > 0, ps_clean) 
-ps_clean <- prune_samples(sample_sums(ps_clean) > 0, ps_clean)
+clean_phy <- prune_taxa(taxa_sums(clean_phy) > 0, clean_phy) 
+clean_phy <- prune_samples(sample_sums(clean_phy) > 0, clean_phy)
 
-ps_clean
-ps_clean.stack <- transform_sample_counts(ps_clean, function(x) x / sum(x) )
-# Plot based on Phylum
-plot_bar(ps_clean.stack, fill="Phylum") + ggtitle("Proportion by Phylum of Identified Reads - COI")
+# Save the cleaned phyloseq object
+saveRDS(clean_phy, "Data/Outputs/2025-06-17/InterimObjects/CleanPhyloseq.RDS")
+```
+
